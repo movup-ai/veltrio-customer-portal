@@ -15,9 +15,9 @@ import {
 import { SearchCapsule } from "@/modules/search/components/SearchCapsule";
 import { buildSearchUrl } from "@/modules/search/search-params";
 import {
-  VehicleGrid,
-  VehicleGridSkeleton,
-} from "@/modules/vehicle/components/VehicleGrid";
+  VehicleRow,
+  VehicleRowSkeleton,
+} from "@/modules/vehicle/components/VehicleRow";
 import { VehicleTypeNav } from "@/modules/vehicle/components/VehicleTypeNav";
 import { listVehicles } from "@/modules/vehicle/vehicle.repository";
 import { siteConfig } from "@/shared/config/site";
@@ -90,8 +90,8 @@ export default function HomePage() {
         <div className="container-page space-y-16 pt-10 md:pt-12">
           <VehicleTypeNav hrefFor={(type) => buildSearchUrl({ type })} />
 
-          <Suspense fallback={<VehicleGridSkeleton {...ALL_VEHICLES} />}>
-            <VehicleGrid {...ALL_VEHICLES} vehicles={listVehicles()} />
+          <Suspense fallback={<VehicleRowSkeleton {...ALL_VEHICLES} />}>
+            <VehicleRow {...ALL_VEHICLES} vehicles={listVehicles()} />
           </Suspense>
 
           <CollectionsSection

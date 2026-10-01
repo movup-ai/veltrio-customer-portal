@@ -1,7 +1,7 @@
 "use client";
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useRef, type ReactNode } from "react";
+import { useCallback, useRef, useState, type ReactNode } from "react";
 import { cn } from "@/shared/lib/cn";
 import { preferredScrollBehavior } from "@/shared/lib/motion";
 import { Button } from "@/shared/ui/atoms/Button";
@@ -18,7 +18,9 @@ interface ScrollRowProps {
   itemClassName?: string;
 }
 
-/** A titled, horizontally scrolling list with snap points and arrow controls. */
+const ARROW = "border border-border disabled:bg-surface disabled:opacity-35";
+
+/** A titled, single-line list that scrolls sideways, with arrow controls above it. */
 export function ScrollRow({
   id,
   title,
@@ -26,17 +28,30 @@ export function ScrollRow({
   children,
   itemClassName,
 }: ScrollRowProps) {
-  const listRef = useRef<HTMLUListElement>(null);
+  const listRef = useRef<HTMLUListElement | null>(null);
+  const [edges, setEdges] = useState({ start: true, end: true });
   const headingId = `${id}-heading`;
+
+  const measure = useCallback((list: HTMLUListElement | null) => {
+    listRef.current = list;
+    if (!list) return;
+    const start = list.scrollLeft <= 1;
+    const end = list.scrollLeft + list.clientWidth >= list.scrollWidth - 1;
+    setEdges((current) =>
+      current.start === start && current.end === end ? current : { start, end },
+    );
+  }, []);
 
   const scrollBy = (direction: 1 | -1) => {
     const list = listRef.current;
-    if (!list) return;
-    list.scrollBy({
+    list?.scrollBy({
       left: direction * list.clientWidth * 0.9,
       behavior: preferredScrollBehavior(),
     });
   };
+
+  // No arrows when everything already fits on one line.
+  const overflows = !(edges.start && edges.end);
 
   return (
     <section aria-labelledby={headingId}>
@@ -45,37 +60,42 @@ export function ScrollRow({
         title={title}
         description={description}
         action={
-          <div className="hidden gap-2 md:flex">
-            <Button
-              variant="light"
-              size="icon-sm"
-              className="border border-border"
-              aria-label="Scroll back"
-              onClick={() => scrollBy(-1)}
-            >
-              <ChevronLeft className="size-4" />
-            </Button>
-            <Button
-              variant="light"
-              size="icon-sm"
-              className="border border-border"
-              aria-label="Scroll forward"
-              onClick={() => scrollBy(1)}
-            >
-              <ChevronRight className="size-4" />
-            </Button>
-          </div>
+          overflows && (
+            <div className="hidden gap-2 md:flex">
+              <Button
+                variant="light"
+                size="icon-sm"
+                className={ARROW}
+                aria-label="Scroll back"
+                disabled={edges.start}
+                onClick={() => scrollBy(-1)}
+              >
+                <ChevronLeft aria-hidden className="size-4" />
+              </Button>
+              <Button
+                variant="light"
+                size="icon-sm"
+                className={ARROW}
+                aria-label="Scroll forward"
+                disabled={edges.end}
+                onClick={() => scrollBy(1)}
+              >
+                <ChevronRight aria-hidden className="size-4" />
+              </Button>
+            </div>
+          )
         }
       />
       <ul
-        ref={listRef}
-        className="bleed-gutter scrollbar-none flex snap-x snap-mandatory gap-4 overflow-x-auto pb-1 sm:gap-6 md:mx-0 md:px-0"
+        ref={measure}
+        onScroll={(event) => measure(event.currentTarget)}
+        className="bleed-gutter scrollbar-none flex snap-x snap-mandatory gap-4 overflow-x-auto pb-1 md:mx-0 md:gap-5 md:px-0 lg:gap-6"
       >
         {children.map((child, index) => (
           <li
             key={index}
             className={cn(
-              "w-[78%] shrink-0 snap-start sm:w-[calc((100%-1.5rem)/2)] lg:w-[calc((100%-3rem)/3)] xl:w-[calc((100%-4.5rem)/4)]",
+              "w-[78%] shrink-0 snap-start md:w-[calc((100%-2.5rem)/3)] lg:w-[calc((100%-4.5rem)/4)]",
               itemClassName,
             )}
           >

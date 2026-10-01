@@ -1,5 +1,6 @@
 import { Zap } from "lucide-react";
 import Link from "next/link";
+import { Fragment } from "react";
 import { cn } from "@/shared/lib/cn";
 import { formatMoney } from "@/shared/lib/format";
 import { Badge } from "@/shared/ui/atoms/Badge";
@@ -8,8 +9,7 @@ import { vehicleHref, vehicleName } from "../vehicle.utils";
 import { VehicleCardGallery } from "./VehicleCardGallery";
 
 /** Default `sizes` for a card in a 1-4 column grid or carousel. */
-const DEFAULT_SIZES =
-  "(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, (min-width: 640px) 50vw, 80vw";
+const DEFAULT_SIZES = "(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 80vw";
 
 /** Photos shown in a card; the rest are on the vehicle page. */
 const MAX_PHOTOS = 5;
@@ -20,6 +20,8 @@ interface VehicleCardProps {
   sizes?: string;
   /** Load the photo eagerly. Use only for cards visible without scrolling. */
   priority?: boolean;
+  /** Position in a list; staggers the entrance animation. */
+  index?: number;
   className?: string;
 }
 
@@ -27,12 +29,12 @@ export function VehicleCard({
   vehicle,
   sizes = DEFAULT_SIZES,
   priority,
+  index = 0,
   className,
 }: VehicleCardProps) {
   const { specs, company } = vehicle;
   const name = vehicleName(vehicle);
   const rate = vehicle.dailyRateCents;
-  const href = vehicleHref(vehicle);
 
   const specLine = [
     specs.horsepower && `${specs.horsepower} hp`,
@@ -41,39 +43,55 @@ export function VehicleCard({
   ].filter(Boolean);
 
   return (
-    <article className={cn("group relative", className)}>
-      <div className="relative aspect-4/3 overflow-hidden rounded-lg bg-surface-muted">
-        <VehicleCardGallery
-          photos={vehicle.photos.slice(0, MAX_PHOTOS)}
-          alt={`${vehicle.year} ${name} in ${vehicle.color}`}
-          href={href}
-          sizes={sizes}
-          priority={priority}
-        />
+    <article
+      className={cn(
+        "group relative animate-fade-up motion-reduce:animate-none",
+        className,
+      )}
+      style={{ animationDelay: `${Math.min(index, 12) * 45}ms` }}
+    >
+      <VehicleCardGallery
+        photos={vehicle.photos.slice(0, MAX_PHOTOS)}
+        alt={`${vehicle.year} ${name} in ${vehicle.color}`}
+        sizes={sizes}
+        priority={priority}
+      >
         {specs.fuelType === "electric" && (
-          <Badge className="pointer-events-none absolute top-3 left-3 z-20">
+          <Badge className="absolute top-3 left-3 z-10">
             <Zap aria-hidden className="size-3.5" /> Electric
           </Badge>
         )}
-      </div>
+      </VehicleCardGallery>
       <div className="pt-3">
         <h3 className="truncate font-semibold tracking-tight">
           {/* The stretched link makes the whole card clickable with one tab stop. */}
-          <Link href={href} className="after:absolute after:inset-0">
+          <Link
+            href={vehicleHref(vehicle)}
+            className="after:absolute after:inset-0 after:z-10"
+          >
             {name}
           </Link>{" "}
           <span className="font-normal text-muted">{vehicle.year}</span>
         </h3>
-        <p className="mt-1 truncate type-spec text-muted">
-          {specLine.join(" · ")}
+        <p className="mt-1.5 flex gap-2 overflow-hidden font-mono text-label whitespace-nowrap text-muted">
+          {specLine.map((spec, i) => (
+            <Fragment key={spec}>
+              {i > 0 && (
+                <span aria-hidden className="text-border-strong">
+                  ·
+                </span>
+              )}
+              <span>{spec}</span>
+            </Fragment>
+          ))}
         </p>
-        <p className="mt-1 truncate text-meta text-muted">
+        <p className="mt-1.5 truncate text-meta text-muted">
           <span className="font-medium text-foreground">{company.name}</span> ·{" "}
           {vehicle.location}
         </p>
         {rate !== null && (
-          <p className="mt-2">
-            <span className="font-bold">{formatMoney(rate)}</span> / day
+          <p className="mt-2 flex items-baseline gap-1.5">
+            <span className="font-bold">{formatMoney(rate)}</span> day
           </p>
         )}
       </div>

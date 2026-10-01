@@ -52,9 +52,9 @@ export function ModulesSection() {
         tone="background"
       >
         <ul className="grid gap-x-6 gap-y-10 sm:grid-cols-2 xl:grid-cols-4">
-          {SAMPLE_VEHICLES.map((vehicle) => (
+          {SAMPLE_VEHICLES.map((vehicle, index) => (
             <li key={vehicle.id}>
-              <VehicleCard vehicle={vehicle} />
+              <VehicleCard vehicle={vehicle} index={index} />
             </li>
           ))}
           <li>
