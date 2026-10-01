@@ -37,15 +37,15 @@ export function HostCtaSection({
         aria-hidden
         className="absolute inset-0 -z-10 bg-linear-to-r from-night/95 via-night/65 to-night/10"
       />
-      <div className="max-w-xl p-7 md:p-14">
+      <div className="max-w-xl p-6 md:p-14">
         <Eyebrow tone="inverse">{eyebrow}</Eyebrow>
         <h2
           id="host-cta-heading"
-          className="mt-3.5 font-display text-h3 md:text-h2"
+          className="mt-4 font-display text-h3 md:text-h2"
         >
           {title}
         </h2>
-        <p className="mt-3.5 mb-6 text-on-inverse/80">{description}</p>
+        <p className="mt-4 mb-6 text-on-inverse/80">{description}</p>
         <Button asChild variant="light">
           <Link href={cta.href}>{cta.label}</Link>
         </Button>

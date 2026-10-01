@@ -4,7 +4,7 @@ import type { ComponentProps } from "react";
 import { cn } from "@/shared/lib/cn";
 
 export const buttonVariants = cva(
-  "inline-flex shrink-0 items-center justify-center gap-2 rounded-full font-semibold whitespace-nowrap transition duration-150 ease-standard active:scale-[0.97] disabled:pointer-events-none disabled:bg-surface-muted disabled:text-border-strong",
+  "inline-flex shrink-0 items-center justify-center rounded-full font-semibold whitespace-nowrap transition duration-150 ease-standard active:scale-[0.97] disabled:pointer-events-none disabled:bg-surface-muted disabled:text-border-strong",
   {
     variants: {
       variant: {
@@ -17,10 +17,11 @@ export const buttonVariants = cva(
           "border border-white/25 bg-white/15 text-on-inverse backdrop-blur-md hover:bg-white/25",
       },
       size: {
-        sm: "h-9 px-3.5 text-sm",
-        md: "h-12 px-5.5 text-body",
-        lg: "h-14 px-7 text-ui",
-        icon: "size-10",
+        // Side padding is at least half the height; a leading icon pulls its side in one step.
+        sm: "h-9 gap-1.5 px-4 text-sm has-[>svg:first-child]:pl-3",
+        md: "h-11 gap-2 px-6 text-body has-[>svg:first-child]:pl-5",
+        lg: "h-13 gap-2.5 px-8 text-ui has-[>svg:first-child]:pl-6",
+        icon: "size-11",
         "icon-sm": "size-9",
       },
     },

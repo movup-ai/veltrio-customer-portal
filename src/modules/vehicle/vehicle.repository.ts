@@ -1,32 +1,21 @@
-import { MOCK_VEHICLES } from "./mocks/vehicles.mock";
+import { apiGet, type Page } from "@/shared/api/client";
 import type { Vehicle } from "./types";
+import { isListed, toVehicle, type VehicleDto } from "./vehicle.api";
 
-/**
- * Data access for vehicles. Components never import mocks or call fetch directly.
- *
- * TODO(api): the backend has no public (unauthenticated, cross-tenant) vehicle
- * endpoint yet. When it does, replace the bodies below with fetch calls to
- * NEXT_PUBLIC_API_URL; callers do not need to change.
- */
+/** Data access for vehicles. Components never call the API directly. */
 
-interface ListFeaturedOptions {
-  limit?: number;
-  /** Upper bound on the lowest daily rate, in cents. */
-  maxDailyRateCents?: number;
-}
+const PAGE_SIZE = 100; // the API's maximum
 
-export async function listFeaturedVehicles({
-  limit = 8,
-  maxDailyRateCents,
-}: ListFeaturedOptions = {}): Promise<Vehicle[]> {
-  const vehicles =
-    maxDailyRateCents === undefined
-      ? MOCK_VEHICLES
-      : MOCK_VEHICLES.filter((vehicle) =>
-          vehicle.rateOptions.some(
-            (option) =>
-              option.basis === "day" && option.rateCents <= maxDailyRateCents,
-          ),
-        );
-  return vehicles.slice(0, limit);
+/** Every vehicle a renter can see, walking the API's pages. */
+export async function listVehicles(): Promise<Vehicle[]> {
+  const vehicles: VehicleDto[] = [];
+  let total = Infinity;
+  for (let offset = 0; offset < total; offset += PAGE_SIZE) {
+    const page = await apiGet<Page<VehicleDto>>("/vehicles", {
+      query: { sortBy: "manual", limit: PAGE_SIZE, offset },
+    });
+    vehicles.push(...page.items);
+    total = page.total;
+  }
+  return vehicles.filter(isListed).map(toVehicle);
 }

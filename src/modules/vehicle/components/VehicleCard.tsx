@@ -66,11 +66,18 @@ export function VehicleCard({
           </Link>{" "}
           <span className="font-normal text-muted">{vehicle.year}</span>
         </h3>
-        <p className="mt-1.5 truncate type-spec text-muted">
+        <p className="mt-1 truncate type-spec text-muted">
           {specLine.join(" · ")}
         </p>
-        <p className="mt-1.5 truncate text-meta text-muted">
-          <span className="font-medium text-foreground">{company.name}</span> ·{" "}
+        <p className="mt-1 truncate text-meta text-muted">
+          {company && (
+            <>
+              <span className="font-medium text-foreground">
+                {company.name}
+              </span>{" "}
+              ·{" "}
+            </>
+          )}
           {vehicle.location}
         </p>
         {rate !== null && (

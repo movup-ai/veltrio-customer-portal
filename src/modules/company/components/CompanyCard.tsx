@@ -22,7 +22,7 @@ export function CompanyCard({ company, className }: CompanyCardProps) {
         className,
       )}
     >
-      <div className="flex items-center gap-3.5">
+      <div className="flex items-center gap-4">
         <span
           aria-hidden
           className="grid size-14 shrink-0 place-items-center rounded-full bg-foreground text-ui font-bold text-on-inverse"
@@ -34,7 +34,7 @@ export function CompanyCard({ company, className }: CompanyCardProps) {
           <p className="text-meta text-muted">{company.city}</p>
         </div>
       </div>
-      <p className="mt-5 border-t border-border pt-3.5 text-meta text-muted">
+      <p className="mt-5 border-t border-border pt-4 text-meta text-muted">
         <span className="text-ui font-bold text-foreground">
           {company.vehicleCount}
         </span>{" "}

@@ -13,20 +13,20 @@ interface SiteFooterProps {
 
 export function SiteFooter({ columns }: SiteFooterProps) {
   return (
-    <footer className="mt-20 bg-surface-muted pt-14 pb-7">
+    <footer className="mt-20 bg-surface-muted pt-14 pb-8">
       <div className="container-page">
         <div className="grid grid-cols-2 gap-8 md:grid-cols-[1.4fr_repeat(3,1fr)]">
           <div className="col-span-2 md:col-span-1">
             <Logo />
-            <p className="mt-3.5 max-w-xs text-meta text-muted">
+            <p className="mt-4 max-w-xs text-meta text-muted">
               The marketplace for independent rental companies and the people
               who love to drive.
             </p>
           </div>
           {columns.map((column) => (
             <nav key={column.title} aria-label={column.title}>
-              <h2 className="mb-3.5 text-sm font-semibold">{column.title}</h2>
-              <ul className="grid gap-2.5">
+              <h2 className="mb-4 text-sm font-semibold">{column.title}</h2>
+              <ul className="grid gap-3">
                 {column.links.map((link) => (
                   <li key={link.href + link.label}>
                     <Link
@@ -41,7 +41,7 @@ export function SiteFooter({ columns }: SiteFooterProps) {
             </nav>
           ))}
         </div>
-        <p className="mt-10 border-t border-border pt-5 text-meta text-muted">
+        <p className="mt-10 border-t border-border pt-6 text-meta text-muted">
           © {new Date().getFullYear()} {siteConfig.name}
         </p>
       </div>

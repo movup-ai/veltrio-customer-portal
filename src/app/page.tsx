@@ -15,11 +15,11 @@ import {
 import { SearchCapsule } from "@/modules/search/components/SearchCapsule";
 import { buildSearchUrl } from "@/modules/search/search-params";
 import {
-  VehicleRow,
-  VehicleRowSkeleton,
-} from "@/modules/vehicle/components/VehicleRow";
+  VehicleGrid,
+  VehicleGridSkeleton,
+} from "@/modules/vehicle/components/VehicleGrid";
 import { VehicleTypeNav } from "@/modules/vehicle/components/VehicleTypeNav";
-import { listFeaturedVehicles } from "@/modules/vehicle/vehicle.repository";
+import { listVehicles } from "@/modules/vehicle/vehicle.repository";
 import { siteConfig } from "@/shared/config/site";
 import { buildMetadata, JsonLd } from "@/shared/lib/seo";
 import { ScrollRow } from "@/shared/ui/molecules/ScrollRow";
@@ -31,15 +31,10 @@ export const metadata: Metadata = buildMetadata({
   path: "/",
 });
 
-const FEATURED = {
-  id: "featured",
-  title: "Featured vehicles",
-  description: "A selection from rental companies on Veltrio.",
-};
-const EVERYDAY = {
-  id: "everyday",
-  title: "Everyday drives under $160",
-  description: "Good cars from good companies, without the supercar deposit.",
+const ALL_VEHICLES = {
+  id: "vehicles",
+  title: "All vehicles",
+  description: "Every vehicle listed by rental companies on Veltrio.",
 };
 
 async function CompaniesRow() {
@@ -95,11 +90,8 @@ export default function HomePage() {
         <div className="container-page space-y-16 pt-10 md:pt-12">
           <VehicleTypeNav hrefFor={(type) => buildSearchUrl({ type })} />
 
-          <Suspense fallback={<VehicleRowSkeleton {...FEATURED} />}>
-            <VehicleRow
-              {...FEATURED}
-              vehicles={listFeaturedVehicles({ limit: 8 })}
-            />
+          <Suspense fallback={<VehicleGridSkeleton {...ALL_VEHICLES} />}>
+            <VehicleGrid {...ALL_VEHICLES} vehicles={listVehicles()} />
           </Suspense>
 
           <CollectionsSection
@@ -125,16 +117,6 @@ export default function HomePage() {
 
           <Suspense fallback={null}>
             <CompaniesRow />
-          </Suspense>
-
-          <Suspense fallback={<VehicleRowSkeleton {...EVERYDAY} />}>
-            <VehicleRow
-              {...EVERYDAY}
-              vehicles={listFeaturedVehicles({
-                limit: 8,
-                maxDailyRateCents: 16000,
-              })}
-            />
           </Suspense>
 
           <HostCtaSection {...hostCta} />

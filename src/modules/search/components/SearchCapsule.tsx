@@ -78,7 +78,7 @@ export function SearchCapsule({
       aria-label="Find a rental car"
       onSubmit={submit}
       className={cn(
-        "flex max-w-4xl flex-col gap-1.5 rounded-xl bg-surface p-2 text-foreground shadow-search md:flex-row md:items-stretch md:gap-0 md:rounded-full",
+        "flex max-w-4xl flex-col gap-2 rounded-xl bg-surface p-2 text-foreground shadow-search md:flex-row md:items-stretch md:gap-0 md:rounded-full",
         className,
       )}
     >
@@ -102,7 +102,7 @@ export function SearchCapsule({
                     setLocation(m.slug);
                     setOpenField(null);
                   }}
-                  className="flex w-full items-center gap-3.5 rounded-md p-2.5 text-left hover:bg-surface-muted aria-pressed:bg-surface-muted"
+                  className="flex w-full items-center gap-4 rounded-md p-2 text-left hover:bg-surface-muted aria-pressed:bg-surface-muted"
                 >
                   <span className="grid size-11 place-items-center rounded-md bg-surface-muted">
                     <MapPin aria-hidden className="size-5" strokeWidth={1.75} />
@@ -173,7 +173,7 @@ export function SearchCapsule({
                       setType(selected ? undefined : value);
                       setOpenField(null);
                     }}
-                    className="flex w-full items-center gap-2.5 rounded-md border border-border p-3.5 text-sm font-medium hover:border-foreground aria-pressed:border-foreground aria-pressed:bg-surface-muted"
+                    className="flex w-full items-center gap-3 rounded-md border border-border p-4 text-sm font-medium hover:border-foreground aria-pressed:border-foreground aria-pressed:bg-surface-muted"
                   >
                     <Icon aria-hidden className="size-5" strokeWidth={1.75} />
                     {label}
@@ -185,11 +185,7 @@ export function SearchCapsule({
         </PopoverContent>
       </Popover>
 
-      <Button
-        type="submit"
-        size="lg"
-        className="mt-1 md:mt-0 md:ml-1.5 md:self-center"
-      >
+      <Button type="submit" size="lg" className="md:ml-2 md:self-center">
         <Search aria-hidden className="size-5" />
         Search
       </Button>

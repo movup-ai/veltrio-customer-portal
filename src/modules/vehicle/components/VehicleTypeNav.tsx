@@ -19,7 +19,7 @@ export function VehicleTypeNav({
 }: VehicleTypeNavProps) {
   return (
     <nav aria-label="Browse by vehicle type" className={className}>
-      <ul className="bleed-gutter scrollbar-none flex gap-7 overflow-x-auto md:mx-0 md:px-0">
+      <ul className="bleed-gutter scrollbar-none flex gap-6 overflow-x-auto md:mx-0 md:gap-8 md:px-0">
         {VEHICLE_TYPE_ORDER.map((type) => {
           const { label, icon: Icon } = VEHICLE_TYPE_META[type];
           const isActive = type === active;

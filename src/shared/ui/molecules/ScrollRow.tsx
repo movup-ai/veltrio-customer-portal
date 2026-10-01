@@ -71,7 +71,7 @@ export function ScrollRow({
       />
       <ul
         ref={listRef}
-        className="bleed-gutter scrollbar-none flex snap-x snap-mandatory gap-3.5 overflow-x-auto pb-1 md:mx-0 md:gap-6 md:px-0"
+        className="bleed-gutter scrollbar-none flex snap-x snap-mandatory gap-4 overflow-x-auto pb-1 sm:gap-6 md:mx-0 md:px-0"
       >
         {children.map((child, index) => (
           <li

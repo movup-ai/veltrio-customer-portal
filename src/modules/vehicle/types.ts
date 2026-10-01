@@ -81,5 +81,6 @@ export interface Vehicle {
   photos: VehiclePhoto[];
   rateOptions: RateOption[];
   specs: VehicleSpecs;
-  company: VehicleCompany;
+  /** Null until the API exposes the company on a vehicle. */
+  company: VehicleCompany | null;
 }

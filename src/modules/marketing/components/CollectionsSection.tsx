@@ -51,7 +51,7 @@ export function CollectionsSection({
                 aria-hidden
                 className="absolute inset-0 -z-10 bg-linear-to-b from-transparent from-40% via-night/45 to-night/90"
               />
-              <span className="block p-7">
+              <span className="block p-6 md:p-8">
                 <span className="block font-display text-h2">
                   {collection.title}
                 </span>
