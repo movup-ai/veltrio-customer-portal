@@ -5,11 +5,11 @@ import { MapPin, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import type { DateRange } from "react-day-picker";
-import type { VehicleType } from "@/domains/vehicle/types";
+import type { VehicleType } from "@/modules/vehicle/types";
 import {
   VEHICLE_TYPE_META,
   VEHICLE_TYPE_ORDER,
-} from "@/domains/vehicle/vehicle-types";
+} from "@/modules/vehicle/vehicle-types";
 import { track } from "@/shared/lib/analytics";
 import { cn } from "@/shared/lib/cn";
 import { Button } from "@/shared/ui/atoms/Button";

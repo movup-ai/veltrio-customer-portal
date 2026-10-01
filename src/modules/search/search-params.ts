@@ -1,4 +1,4 @@
-import { VEHICLE_TYPES, type VehicleType } from "@/domains/vehicle/types";
+import { VEHICLE_TYPES, type VehicleType } from "@/modules/vehicle/types";
 
 /**
  * Search state lives in the URL so results can be refreshed, bookmarked and shared:

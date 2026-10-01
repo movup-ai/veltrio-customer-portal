@@ -5,7 +5,7 @@ import {
   JetBrains_Mono,
 } from "next/font/google";
 import type { ReactNode } from "react";
-import { footerColumns } from "@/domains/marketing/landing.content";
+import { footerColumns } from "@/modules/marketing/landing.content";
 import { siteConfig } from "@/shared/config/site";
 import { SiteFooter } from "@/shared/ui/organisms/SiteFooter";
 import "@/styles/globals.css";

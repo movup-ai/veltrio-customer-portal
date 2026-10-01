@@ -1,25 +1,25 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { listFeaturedCompanies } from "@/domains/company/company.repository";
-import { CompanyCard } from "@/domains/company/components/CompanyCard";
-import { CollectionsSection } from "@/domains/marketing/components/CollectionsSection";
-import { HeroSection } from "@/domains/marketing/components/HeroSection";
-import { HostCtaSection } from "@/domains/marketing/components/HostCtaSection";
-import { ValuePropsSection } from "@/domains/marketing/components/ValuePropsSection";
+import { listFeaturedCompanies } from "@/modules/company/company.repository";
+import { CompanyCard } from "@/modules/company/components/CompanyCard";
+import { CollectionsSection } from "@/modules/marketing/components/CollectionsSection";
+import { HeroSection } from "@/modules/marketing/components/HeroSection";
+import { HostCtaSection } from "@/modules/marketing/components/HostCtaSection";
+import { ValuePropsSection } from "@/modules/marketing/components/ValuePropsSection";
 import {
   collections,
   hero,
   hostCta,
   valueProps,
-} from "@/domains/marketing/landing.content";
-import { SearchCapsule } from "@/domains/search/components/SearchCapsule";
-import { buildSearchUrl } from "@/domains/search/search-params";
+} from "@/modules/marketing/landing.content";
+import { SearchCapsule } from "@/modules/search/components/SearchCapsule";
+import { buildSearchUrl } from "@/modules/search/search-params";
 import {
   VehicleRow,
   VehicleRowSkeleton,
-} from "@/domains/vehicle/components/VehicleRow";
-import { VehicleTypeNav } from "@/domains/vehicle/components/VehicleTypeNav";
-import { listFeaturedVehicles } from "@/domains/vehicle/vehicle.repository";
+} from "@/modules/vehicle/components/VehicleRow";
+import { VehicleTypeNav } from "@/modules/vehicle/components/VehicleTypeNav";
+import { listFeaturedVehicles } from "@/modules/vehicle/vehicle.repository";
 import { siteConfig } from "@/shared/config/site";
 import { buildMetadata, JsonLd } from "@/shared/lib/seo";
 import { ScrollRow } from "@/shared/ui/molecules/ScrollRow";

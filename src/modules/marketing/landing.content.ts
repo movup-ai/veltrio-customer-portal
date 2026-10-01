@@ -4,7 +4,7 @@ import {
   ListChecks,
   ShieldCheck,
 } from "lucide-react";
-import { buildSearchUrl } from "@/domains/search/search-params";
+import { buildSearchUrl } from "@/modules/search/search-params";
 import type { ImageVariant } from "@/shared/ui/atoms/ResponsiveImage";
 import type { FooterColumn } from "@/shared/ui/organisms/SiteFooter";
 import type { Collection } from "./components/CollectionsSection";
