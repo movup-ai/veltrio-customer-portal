@@ -17,7 +17,11 @@ const base = {
   color: "Silver",
   location: "Miami Beach",
   description: null,
-  company: { name: "Coastline Exotics", subdomain: "coastline-exotics" },
+  company: {
+    id: "sample-c1",
+    name: "Coastline Exotics",
+    subdomain: "coastline-exotics",
+  },
 };
 
 export const SAMPLE_VEHICLES: Vehicle[] = [
@@ -30,17 +34,8 @@ export const SAMPLE_VEHICLES: Vehicle[] = [
     year: 2024,
     vehicleType: "sport",
     color: "Yellow",
-    photos: PHOTOS.slice(0, 1),
-    rateOptions: [
-      {
-        id: "r1",
-        label: "Daily",
-        basis: "day",
-        rateCents: 129500,
-        includedMiles: 100,
-        unlimitedMileage: false,
-      },
-    ],
+    photos: PHOTOS,
+    dailyRateCents: 129500,
     specs: {
       transmission: "automatic",
       fuelType: "petrol",
@@ -62,18 +57,8 @@ export const SAMPLE_VEHICLES: Vehicle[] = [
     vehicleType: "suv",
     color: "White",
     location: "Scottsdale",
-    company: null,
     photos: PHOTOS.slice(1, 2),
-    rateOptions: [
-      {
-        id: "r2",
-        label: "Daily",
-        basis: "day",
-        rateCents: 14900,
-        includedMiles: null,
-        unlimitedMileage: true,
-      },
-    ],
+    dailyRateCents: 14900,
     specs: {
       transmission: "automatic",
       fuelType: "electric",
@@ -94,7 +79,7 @@ export const SAMPLE_VEHICLES: Vehicle[] = [
     year: 2023,
     vehicleType: "convertible",
     photos: PHOTOS.slice(2, 3),
-    rateOptions: [],
+    dailyRateCents: null,
     specs: {
       transmission: "automatic",
       fuelType: "petrol",

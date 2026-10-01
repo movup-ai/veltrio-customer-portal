@@ -1,10 +1,8 @@
 /**
  * Vehicle types for the marketplace.
  *
- * Field names and enums mirror the backend API (VehicleRead, VehiclePhotoRead,
- * RateOptionRead, VehicleSpecs in https://api.veltrio.autos/docs) so that a
- * public endpoint can be mapped 1:1. Operator-only fields (plate, VIN, notes,
- * utilization, status) are deliberately left out.
+ * Field names and enums mirror MarketplaceVehicleRead from the backend API
+ * (GET /marketplace/vehicles in https://api.veltrio.autos/docs).
  */
 
 export const VEHICLE_TYPES = [
@@ -24,7 +22,6 @@ export type VehicleType = (typeof VEHICLE_TYPES)[number];
 
 export type Transmission = "automatic" | "manual";
 export type FuelType = "petrol" | "diesel" | "hybrid" | "electric";
-export type BillingBasis = "hour" | "day" | "week" | "month" | "fixed";
 export type PhotoSize = "thumbnail" | "medium" | "large";
 
 export interface PhotoVariant {
@@ -40,15 +37,6 @@ export interface VehiclePhoto {
   variants: PhotoVariant[];
 }
 
-export interface RateOption {
-  id: string;
-  label: string;
-  basis: BillingBasis;
-  rateCents: number;
-  includedMiles: number | null;
-  unlimitedMileage: boolean;
-}
-
 export interface VehicleSpecs {
   transmission: Transmission;
   fuelType: FuelType;
@@ -62,13 +50,14 @@ export interface VehicleSpecs {
 
 /** The rental company offering a vehicle (a tenant in the API). */
 export interface VehicleCompany {
+  id: string;
   name: string;
   subdomain: string;
 }
 
 export interface Vehicle {
   id: string;
-  /** URL slug, e.g. "bmw-m5-competition-a1b2c3". */
+  /** URL slug, e.g. "honda-accord-2023". Unique per company, not across the marketplace. */
   uri: string;
   make: string;
   model: string;
@@ -79,8 +68,8 @@ export interface Vehicle {
   location: string;
   description: string | null;
   photos: VehiclePhoto[];
-  rateOptions: RateOption[];
+  /** Lowest per-day rate in cents; null when the company has no daily rate. */
+  dailyRateCents: number | null;
   specs: VehicleSpecs;
-  /** Null until the API exposes the company on a vehicle. */
-  company: VehicleCompany | null;
+  company: VehicleCompany;
 }

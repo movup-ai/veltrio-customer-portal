@@ -3,6 +3,7 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useRef, type ReactNode } from "react";
 import { cn } from "@/shared/lib/cn";
+import { preferredScrollBehavior } from "@/shared/lib/motion";
 import { Button } from "@/shared/ui/atoms/Button";
 import { SectionHeading } from "@/shared/ui/molecules/SectionHeading";
 
@@ -31,12 +32,9 @@ export function ScrollRow({
   const scrollBy = (direction: 1 | -1) => {
     const list = listRef.current;
     if (!list) return;
-    const reduceMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
     list.scrollBy({
       left: direction * list.clientWidth * 0.9,
-      behavior: reduceMotion ? "auto" : "smooth",
+      behavior: preferredScrollBehavior(),
     });
   };
 

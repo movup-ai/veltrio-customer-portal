@@ -35,12 +35,7 @@ export async function apiGet<T>(
     if (value !== undefined) url.searchParams.set(key, String(value));
   }
 
-  // Stopgap until the API has public endpoints: a token scopes results to one company.
-  const token = process.env.API_TOKEN;
-  const response = await fetch(url, {
-    headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-    next: { revalidate },
-  });
+  const response = await fetch(url, { next: { revalidate } });
 
   if (!response.ok) {
     const body = await response.json().catch(() => null);

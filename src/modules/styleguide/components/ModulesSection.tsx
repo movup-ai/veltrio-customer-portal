@@ -62,8 +62,8 @@ export function ModulesSection() {
           </li>
         </ul>
         <p className="mt-6 text-meta text-muted">
-          Left to right: full specs, electric with no company or performance
-          figures, no daily rate, loading.
+          Left to right: full specs with a photo carousel, electric with no
+          performance figures, no daily rate, loading.
         </p>
       </Specimen>
 
