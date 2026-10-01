@@ -1,0 +1,6 @@
+.next
+node_modules
+__design
+package-lock.json
+CLAUDE.md
+.claude
