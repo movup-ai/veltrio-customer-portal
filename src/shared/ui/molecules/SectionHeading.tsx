@@ -27,7 +27,7 @@ export function SectionHeading({
   return (
     <div className={cn("mb-6 flex items-end gap-6", className)}>
       <div className="min-w-0 flex-1">
-        {eyebrow && <Eyebrow className="mb-2.5">{eyebrow}</Eyebrow>}
+        {eyebrow && <Eyebrow className="mb-3">{eyebrow}</Eyebrow>}
         <h2
           id={id}
           className={
@@ -38,7 +38,7 @@ export function SectionHeading({
         >
           {title}
         </h2>
-        {description && <p className="mt-1.5 text-muted">{description}</p>}
+        {description && <p className="mt-2 text-muted">{description}</p>}
       </div>
       {action && <div className="shrink-0">{action}</div>}
     </div>

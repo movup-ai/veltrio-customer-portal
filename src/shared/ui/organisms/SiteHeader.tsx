@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { cn } from "@/shared/lib/cn";
 import { Logo } from "@/shared/ui/atoms/Logo";
 
-const NAV_LINKS = [{ href: "/search", label: "Explore" }];
+const NAV_LINKS = [{ href: "/design", label: "Design System" }];
 
 interface SiteHeaderProps {
   /**
@@ -45,7 +45,7 @@ export function SiteHeader({ variant = "solid" }: SiteHeaderProps) {
             <Link
               key={link.href}
               href={link.href}
-              className="rounded-full px-3.5 py-2 text-sm font-medium hover:bg-current/10"
+              className="flex h-10 items-center rounded-full px-4 text-sm font-medium hover:bg-current/10"
             >
               {link.label}
             </Link>
@@ -53,7 +53,7 @@ export function SiteHeader({ variant = "solid" }: SiteHeaderProps) {
         </nav>
         <Link
           href="/for-companies"
-          className="ml-auto rounded-full px-3.5 py-2.5 text-sm font-semibold hover:bg-current/10"
+          className="ml-auto flex h-10 items-center rounded-full px-4 text-sm font-semibold hover:bg-current/10"
         >
           List your fleet
         </Link>
