@@ -32,15 +32,24 @@ export function ScrollRow({
   const [edges, setEdges] = useState({ start: true, end: true });
   const headingId = `${id}-heading`;
 
-  const measure = useCallback((list: HTMLUListElement | null) => {
-    listRef.current = list;
-    if (!list) return;
+  const measure = useCallback((list: HTMLUListElement) => {
     const start = list.scrollLeft <= 1;
     const end = list.scrollLeft + list.clientWidth >= list.scrollWidth - 1;
     setEdges((current) =>
       current.start === start && current.end === end ? current : { start, end },
     );
   }, []);
+
+  // Measures on mount and again whenever the row changes size.
+  const attach = useCallback(
+    (list: HTMLUListElement) => {
+      listRef.current = list;
+      const observer = new ResizeObserver(() => measure(list));
+      observer.observe(list);
+      return () => observer.disconnect();
+    },
+    [measure],
+  );
 
   const scrollBy = (direction: 1 | -1) => {
     const list = listRef.current;
@@ -61,7 +70,7 @@ export function ScrollRow({
         description={description}
         action={
           overflows && (
-            <div className="hidden gap-2 md:flex">
+            <div className="flex gap-2">
               <Button
                 variant="light"
                 size="icon-sm"
@@ -87,7 +96,7 @@ export function ScrollRow({
         }
       />
       <ul
-        ref={measure}
+        ref={attach}
         onScroll={(event) => measure(event.currentTarget)}
         className="bleed-gutter scrollbar-none flex snap-x snap-mandatory gap-4 overflow-x-auto pb-1 md:mx-0 md:gap-5 md:px-0 lg:gap-6"
       >

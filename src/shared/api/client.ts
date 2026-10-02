@@ -1,4 +1,13 @@
-const API_BASE = process.env.NEXT_PUBLIC_API_URL;
+/** Backend base URL. Fails with setup instructions instead of an opaque "Invalid URL". */
+function apiBase() {
+  const base = process.env.NEXT_PUBLIC_API_URL;
+  if (!base) {
+    throw new Error(
+      "NEXT_PUBLIC_API_URL is not set. Copy .env.example to .env and set it to the backend API base URL, e.g. https://api.example.com/api/v1.",
+    );
+  }
+  return base;
+}
 
 /** The API's pagination envelope. */
 export interface Page<T> {
@@ -30,7 +39,7 @@ export async function apiGet<T>(
   path: string,
   { query = {}, revalidate = 60 }: ApiGetOptions = {},
 ): Promise<T> {
-  const url = new URL(API_BASE + path);
+  const url = new URL(apiBase() + path);
   for (const [key, value] of Object.entries(query)) {
     if (value !== undefined) url.searchParams.set(key, String(value));
   }
