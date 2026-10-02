@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { siteHref } from "@/shared/config/site";
 import { cn } from "@/shared/lib/cn";
 import { Logo } from "@/shared/ui/atoms/Logo";
 
@@ -44,7 +45,7 @@ export function SiteHeader({ variant = "solid" }: SiteHeaderProps) {
           {NAV_LINKS.map((link) => (
             <Link
               key={link.href}
-              href={link.href}
+              href={siteHref(link.href)}
               className="flex h-10 items-center rounded-full px-4 text-sm font-medium hover:bg-current/10"
             >
               {link.label}
@@ -52,7 +53,7 @@ export function SiteHeader({ variant = "solid" }: SiteHeaderProps) {
           ))}
         </nav>
         <Link
-          href="/for-companies"
+          href={siteHref("/for-companies")}
           className="ml-auto flex h-10 items-center rounded-full px-4 text-sm font-semibold hover:bg-current/10"
         >
           List your fleet

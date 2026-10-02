@@ -12,7 +12,13 @@ import {
 } from "@/modules/vehicle/vehicle-types";
 import { track } from "@/shared/lib/analytics";
 import { cn } from "@/shared/lib/cn";
+import { fromIsoDate, toIsoDate } from "@/shared/lib/date";
 import { Button } from "@/shared/ui/atoms/Button";
+import { DEFAULT_TIME } from "@/shared/lib/time";
+import {
+  DateRangePicker,
+  type RangeTimes,
+} from "@/shared/ui/molecules/DateRangePicker";
 import {
   Popover,
   PopoverContent,
@@ -20,7 +26,6 @@ import {
 } from "@/shared/ui/molecules/Popover";
 import { MARKETS, type Market } from "../markets";
 import { buildSearchUrl, type SearchQuery } from "../search-params";
-import { DateRangePicker } from "./DateRangePicker";
 import { SearchField } from "./SearchField";
 
 type Field = "location" | "dates" | "type";
@@ -31,9 +36,6 @@ interface SearchCapsuleProps {
   markets?: Market[];
   className?: string;
 }
-
-const toIso = (date: Date) => format(date, "yyyy-MM-dd");
-const fromIso = (iso: string) => new Date(`${iso}T00:00:00`);
 
 function Divider() {
   return <span aria-hidden className="my-3 hidden w-px bg-border md:block" />;
@@ -50,9 +52,17 @@ export function SearchCapsule({
   const [type, setType] = useState(initialQuery?.type);
   const [range, setRange] = useState<DateRange | undefined>(
     initialQuery?.pickup && initialQuery.return
-      ? { from: fromIso(initialQuery.pickup), to: fromIso(initialQuery.return) }
+      ? {
+          from: fromIsoDate(initialQuery.pickup),
+          to: fromIsoDate(initialQuery.return),
+        }
       : undefined,
   );
+
+  const [times, setTimes] = useState<RangeTimes>({
+    pickup: initialQuery?.pickupTime ?? DEFAULT_TIME,
+    return: initialQuery?.returnTime ?? DEFAULT_TIME,
+  });
 
   const market = markets.find((m) => m.slug === location);
   const popoverProps = (field: Field) => ({
@@ -64,8 +74,13 @@ export function SearchCapsule({
     event.preventDefault();
     const query: SearchQuery = {
       location,
-      pickup: range?.from && range.to ? toIso(range.from) : undefined,
-      return: range?.from && range.to ? toIso(range.to) : undefined,
+      ...(range?.from &&
+        range.to && {
+          pickup: toIsoDate(range.from),
+          pickupTime: times.pickup,
+          return: toIsoDate(range.to),
+          returnTime: times.return,
+        }),
       type,
     };
     track("search_submitted", query);
@@ -133,19 +148,30 @@ export function SearchCapsule({
           />
         </PopoverTrigger>
         <PopoverContent align="center">
-          <DateRangePicker value={range} onChange={setRange} />
-          <div className="mt-3 flex justify-end gap-2 border-t border-border pt-3">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setRange(undefined)}
-            >
-              Clear
-            </Button>
-            <Button variant="dark" size="sm" onClick={() => setOpenField(null)}>
-              Done
-            </Button>
-          </div>
+          <DateRangePicker
+            value={range}
+            onChange={setRange}
+            times={times}
+            onTimesChange={setTimes}
+            actions={
+              <>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setRange(undefined)}
+                >
+                  Clear
+                </Button>
+                <Button
+                  variant="dark"
+                  size="sm"
+                  onClick={() => setOpenField(null)}
+                >
+                  Done
+                </Button>
+              </>
+            }
+          />
         </PopoverContent>
       </Popover>
 

@@ -5,7 +5,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { buildSearchUrl } from "@/modules/search/search-params";
-import type { ImageVariant } from "@/shared/ui/atoms/ResponsiveImage";
+import { unsplash } from "@/shared/lib/unsplash";
 import type { FooterColumn } from "@/shared/ui/organisms/SiteFooter";
 import type { Collection } from "./components/CollectionsSection";
 import type { ValueProp } from "./components/ValuePropsSection";
@@ -14,21 +14,6 @@ import type { ValueProp } from "./components/ValuePropsSection";
  * All landing-page copy and imagery in one place, so marketing edits never
  * touch component code. Photography is placeholder (Unsplash).
  */
-
-function unsplash(
-  id: string,
-  widths: number[],
-  aspect: number,
-): ImageVariant[] {
-  return widths.map((width) => {
-    const height = Math.round(width / aspect);
-    return {
-      width,
-      height,
-      url: `https://images.unsplash.com/photo-${id}?auto=format&fit=crop&q=75&w=${width}&h=${height}`,
-    };
-  });
-}
 
 export const hero = {
   eyebrow: "The car rental marketplace",

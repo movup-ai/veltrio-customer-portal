@@ -5,25 +5,44 @@ import { siteConfig } from "@/shared/config/site";
 interface PageSeo {
   title: string;
   description: string;
-  /** Path on this site, e.g. "/cars/miami". Becomes the canonical URL. */
+  /** Path on this site, e.g. "/cars/miami", or an absolute URL on a company subdomain. Becomes the canonical URL. */
   path: string;
+  /** Social preview image. Falls back to the site-wide Open Graph image. */
+  image?: string;
+  /**
+   * Whose page this is in link previews. Set to the company's name on its
+   * subdomain; this also drops the "| Veltrio" suffix from the title.
+   */
+  siteName?: string;
 }
 
 /** Per-page metadata with canonical URL and Open Graph. Resolved against `metadataBase` in the root layout. */
-export function buildMetadata({ title, description, path }: PageSeo): Metadata {
+export function buildMetadata({
+  title,
+  description,
+  path,
+  image,
+  siteName,
+}: PageSeo): Metadata {
   return {
-    title,
+    title: siteName ? { absolute: title } : title,
     description,
     alternates: { canonical: path },
     openGraph: {
       title,
       description,
       url: path,
-      siteName: siteConfig.name,
+      siteName: siteName ?? siteConfig.name,
       locale: siteConfig.locale,
       type: "website",
+      ...(image && { images: [image] }),
     },
-    twitter: { card: "summary_large_image", title, description },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      ...(image && { images: [image] }),
+    },
   };
 }
 

@@ -1,4 +1,5 @@
 import { VEHICLE_TYPES, type VehicleType } from "@/modules/vehicle/types";
+import { parseTime } from "@/shared/lib/time";
 
 /**
  * Search state lives in the URL so results can be refreshed, bookmarked and shared:
@@ -11,11 +12,21 @@ export interface SearchQuery {
   pickup?: string;
   /** Return date, YYYY-MM-DD. */
   return?: string;
+  /** Pick-up and return times, HH:mm. Only kept alongside their dates. */
+  pickupTime?: string;
+  returnTime?: string;
   type?: VehicleType;
 }
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
-const KEYS = ["location", "pickup", "return", "type"] as const;
+const KEYS = [
+  "location",
+  "pickup",
+  "pickupTime",
+  "return",
+  "returnTime",
+  "type",
+] as const;
 
 export function buildSearchUrl(query: SearchQuery = {}) {
   const params = new URLSearchParams();
@@ -51,6 +62,8 @@ export function parseSearchParams(raw: RawParams): SearchQuery {
     location: first("location") || undefined,
     pickup: validRange ? pickup : undefined,
     return: validRange ? returnDate : undefined,
+    pickupTime: validRange ? parseTime(first("pickupTime")) : undefined,
+    returnTime: validRange ? parseTime(first("returnTime")) : undefined,
     type: VEHICLE_TYPES.includes(type as VehicleType)
       ? (type as VehicleType)
       : undefined,

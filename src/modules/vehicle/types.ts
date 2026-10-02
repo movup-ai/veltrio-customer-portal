@@ -23,6 +23,15 @@ export type VehicleType = (typeof VEHICLE_TYPES)[number];
 export type Transmission = "automatic" | "manual";
 export type FuelType = "petrol" | "diesel" | "hybrid" | "electric";
 export type PhotoSize = "thumbnail" | "medium" | "large";
+export type VehicleFeature =
+  | "air_conditioning"
+  | "gps_navigation"
+  | "bluetooth_audio"
+  | "usb_charging"
+  | "sunroof"
+  | "driver_assist"
+  | "apple_car_play"
+  | "rear_view_camera";
 
 export interface PhotoVariant {
   size: PhotoSize;
@@ -34,6 +43,8 @@ export interface PhotoVariant {
 export interface VehiclePhoto {
   id: string;
   name: string;
+  /** What the photo shows, e.g. "Front". Null until the API provides it. */
+  label: string | null;
   variants: PhotoVariant[];
 }
 
@@ -67,6 +78,7 @@ export interface Vehicle {
   /** Pick-up branch name as entered by the company, e.g. "Miami Beach". */
   location: string;
   description: string | null;
+  features: VehicleFeature[];
   photos: VehiclePhoto[];
   /** Lowest per-day rate in cents; null when the company has no daily rate. */
   dailyRateCents: number | null;

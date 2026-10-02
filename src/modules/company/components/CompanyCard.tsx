@@ -1,23 +1,7 @@
 import { cn } from "@/shared/lib/cn";
+import { companyHref, countryName } from "../company.utils";
 import type { Company } from "../types";
-
-function initials(name: string) {
-  return name
-    .split(/\s+/)
-    .slice(0, 2)
-    .map((word) => word[0]?.toUpperCase())
-    .join("");
-}
-
-const regionNames = new Intl.DisplayNames("en", { type: "region" });
-
-function countryName(code: string) {
-  try {
-    return regionNames.of(code) ?? code;
-  } catch {
-    return code;
-  }
-}
+import { CompanyLogo } from "./CompanyLogo";
 
 interface CompanyCardProps {
   company: Company;
@@ -28,19 +12,22 @@ export function CompanyCard({ company, className }: CompanyCardProps) {
   return (
     <article
       className={cn(
-        "rounded-xl border border-border bg-surface p-6",
+        "relative rounded-xl border border-border bg-surface p-6 transition-colors hover:border-border-strong",
         className,
       )}
     >
       <div className="flex items-center gap-4">
-        <span
-          aria-hidden
-          className="grid size-14 shrink-0 place-items-center rounded-full bg-foreground text-ui font-bold text-on-inverse"
-        >
-          {initials(company.name)}
-        </span>
+        <CompanyLogo name={company.name} />
         <div className="min-w-0">
-          <h3 className="truncate text-ui font-semibold">{company.name}</h3>
+          <h3 className="truncate text-ui font-semibold">
+            {/* The stretched link makes the whole card clickable with one tab stop. */}
+            <a
+              href={companyHref(company)}
+              className="after:absolute after:inset-0"
+            >
+              {company.name}
+            </a>
+          </h3>
           <p className="text-meta text-muted">{countryName(company.country)}</p>
         </div>
       </div>

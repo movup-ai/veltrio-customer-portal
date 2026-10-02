@@ -11,6 +11,7 @@ const dto: VehicleDto = {
   color: "Black",
   location: "Miami Beach",
   description: null,
+  features: [],
   photos: [
     { id: "p1", name: "a.jpg", variants: [] },
     {
