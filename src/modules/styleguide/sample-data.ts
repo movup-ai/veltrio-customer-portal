@@ -17,6 +17,7 @@ const base = {
   color: "Silver",
   location: "Miami Beach",
   description: null,
+  features: [],
   company: {
     id: "sample-c1",
     name: "Coastline Exotics",

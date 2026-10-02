@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { siteConfig } from "@/shared/config/site";
+import { siteConfig, siteHref } from "@/shared/config/site";
 import { cn } from "@/shared/lib/cn";
 
 interface LogoProps {
@@ -11,7 +11,7 @@ interface LogoProps {
 export function Logo({ inverse, className }: LogoProps) {
   return (
     <Link
-      href="/"
+      href={siteHref("/")}
       aria-label={`${siteConfig.name} home`}
       className={cn("inline-flex items-center gap-2.5", className)}
     >

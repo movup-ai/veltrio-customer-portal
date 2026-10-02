@@ -5,12 +5,19 @@ import { siteConfig } from "@/shared/config/site";
 interface PageSeo {
   title: string;
   description: string;
-  /** Path on this site, e.g. "/cars/miami". Becomes the canonical URL. */
+  /** Path on this site, e.g. "/cars/miami", or an absolute URL on a company subdomain. Becomes the canonical URL. */
   path: string;
+  /** Social preview image. Falls back to the site-wide Open Graph image. */
+  image?: string;
 }
 
 /** Per-page metadata with canonical URL and Open Graph. Resolved against `metadataBase` in the root layout. */
-export function buildMetadata({ title, description, path }: PageSeo): Metadata {
+export function buildMetadata({
+  title,
+  description,
+  path,
+  image,
+}: PageSeo): Metadata {
   return {
     title,
     description,
@@ -22,8 +29,14 @@ export function buildMetadata({ title, description, path }: PageSeo): Metadata {
       siteName: siteConfig.name,
       locale: siteConfig.locale,
       type: "website",
+      ...(image && { images: [image] }),
     },
-    twitter: { card: "summary_large_image", title, description },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      ...(image && { images: [image] }),
+    },
   };
 }
 

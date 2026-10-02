@@ -1,13 +1,6 @@
 import { cn } from "@/shared/lib/cn";
+import { companyInitials } from "../company.utils";
 import type { Company } from "../types";
-
-function initials(name: string) {
-  return name
-    .split(/\s+/)
-    .slice(0, 2)
-    .map((word) => word[0]?.toUpperCase())
-    .join("");
-}
 
 const regionNames = new Intl.DisplayNames("en", { type: "region" });
 
@@ -37,7 +30,7 @@ export function CompanyCard({ company, className }: CompanyCardProps) {
           aria-hidden
           className="grid size-14 shrink-0 place-items-center rounded-full bg-foreground text-ui font-bold text-on-inverse"
         >
-          {initials(company.name)}
+          {companyInitials(company.name)}
         </span>
         <div className="min-w-0">
           <h3 className="truncate text-ui font-semibold">{company.name}</h3>

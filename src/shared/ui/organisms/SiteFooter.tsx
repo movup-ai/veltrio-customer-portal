@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { siteConfig } from "@/shared/config/site";
+import { siteConfig, siteHref } from "@/shared/config/site";
 import { Logo } from "@/shared/ui/atoms/Logo";
 
 export interface FooterColumn {
@@ -30,7 +30,7 @@ export function SiteFooter({ columns }: SiteFooterProps) {
                 {column.links.map((link) => (
                   <li key={link.href + link.label}>
                     <Link
-                      href={link.href}
+                      href={siteHref(link.href)}
                       className="text-sm text-muted hover:text-foreground"
                     >
                       {link.label}

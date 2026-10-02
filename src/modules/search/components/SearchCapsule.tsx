@@ -12,7 +12,9 @@ import {
 } from "@/modules/vehicle/vehicle-types";
 import { track } from "@/shared/lib/analytics";
 import { cn } from "@/shared/lib/cn";
+import { fromIsoDate, toIsoDate } from "@/shared/lib/date";
 import { Button } from "@/shared/ui/atoms/Button";
+import { DateRangePicker } from "@/shared/ui/molecules/DateRangePicker";
 import {
   Popover,
   PopoverContent,
@@ -20,7 +22,6 @@ import {
 } from "@/shared/ui/molecules/Popover";
 import { MARKETS, type Market } from "../markets";
 import { buildSearchUrl, type SearchQuery } from "../search-params";
-import { DateRangePicker } from "./DateRangePicker";
 import { SearchField } from "./SearchField";
 
 type Field = "location" | "dates" | "type";
@@ -31,9 +32,6 @@ interface SearchCapsuleProps {
   markets?: Market[];
   className?: string;
 }
-
-const toIso = (date: Date) => format(date, "yyyy-MM-dd");
-const fromIso = (iso: string) => new Date(`${iso}T00:00:00`);
 
 function Divider() {
   return <span aria-hidden className="my-3 hidden w-px bg-border md:block" />;
@@ -50,7 +48,10 @@ export function SearchCapsule({
   const [type, setType] = useState(initialQuery?.type);
   const [range, setRange] = useState<DateRange | undefined>(
     initialQuery?.pickup && initialQuery.return
-      ? { from: fromIso(initialQuery.pickup), to: fromIso(initialQuery.return) }
+      ? {
+          from: fromIsoDate(initialQuery.pickup),
+          to: fromIsoDate(initialQuery.return),
+        }
       : undefined,
   );
 
@@ -64,8 +65,8 @@ export function SearchCapsule({
     event.preventDefault();
     const query: SearchQuery = {
       location,
-      pickup: range?.from && range.to ? toIso(range.from) : undefined,
-      return: range?.from && range.to ? toIso(range.to) : undefined,
+      pickup: range?.from && range.to ? toIsoDate(range.from) : undefined,
+      return: range?.from && range.to ? toIsoDate(range.to) : undefined,
       type,
     };
     track("search_submitted", query);

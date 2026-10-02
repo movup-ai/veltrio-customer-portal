@@ -3,6 +3,8 @@ import { withSentryConfig } from "@sentry/nextjs/config";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  // Company subdomains in development, e.g. http://abc-rental.localhost:3000.
+  allowedDevOrigins: ["*.localhost"],
 };
 
 export default withSentryConfig(nextConfig, {

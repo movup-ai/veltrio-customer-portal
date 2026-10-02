@@ -2,6 +2,7 @@ import type {
   PhotoVariant,
   Vehicle,
   VehicleCompany,
+  VehicleFeature,
   VehicleSpecs,
   VehicleType,
 } from "./types";
@@ -17,6 +18,7 @@ export interface VehicleDto {
   color: string;
   location: string;
   description: string | null;
+  features: VehicleFeature[];
   photos: { id: string; name: string; variants: PhotoVariant[] }[];
   dailyRateCents: number | null;
   specs: Pick<VehicleSpecs, "transmission" | "fuelType" | "seats" | "doors"> &
@@ -36,6 +38,7 @@ export function toVehicle(dto: VehicleDto): Vehicle {
     color: dto.color,
     location: dto.location,
     description: dto.description,
+    features: dto.features,
     photos: dto.photos
       .filter((photo) => photo.variants.length > 0)
       .map(({ id, name, variants }) => ({ id, name, variants })),
