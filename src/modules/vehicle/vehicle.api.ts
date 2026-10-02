@@ -19,7 +19,13 @@ export interface VehicleDto {
   location: string;
   description: string | null;
   features: VehicleFeature[];
-  photos: { id: string; name: string; variants: PhotoVariant[] }[];
+  photos: {
+    id: string;
+    name: string;
+    // TODO(api): not sent yet; photos stay in one group until it is.
+    label?: string | null;
+    variants: PhotoVariant[];
+  }[];
   dailyRateCents: number | null;
   specs: Pick<VehicleSpecs, "transmission" | "fuelType" | "seats" | "doors"> &
     Partial<VehicleSpecs>;
@@ -41,7 +47,12 @@ export function toVehicle(dto: VehicleDto): Vehicle {
     features: dto.features,
     photos: dto.photos
       .filter((photo) => photo.variants.length > 0)
-      .map(({ id, name, variants }) => ({ id, name, variants })),
+      .map(({ id, name, label, variants }) => ({
+        id,
+        name,
+        label: label ?? null,
+        variants,
+      })),
     dailyRateCents: dto.dailyRateCents,
     specs: {
       transmission: dto.specs.transmission,

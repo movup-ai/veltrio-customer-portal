@@ -104,6 +104,7 @@ export default async function VehiclePage({ params }: PageProps) {
             <VehicleGallery
               photos={vehicle.photos}
               alt={`${vehicle.year} ${name} in ${vehicle.color}`}
+              photosHref={`${url}/photos`}
             />
           </div>
 

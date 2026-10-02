@@ -20,7 +20,9 @@ describe("parseSearchParams", () => {
     const query = {
       location: "miami",
       pickup: "2026-10-10",
+      pickupTime: "09:00",
       return: "2026-10-13",
+      returnTime: "18:00",
       type: "suv",
     } as const;
     const params = Object.fromEntries(
@@ -40,6 +42,8 @@ describe("parseSearchParams", () => {
       location: undefined,
       pickup: undefined,
       return: undefined,
+      pickupTime: undefined,
+      returnTime: undefined,
       type: undefined,
     });
   });

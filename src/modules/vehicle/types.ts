@@ -43,6 +43,8 @@ export interface PhotoVariant {
 export interface VehiclePhoto {
   id: string;
   name: string;
+  /** What the photo shows, e.g. "Front". Null until the API provides it. */
+  label: string | null;
   variants: PhotoVariant[];
 }
 

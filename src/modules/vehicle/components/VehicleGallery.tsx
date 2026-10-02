@@ -1,11 +1,17 @@
+import { LayoutGrid } from "lucide-react";
+import Link from "next/link";
 import { cn } from "@/shared/lib/cn";
+import { Button } from "@/shared/ui/atoms/Button";
 import { ResponsiveImage } from "@/shared/ui/atoms/ResponsiveImage";
 import type { VehiclePhoto } from "../types";
+import { photoAnchor } from "../vehicle.utils";
 
 interface VehicleGalleryProps {
   photos: VehiclePhoto[];
   /** Describes the vehicle; each photo adds its position. */
   alt: string;
+  /** The page that shows every photo. Each tile opens it at its own photo. */
+  photosHref: string;
 }
 
 /** Photos that fit the desktop mosaic. On mobile every photo is in the swipe strip. */
@@ -21,7 +27,11 @@ const MOSAIC: Record<number, string> = {
 };
 
 /** A swipe strip on mobile; a mosaic with one large photo from tablet up. */
-export function VehicleGallery({ photos, alt }: VehicleGalleryProps) {
+export function VehicleGallery({
+  photos,
+  alt,
+  photosHref,
+}: VehicleGalleryProps) {
   if (photos.length === 0) {
     return (
       <div className="grid aspect-4/3 place-items-center rounded-xl bg-surface-muted text-muted md:aspect-auto md:h-126">
@@ -33,36 +43,55 @@ export function VehicleGallery({ photos, alt }: VehicleGalleryProps) {
   const shown = Math.min(photos.length, MOSAIC_SIZE);
 
   return (
-    <ul
-      aria-label="Photos"
-      className={cn(
-        "bleed-gutter scrollbar-none flex snap-x snap-mandatory gap-2 overflow-x-auto md:mx-0 md:grid md:h-126 md:overflow-hidden md:rounded-xl md:px-0",
-        MOSAIC[shown],
-      )}
-    >
-      {photos.map((photo, i) => (
-        <li
-          key={photo.id}
-          className={cn(
-            "aspect-4/3 w-full shrink-0 snap-center overflow-hidden rounded-lg bg-surface-muted md:aspect-auto md:w-auto md:rounded-none",
-            i === 0 && shown > 2 && "md:row-span-2",
-            i === 3 && shown === 4 && "md:col-span-2",
-            i >= MOSAIC_SIZE && "md:hidden",
-          )}
-        >
-          <ResponsiveImage
-            variants={photo.variants}
-            alt={`${alt}, photo ${i + 1} of ${photos.length}`}
-            sizes={
-              i === 0
-                ? "(min-width: 768px) 50vw, 100vw"
-                : "(min-width: 768px) 25vw, 100vw"
-            }
-            priority={i === 0}
-            className="size-full object-cover"
-          />
-        </li>
-      ))}
-    </ul>
+    <div className="relative">
+      <ul
+        aria-label="Photos"
+        className={cn(
+          "bleed-gutter scrollbar-none flex snap-x snap-mandatory gap-2 overflow-x-auto md:mx-0 md:grid md:h-126 md:overflow-hidden md:rounded-xl md:px-0",
+          MOSAIC[shown],
+        )}
+      >
+        {photos.map((photo, i) => (
+          <li
+            key={photo.id}
+            className={cn(
+              "aspect-4/3 w-full shrink-0 snap-center overflow-hidden rounded-lg bg-surface-muted md:aspect-auto md:w-auto md:rounded-none",
+              i === 0 && shown > 2 && "md:row-span-2",
+              i === 3 && shown === 4 && "md:col-span-2",
+              i >= MOSAIC_SIZE && "md:hidden",
+            )}
+          >
+            <Link
+              href={`${photosHref}#${photoAnchor(i)}`}
+              aria-label={`Open photo ${i + 1} of ${photos.length}`}
+              className="group block size-full"
+            >
+              <ResponsiveImage
+                variants={photo.variants}
+                alt={`${alt}, photo ${i + 1} of ${photos.length}`}
+                sizes={
+                  i === 0
+                    ? "(min-width: 768px) 50vw, 100vw"
+                    : "(min-width: 768px) 25vw, 100vw"
+                }
+                priority={i === 0}
+                className="size-full object-cover transition duration-1000 ease-standard group-hover:scale-[1.03] group-hover:brightness-95"
+              />
+            </Link>
+          </li>
+        ))}
+      </ul>
+      <Button
+        asChild
+        variant="light"
+        size="sm"
+        className="absolute right-4 bottom-4 shadow-2"
+      >
+        <Link href={photosHref}>
+          <LayoutGrid aria-hidden className="size-4" />
+          All photos
+        </Link>
+      </Button>
+    </div>
   );
 }

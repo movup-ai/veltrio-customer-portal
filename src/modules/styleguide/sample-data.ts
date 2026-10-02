@@ -7,6 +7,7 @@ import type { Vehicle, VehiclePhoto } from "@/modules/vehicle/types";
 const PHOTOS: VehiclePhoto[] = collections.map(({ image }, index) => ({
   id: `sample-photo-${index}`,
   name: "sample.jpg",
+  label: null,
   variants: image.variants.map((variant, i) => ({
     ...variant,
     size: i === 0 ? "medium" : "large",

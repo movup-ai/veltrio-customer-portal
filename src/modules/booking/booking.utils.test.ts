@@ -12,9 +12,16 @@ describe("rentalDays", () => {
 });
 
 describe("bookingHref", () => {
-  it("keeps the dates in the URL", () => {
-    expect(bookingHref("bmw-m4", "2026-10-10", "2026-10-13")).toBe(
-      "/vehicles/bmw-m4/book?pickup=2026-10-10&return=2026-10-13",
+  it("keeps the dates and times in the URL", () => {
+    expect(
+      bookingHref("bmw-m4", {
+        pickup: "2026-10-10",
+        pickupTime: "10:00",
+        return: "2026-10-13",
+        returnTime: "18:00",
+      }),
+    ).toBe(
+      "/vehicles/bmw-m4/book?pickup=2026-10-10&pickupTime=10%3A00&return=2026-10-13&returnTime=18%3A00",
     );
   });
 });

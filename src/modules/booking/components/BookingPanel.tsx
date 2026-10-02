@@ -6,8 +6,12 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import type { DateRange } from "react-day-picker";
 import { fromIsoDate, toIsoDate } from "@/shared/lib/date";
 import { formatMoney } from "@/shared/lib/format";
+import { DEFAULT_TIME, formatTime, parseTime } from "@/shared/lib/time";
 import { Button } from "@/shared/ui/atoms/Button";
-import { DateRangePicker } from "@/shared/ui/molecules/DateRangePicker";
+import {
+  DateRangePicker,
+  type RangeTimes,
+} from "@/shared/ui/molecules/DateRangePicker";
 import { bookingHref, rentalDays } from "../booking.utils";
 import type { BookedRange } from "../types";
 
@@ -20,7 +24,7 @@ interface BookingPanelProps {
   booked: BookedRange[];
 }
 
-/** Price, availability calendar and the call to action. Dates live in the URL. */
+/** Price, availability calendar and the call to action. Dates and times live in the URL. */
 export function BookingPanel({
   uri,
   dailyRateCents,
@@ -33,13 +37,24 @@ export function BookingPanel({
   const from = fromIsoDate(searchParams.get("pickup"));
   const to = fromIsoDate(searchParams.get("return"));
   const range: DateRange | undefined = from ? { from, to } : undefined;
+  const times: RangeTimes = {
+    pickup: parseTime(searchParams.get("pickupTime")) ?? DEFAULT_TIME,
+    return: parseTime(searchParams.get("returnTime")) ?? DEFAULT_TIME,
+  };
 
-  const setRange = (next: DateRange | undefined) => {
+  const update = (next: DateRange | undefined, nextTimes: RangeTimes) => {
     const params = new URLSearchParams(searchParams);
-    params.delete("pickup");
-    params.delete("return");
-    if (next?.from) params.set("pickup", toIsoDate(next.from));
-    if (next?.from && next.to) params.set("return", toIsoDate(next.to));
+    for (const key of ["pickup", "return", "pickupTime", "returnTime"]) {
+      params.delete(key);
+    }
+    if (next?.from) {
+      params.set("pickup", toIsoDate(next.from));
+      params.set("pickupTime", nextTimes.pickup);
+    }
+    if (next?.from && next.to) {
+      params.set("return", toIsoDate(next.to));
+      params.set("returnTime", nextTimes.return);
+    }
     const query = params.toString();
     router.replace(query ? `${pathname}?${query}` : pathname, {
       scroll: false,
@@ -73,7 +88,9 @@ export function BookingPanel({
         <DateRangePicker
           months={1}
           value={range}
-          onChange={setRange}
+          onChange={(next) => update(next, times)}
+          times={times}
+          onTimesChange={(next) => update(range, next)}
           unavailable={unavailable}
         />
       </div>
@@ -82,7 +99,8 @@ export function BookingPanel({
         {from && to ? (
           <>
             <span className="font-semibold">
-              {format(from, "MMM d")} – {format(to, "MMM d")}
+              {format(from, "MMM d")}, {formatTime(times.pickup)} –{" "}
+              {format(to, "MMM d")}, {formatTime(times.return)}
             </span>
             {dailyRateCents !== null && days !== null && (
               <span className="text-muted">
@@ -104,7 +122,14 @@ export function BookingPanel({
 
       {from && to ? (
         <Button asChild size="lg" className="mt-4 w-full">
-          <Link href={bookingHref(uri, toIsoDate(from), toIsoDate(to))}>
+          <Link
+            href={bookingHref(uri, {
+              pickup: toIsoDate(from),
+              pickupTime: times.pickup,
+              return: toIsoDate(to),
+              returnTime: times.return,
+            })}
+          >
             Continue to book
           </Link>
         </Button>
@@ -119,7 +144,7 @@ export function BookingPanel({
           variant="ghost"
           size="sm"
           className="mt-2 w-full"
-          onClick={() => setRange(undefined)}
+          onClick={() => update(undefined, times)}
         >
           Clear dates
         </Button>

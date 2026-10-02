@@ -14,7 +14,11 @@ import { track } from "@/shared/lib/analytics";
 import { cn } from "@/shared/lib/cn";
 import { fromIsoDate, toIsoDate } from "@/shared/lib/date";
 import { Button } from "@/shared/ui/atoms/Button";
-import { DateRangePicker } from "@/shared/ui/molecules/DateRangePicker";
+import { DEFAULT_TIME } from "@/shared/lib/time";
+import {
+  DateRangePicker,
+  type RangeTimes,
+} from "@/shared/ui/molecules/DateRangePicker";
 import {
   Popover,
   PopoverContent,
@@ -55,6 +59,11 @@ export function SearchCapsule({
       : undefined,
   );
 
+  const [times, setTimes] = useState<RangeTimes>({
+    pickup: initialQuery?.pickupTime ?? DEFAULT_TIME,
+    return: initialQuery?.returnTime ?? DEFAULT_TIME,
+  });
+
   const market = markets.find((m) => m.slug === location);
   const popoverProps = (field: Field) => ({
     open: openField === field,
@@ -65,8 +74,13 @@ export function SearchCapsule({
     event.preventDefault();
     const query: SearchQuery = {
       location,
-      pickup: range?.from && range.to ? toIsoDate(range.from) : undefined,
-      return: range?.from && range.to ? toIsoDate(range.to) : undefined,
+      ...(range?.from &&
+        range.to && {
+          pickup: toIsoDate(range.from),
+          pickupTime: times.pickup,
+          return: toIsoDate(range.to),
+          returnTime: times.return,
+        }),
       type,
     };
     track("search_submitted", query);
@@ -134,19 +148,30 @@ export function SearchCapsule({
           />
         </PopoverTrigger>
         <PopoverContent align="center">
-          <DateRangePicker value={range} onChange={setRange} />
-          <div className="mt-3 flex justify-end gap-2 border-t border-border pt-3">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setRange(undefined)}
-            >
-              Clear
-            </Button>
-            <Button variant="dark" size="sm" onClick={() => setOpenField(null)}>
-              Done
-            </Button>
-          </div>
+          <DateRangePicker
+            value={range}
+            onChange={setRange}
+            times={times}
+            onTimesChange={setTimes}
+            actions={
+              <>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setRange(undefined)}
+                >
+                  Clear
+                </Button>
+                <Button
+                  variant="dark"
+                  size="sm"
+                  onClick={() => setOpenField(null)}
+                >
+                  Done
+                </Button>
+              </>
+            }
+          />
         </PopoverContent>
       </Popover>
 

@@ -6,6 +6,8 @@ export interface AnalyticsEvents {
     location?: string;
     pickup?: string;
     return?: string;
+    pickupTime?: string;
+    returnTime?: string;
     type?: string;
   };
 }
