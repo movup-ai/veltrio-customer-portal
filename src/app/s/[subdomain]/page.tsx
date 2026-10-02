@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getCompanyProfile } from "@/modules/company/company.repository";
-import { brandTheme, companyHref } from "@/modules/company/company.utils";
+import { companyHref } from "@/modules/company/company.utils";
 import { CompanyAbout } from "@/modules/company/components/CompanyAbout";
+import { CompanyBrandStyle } from "@/modules/company/components/CompanyBrandStyle";
 import { CompanyHero } from "@/modules/company/components/CompanyHero";
 import { CompanyLocations } from "@/modules/company/components/CompanyLocations";
 import { CompanyStats } from "@/modules/company/components/CompanyStats";
@@ -29,6 +30,7 @@ export async function generateMetadata({
       `Rent a car from ${company.name}. See every vehicle, price and pick-up location.`,
     path: companyHref(company),
     image: company.branding.coverImage.at(-1)?.url,
+    siteName: company.name,
   });
 }
 
@@ -41,7 +43,8 @@ export default async function CompanyPage({ params }: PageProps) {
   const url = companyHref(company);
 
   return (
-    <div style={brandTheme(company.branding)} className="bg-background">
+    <>
+      <CompanyBrandStyle branding={company.branding} />
       <JsonLd
         data={{
           "@context": "https://schema.org",
@@ -63,10 +66,14 @@ export default async function CompanyPage({ params }: PageProps) {
       />
       <SiteHeader variant="overlay" />
       <main id="main">
-        <CompanyHero company={company} />
+        <CompanyHero company={company} fleetHref="#fleet" />
 
         <div className="container-page space-y-16 py-12 md:space-y-20 md:py-16">
-          <section aria-labelledby="fleet-heading">
+          <section
+            id="fleet"
+            aria-labelledby="fleet-heading"
+            className="scroll-mt-24"
+          >
             <SectionHeading
               id="fleet-heading"
               title="The fleet"
@@ -116,6 +123,6 @@ export default async function CompanyPage({ params }: PageProps) {
           )}
         </div>
       </main>
-    </div>
+    </>
   );
 }

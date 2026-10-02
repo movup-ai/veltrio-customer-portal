@@ -1,4 +1,5 @@
 import { ArrowUpRight, MapPin } from "lucide-react";
+import { Button } from "@/shared/ui/atoms/Button";
 import { ResponsiveImage } from "@/shared/ui/atoms/ResponsiveImage";
 import { countryName } from "../company.utils";
 import type { CompanyProfile } from "../types";
@@ -6,6 +7,8 @@ import { CompanyLogo } from "./CompanyLogo";
 
 interface CompanyHeroProps {
   company: CompanyProfile;
+  /** Anchor of the vehicle list on the same page. */
+  fleetHref: string;
 }
 
 /** Shows a web address without its protocol or trailing slash. */
@@ -14,7 +17,7 @@ function displayUrl(url: string) {
 }
 
 /** Full-bleed cover with the company's logo, name, motto and website. Sits under an `overlay` SiteHeader. */
-export function CompanyHero({ company }: CompanyHeroProps) {
+export function CompanyHero({ company, fleetHref }: CompanyHeroProps) {
   const { branding } = company;
   return (
     <section className="relative isolate bg-surface-inverse text-on-inverse">
@@ -33,7 +36,7 @@ export function CompanyHero({ company }: CompanyHeroProps) {
         <CompanyLogo
           name={company.name}
           logoUrl={branding.logoUrl}
-          className="size-20 rounded-xl bg-surface text-h4 text-foreground shadow-2"
+          className="size-20 rounded-xl bg-primary text-h4 text-on-primary shadow-2"
         />
         <h1 className="mt-5 font-display text-h1 md:text-display">
           {company.name}
@@ -43,7 +46,10 @@ export function CompanyHero({ company }: CompanyHeroProps) {
             {branding.motto}
           </p>
         )}
-        <ul className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">
+        <Button asChild size="lg" className="mt-7 self-start">
+          <a href={fleetHref}>See the fleet</a>
+        </Button>
+        <ul className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">
           <li className="flex items-center gap-2">
             <MapPin aria-hidden className="size-4" />
             {countryName(company.country)}

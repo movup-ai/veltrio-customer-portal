@@ -29,7 +29,11 @@ export function CompanyAbout({ company }: CompanyAboutProps) {
                 href={`tel:${company.phone.replace(/[^+\d]/g, "")}`}
                 className="flex items-center gap-3 font-semibold hover:text-primary"
               >
-                <Phone aria-hidden className="size-5" strokeWidth={1.75} />
+                <Phone
+                  aria-hidden
+                  className="size-5 text-primary"
+                  strokeWidth={1.75}
+                />
                 {company.phone}
               </a>
             </li>
@@ -40,7 +44,11 @@ export function CompanyAbout({ company }: CompanyAboutProps) {
                 href={`mailto:${company.email}`}
                 className="flex items-center gap-3 font-semibold hover:text-primary"
               >
-                <Mail aria-hidden className="size-5" strokeWidth={1.75} />
+                <Mail
+                  aria-hidden
+                  className="size-5 text-primary"
+                  strokeWidth={1.75}
+                />
                 {company.email}
               </a>
             </li>

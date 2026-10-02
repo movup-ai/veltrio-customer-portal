@@ -39,12 +39,15 @@ export function CompanyLocations({ locations }: CompanyLocationsProps) {
               onClick={() => setSelectedId(location.id)}
               className={cn(
                 "w-full rounded-xl border border-border bg-surface p-5 text-left transition-colors hover:border-border-strong",
-                "aria-pressed:border-foreground aria-pressed:shadow-1",
+                "aria-pressed:border-primary aria-pressed:shadow-1",
               )}
             >
               <span className="font-semibold">{location.name}</span>
               <span className="mt-2 flex gap-2 text-sm text-muted">
-                <MapPin aria-hidden className="mt-0.5 size-4 shrink-0" />
+                <MapPin
+                  aria-hidden
+                  className="mt-0.5 size-4 shrink-0 text-primary"
+                />
                 {location.address}
               </span>
               {location.hours && (

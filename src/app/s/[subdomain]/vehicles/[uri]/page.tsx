@@ -4,7 +4,9 @@ import { Suspense } from "react";
 import { listBookedRanges } from "@/modules/booking/booking.repository";
 import { BookingPanel } from "@/modules/booking/components/BookingPanel";
 import { MobileBookingBar } from "@/modules/booking/components/MobileBookingBar";
+import { getCompanyProfile } from "@/modules/company/company.repository";
 import { companyHref } from "@/modules/company/company.utils";
+import { CompanyBrandStyle } from "@/modules/company/components/CompanyBrandStyle";
 import { RentalCompanyCard } from "@/modules/company/components/RentalCompanyCard";
 import { VehicleDetailSection } from "@/modules/vehicle/components/VehicleDetailSection";
 import { VehicleFeatures } from "@/modules/vehicle/components/VehicleFeatures";
@@ -51,6 +53,7 @@ export async function generateMetadata({
     description: describe(vehicle),
     path: vehicleHref(vehicle),
     image: largestPhotoUrl(vehicle),
+    siteName: vehicle.company.name,
   });
 }
 
@@ -60,6 +63,7 @@ export default async function VehiclePage({ params }: PageProps) {
   if (!vehicle) notFound();
 
   const booked = await listBookedRanges(vehicle.id);
+  const company = await getCompanyProfile(subdomain);
   const name = vehicleName(vehicle);
   const url = vehicleHref(vehicle);
 
@@ -97,6 +101,7 @@ export default async function VehiclePage({ params }: PageProps) {
           }),
         }}
       />
+      {company && <CompanyBrandStyle branding={company.branding} />}
       <SiteHeader />
       <main id="main">
         <div className="container-page pt-6 pb-16">

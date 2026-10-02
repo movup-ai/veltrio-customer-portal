@@ -9,6 +9,11 @@ interface PageSeo {
   path: string;
   /** Social preview image. Falls back to the site-wide Open Graph image. */
   image?: string;
+  /**
+   * Whose page this is in link previews. Set to the company's name on its
+   * subdomain; this also drops the "| Veltrio" suffix from the title.
+   */
+  siteName?: string;
 }
 
 /** Per-page metadata with canonical URL and Open Graph. Resolved against `metadataBase` in the root layout. */
@@ -17,16 +22,17 @@ export function buildMetadata({
   description,
   path,
   image,
+  siteName,
 }: PageSeo): Metadata {
   return {
-    title,
+    title: siteName ? { absolute: title } : title,
     description,
     alternates: { canonical: path },
     openGraph: {
       title,
       description,
       url: path,
-      siteName: siteConfig.name,
+      siteName: siteName ?? siteConfig.name,
       locale: siteConfig.locale,
       type: "website",
       ...(image && { images: [image] }),

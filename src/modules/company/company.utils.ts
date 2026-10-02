@@ -1,4 +1,3 @@
-import type { CSSProperties } from "react";
 import { isHexColor, readableOn } from "@/shared/lib/color";
 import { tenantUrl } from "@/shared/lib/tenant";
 import type { Company, CompanyBranding } from "./types";
@@ -29,19 +28,26 @@ export function countryName(code: string) {
 }
 
 /**
- * Re-points the design tokens at a company's brand colours for everything
- * inside the element this style is set on. Invalid colours are ignored.
+ * CSS that re-points the design tokens at a company's brand colours for the
+ * whole document. Returns null when neither colour is a valid "#rrggbb".
  */
-export function brandTheme(branding: CompanyBranding): CSSProperties {
-  const theme: Record<string, string> = {};
-  if (isHexColor(branding.primaryColor)) {
-    theme["--color-primary"] = branding.primaryColor;
-    theme["--color-primary-hover"] =
-      `color-mix(in srgb, ${branding.primaryColor} 85%, black)`;
-    theme["--color-on-primary"] = readableOn(branding.primaryColor);
+export function brandThemeCss(branding: CompanyBranding): string | null {
+  const tokens: Record<string, string> = {};
+  const { primaryColor: primary, backgroundColor: background } = branding;
+  if (isHexColor(primary)) {
+    tokens["--color-primary"] = primary;
+    tokens["--color-primary-hover"] =
+      `color-mix(in srgb, ${primary} 85%, black)`;
+    tokens["--color-on-primary"] = readableOn(primary);
   }
-  if (isHexColor(branding.backgroundColor)) {
-    theme["--color-background"] = branding.backgroundColor;
+  if (isHexColor(background)) {
+    tokens["--color-background"] = background;
+    tokens["--color-surface-muted"] =
+      `color-mix(in srgb, ${background} 95%, black)`;
+    tokens["--color-border"] = `color-mix(in srgb, ${background} 91%, black)`;
   }
-  return theme;
+  const declarations = Object.entries(tokens).map(
+    ([name, value]) => `${name}:${value}`,
+  );
+  return declarations.length ? `:root{${declarations.join(";")}}` : null;
 }
