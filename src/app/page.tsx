@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { listFeaturedCompanies } from "@/modules/company/company.repository";
+import { listCompanies } from "@/modules/company/company.repository";
 import { CompanyCard } from "@/modules/company/components/CompanyCard";
 import { CollectionsSection } from "@/modules/marketing/components/CollectionsSection";
 import { HeroSection } from "@/modules/marketing/components/HeroSection";
@@ -14,15 +14,15 @@ import {
 } from "@/modules/marketing/landing.content";
 import { SearchCapsule } from "@/modules/search/components/SearchCapsule";
 import { buildSearchUrl } from "@/modules/search/search-params";
-import {
-  VehicleRow,
-  VehicleRowSkeleton,
-} from "@/modules/vehicle/components/VehicleRow";
+import { VehicleCard } from "@/modules/vehicle/components/VehicleCard";
+import { VehicleCardSkeleton } from "@/modules/vehicle/components/VehicleCardSkeleton";
 import { VehicleTypeNav } from "@/modules/vehicle/components/VehicleTypeNav";
 import { listVehicles } from "@/modules/vehicle/vehicle.repository";
 import { siteConfig } from "@/shared/config/site";
 import { buildMetadata, JsonLd } from "@/shared/lib/seo";
+import { settle } from "@/shared/lib/settle";
 import { ScrollRow } from "@/shared/ui/molecules/ScrollRow";
+import { SectionHeading } from "@/shared/ui/molecules/SectionHeading";
 import { SiteHeader } from "@/shared/ui/organisms/SiteHeader";
 
 export const metadata: Metadata = buildMetadata({
@@ -37,9 +37,37 @@ const ALL_VEHICLES = {
   description: "Every vehicle listed by rental companies on Veltrio.",
 };
 
+async function VehiclesRow() {
+  const vehicles = await settle(listVehicles());
+  if (!vehicles || vehicles.length === 0) {
+    return (
+      <section aria-labelledby="vehicles-heading">
+        <SectionHeading {...ALL_VEHICLES} id="vehicles-heading" />
+        <p role={vehicles ? undefined : "status"} className="text-muted">
+          {vehicles
+            ? "No vehicles are listed yet."
+            : "Vehicles are unavailable right now. Please try again shortly."}
+        </p>
+      </section>
+    );
+  }
+  return (
+    <ScrollRow {...ALL_VEHICLES}>
+      {vehicles.map((vehicle, index) => (
+        <VehicleCard
+          key={vehicle.id}
+          vehicle={vehicle}
+          index={index}
+          priority={index < 4}
+        />
+      ))}
+    </ScrollRow>
+  );
+}
+
 async function CompaniesRow() {
-  const companies = await listFeaturedCompanies();
-  if (companies.length === 0) return null;
+  const companies = await settle(listCompanies());
+  if (!companies || companies.length === 0) return null;
   return (
     <ScrollRow
       id="companies"
@@ -90,8 +118,16 @@ export default function HomePage() {
         <div className="container-page space-y-16 pt-10 md:pt-12">
           <VehicleTypeNav hrefFor={(type) => buildSearchUrl({ type })} />
 
-          <Suspense fallback={<VehicleRowSkeleton {...ALL_VEHICLES} />}>
-            <VehicleRow {...ALL_VEHICLES} vehicles={listVehicles()} />
+          <Suspense
+            fallback={
+              <ScrollRow {...ALL_VEHICLES}>
+                {Array.from({ length: 4 }, (_, index) => (
+                  <VehicleCardSkeleton key={index} />
+                ))}
+              </ScrollRow>
+            }
+          >
+            <VehiclesRow />
           </Suspense>
 
           <CollectionsSection

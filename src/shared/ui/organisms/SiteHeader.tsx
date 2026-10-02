@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { cn } from "@/shared/lib/cn";
 import { Logo } from "@/shared/ui/atoms/Logo";
 
-const NAV_LINKS = [{ href: "/search", label: "Explore" }];
+const NAV_LINKS = [{ href: "/design", label: "Design System" }];
 
 interface SiteHeaderProps {
   /**

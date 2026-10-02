@@ -47,3 +47,19 @@ export async function apiGet<T>(
   }
   return response.json() as Promise<T>;
 }
+
+const PAGE_SIZE = 100; // the API's maximum
+
+/** Every item of a paginated list endpoint, walking its pages. */
+export async function apiGetAll<T>(path: string): Promise<T[]> {
+  const items: T[] = [];
+  let total = Infinity;
+  for (let offset = 0; offset < total; offset += PAGE_SIZE) {
+    const page = await apiGet<Page<T>>(path, {
+      query: { limit: PAGE_SIZE, offset },
+    });
+    items.push(...page.items);
+    total = page.total;
+  }
+  return items;
+}
