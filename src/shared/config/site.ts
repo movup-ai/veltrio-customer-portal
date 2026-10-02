@@ -8,7 +8,7 @@ export const siteConfig = {
   url,
   /** Host that company subdomains hang off, e.g. "veltrio.autos" for abc-rental.veltrio.autos. */
   rootDomain:
-    process.env.NEXT_PUBLIC_ROOT_DOMAIN ??
+    process.env.NEXT_PUBLIC_ROOT_DOMAIN ||
     new URL(url).host.replace(/^www\./, ""),
   locale: "en_US",
 } as const;
