@@ -1,4 +1,5 @@
 import { ArrowLeft } from "lucide-react";
+import { tenantUrl } from "@/shared/lib/tenant";
 import type { Vehicle } from "../types";
 import { VEHICLE_TYPE_META } from "../vehicle-types";
 import { vehicleName } from "../vehicle.utils";
@@ -36,7 +37,12 @@ export function VehicleHeader({ vehicle, backHref }: VehicleHeaderProps) {
         </span>
         <span>
           Offered by{" "}
-          <span className="font-semibold">{vehicle.company.name}</span>
+          <a
+            href={tenantUrl(vehicle.company.subdomain)}
+            className="font-semibold underline-offset-4 hover:underline"
+          >
+            {vehicle.company.name}
+          </a>
         </span>
       </p>
     </header>

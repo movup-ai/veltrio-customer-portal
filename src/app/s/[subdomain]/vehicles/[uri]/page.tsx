@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import { listBookedRanges } from "@/modules/booking/booking.repository";
 import { BookingPanel } from "@/modules/booking/components/BookingPanel";
 import { MobileBookingBar } from "@/modules/booking/components/MobileBookingBar";
+import { companyHref } from "@/modules/company/company.utils";
 import { RentalCompanyCard } from "@/modules/company/components/RentalCompanyCard";
 import { VehicleDetailSection } from "@/modules/vehicle/components/VehicleDetailSection";
 import { VehicleFeatures } from "@/modules/vehicle/components/VehicleFeatures";
@@ -129,6 +130,7 @@ export default async function VehiclePage({ params }: PageProps) {
                 <RentalCompanyCard
                   name={vehicle.company.name}
                   location={vehicle.location}
+                  href={companyHref(vehicle.company)}
                 />
               </VehicleDetailSection>
             </div>

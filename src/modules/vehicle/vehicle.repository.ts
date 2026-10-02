@@ -29,3 +29,11 @@ export async function getVehicle(
     ) ?? null
   );
 }
+
+/** A company's listed vehicles, newest first. */
+export async function listCompanyVehicles(
+  subdomain: string,
+): Promise<Vehicle[]> {
+  const vehicles = await listVehicles();
+  return vehicles.filter((vehicle) => vehicle.company.subdomain === subdomain);
+}

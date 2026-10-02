@@ -6,8 +6,8 @@ import { subdomainFromHost } from "@/shared/lib/tenant";
 const TENANT_ROOT = "/s";
 
 /**
- * Multi-tenant routing: abc-rental.<root>/vehicles/x is served by
- * app/s/[subdomain]/vehicles/[uri], while the address bar keeps the subdomain URL.
+ * Multi-tenant routing: abc-rental.<root> and abc-rental.<root>/vehicles/x are
+ * served by app/s/[subdomain]/..., while the address bar keeps the subdomain URL.
  */
 export function proxy(request: NextRequest) {
   const host =
@@ -22,13 +22,13 @@ export function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  if (pathname.startsWith("/vehicles/")) {
+  if (pathname === "/" || pathname.startsWith("/vehicles/")) {
     const url = request.nextUrl.clone();
-    url.pathname = `${TENANT_ROOT}/${subdomain}${pathname}`;
+    url.pathname = `${TENANT_ROOT}/${subdomain}${pathname === "/" ? "" : pathname}`;
     return NextResponse.rewrite(url);
   }
 
-  // Everything else lives on the marketplace itself until company storefronts exist.
+  // Everything else lives on the marketplace itself.
   return NextResponse.redirect(new URL(pathname + search, siteConfig.url));
 }
 
