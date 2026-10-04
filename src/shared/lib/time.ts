@@ -19,3 +19,9 @@ export function formatTime(value: string) {
   const period = hours < 12 ? "AM" : "PM";
   return `${hours % 12 || 12}:${String(minutes).padStart(2, "0")} ${period}`;
 }
+
+/** Minutes from midnight -> "HH:mm", e.g. 540 -> "09:00". */
+export function minutesToTime(minutes: number) {
+  const hours = Math.floor(minutes / 60) % 24;
+  return `${String(hours).padStart(2, "0")}:${String(minutes % 60).padStart(2, "0")}`;
+}

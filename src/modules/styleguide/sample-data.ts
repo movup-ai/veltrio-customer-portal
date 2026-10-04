@@ -102,6 +102,7 @@ export const SAMPLE_COMPANIES: Company[] = [
     subdomain: "coastline-exotics",
     website: null,
     country: "US",
+    logoUrl: null,
     vehicleCount: 28,
   },
   {
@@ -110,6 +111,7 @@ export const SAMPLE_COMPANIES: Company[] = [
     subdomain: "northbound-rentals",
     website: null,
     country: "US",
+    logoUrl: null,
     vehicleCount: 55,
   },
   {
@@ -118,6 +120,7 @@ export const SAMPLE_COMPANIES: Company[] = [
     subdomain: "apex-motor-club",
     website: null,
     country: "US",
+    logoUrl: null,
     vehicleCount: 42,
   },
   {
@@ -126,6 +129,7 @@ export const SAMPLE_COMPANIES: Company[] = [
     subdomain: "voltaire-ev",
     website: null,
     country: "US",
+    logoUrl: null,
     vehicleCount: 64,
   },
 ];

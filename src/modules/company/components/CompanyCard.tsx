@@ -17,7 +17,7 @@ export function CompanyCard({ company, className }: CompanyCardProps) {
       )}
     >
       <div className="flex items-center gap-4">
-        <CompanyLogo name={company.name} />
+        <CompanyLogo name={company.name} logoUrl={company.logoUrl} />
         <div className="min-w-0">
           <h3 className="truncate text-ui font-semibold">
             {/* The stretched link makes the whole card clickable with one tab stop. */}
