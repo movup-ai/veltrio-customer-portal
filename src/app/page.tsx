@@ -13,10 +13,8 @@ import {
   valueProps,
 } from "@/modules/marketing/landing.content";
 import { SearchCapsule } from "@/modules/search/components/SearchCapsule";
-import { buildSearchUrl } from "@/modules/search/search-params";
 import { VehicleCard } from "@/modules/vehicle/components/VehicleCard";
 import { VehicleCardSkeleton } from "@/modules/vehicle/components/VehicleCardSkeleton";
-import { VehicleTypeNav } from "@/modules/vehicle/components/VehicleTypeNav";
 import { listVehicles } from "@/modules/vehicle/vehicle.repository";
 import { siteConfig } from "@/shared/config/site";
 import { buildMetadata, JsonLd } from "@/shared/lib/seo";
@@ -116,8 +114,6 @@ export default function HomePage() {
         </HeroSection>
 
         <div className="container-page space-y-16 pt-10 md:pt-12">
-          <VehicleTypeNav hrefFor={(type) => buildSearchUrl({ type })} />
-
           <Suspense
             fallback={
               <ScrollRow {...ALL_VEHICLES}>

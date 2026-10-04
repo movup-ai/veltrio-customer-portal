@@ -31,6 +31,7 @@ export function SiteFooter({ columns }: SiteFooterProps) {
                   <li key={link.href + link.label}>
                     <Link
                       href={siteHref(link.href)}
+                      prefetch={false}
                       className="text-sm text-muted hover:text-foreground"
                     >
                       {link.label}

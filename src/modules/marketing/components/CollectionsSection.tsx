@@ -39,6 +39,7 @@ export function CollectionsSection({
           <li key={collection.href}>
             <Link
               href={collection.href}
+              prefetch={false}
               className="group relative isolate flex aspect-16/11 items-end overflow-hidden rounded-xl text-on-inverse md:aspect-auto md:h-[30rem]"
             >
               <ResponsiveImage

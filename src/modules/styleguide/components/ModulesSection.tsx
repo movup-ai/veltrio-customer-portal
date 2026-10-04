@@ -3,7 +3,6 @@ import { SearchCapsule } from "@/modules/search/components/SearchCapsule";
 import { SearchField } from "@/modules/search/components/SearchField";
 import { VehicleCard } from "@/modules/vehicle/components/VehicleCard";
 import { VehicleCardSkeleton } from "@/modules/vehicle/components/VehicleCardSkeleton";
-import { VehicleTypeNav } from "@/modules/vehicle/components/VehicleTypeNav";
 import { SAMPLE_COMPANIES, SAMPLE_VEHICLES } from "../sample-data";
 import { Specimen } from "./Specimen";
 import { StyleSection } from "./StyleSection";
@@ -35,15 +34,6 @@ export function ModulesSection() {
             value="Miami, FL"
           />
         </div>
-      </Specimen>
-
-      <Specimen
-        name="VehicleTypeNav"
-        source="modules/vehicle/components/VehicleTypeNav.tsx"
-        tone="background"
-        className="overflow-hidden"
-      >
-        <VehicleTypeNav hrefFor={() => "#modules"} active="suv" />
       </Specimen>
 
       <Specimen
