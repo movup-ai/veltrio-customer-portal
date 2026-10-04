@@ -1,15 +1,19 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getCompanyProfile } from "@/modules/company/company.repository";
+import {
+  getCompanyProfile,
+  listCompanyLocations,
+} from "@/modules/company/company.repository";
 import { companyHref } from "@/modules/company/company.utils";
 import { CompanyAbout } from "@/modules/company/components/CompanyAbout";
 import { CompanyBrandStyle } from "@/modules/company/components/CompanyBrandStyle";
 import { CompanyHero } from "@/modules/company/components/CompanyHero";
 import { CompanyLocations } from "@/modules/company/components/CompanyLocations";
-import { CompanyStats } from "@/modules/company/components/CompanyStats";
+import { CompanyMap } from "@/modules/company/components/CompanyMap";
 import { VehicleCard } from "@/modules/vehicle/components/VehicleCard";
 import { listCompanyVehicles } from "@/modules/vehicle/vehicle.repository";
 import { buildMetadata, JsonLd } from "@/shared/lib/seo";
+import { settle } from "@/shared/lib/settle";
 import { SectionHeading } from "@/shared/ui/molecules/SectionHeading";
 import { SiteHeader } from "@/shared/ui/organisms/SiteHeader";
 
@@ -26,10 +30,11 @@ export async function generateMetadata({
   return buildMetadata({
     title: `${company.name} car rental`,
     description:
-      company.branding.motto ??
-      `Rent a car from ${company.name}. See every vehicle, price and pick-up location.`,
+      company.brand.headline ??
+      company.description ??
+      `Rent a car from ${company.name}. See every vehicle and price.`,
     path: companyHref(company),
-    image: company.branding.coverImage.at(-1)?.url,
+    image: company.brand.bannerUrl ?? company.logoUrl ?? undefined,
     siteName: company.name,
   });
 }
@@ -40,28 +45,34 @@ export default async function CompanyPage({ params }: PageProps) {
   if (!company) notFound();
 
   const vehicles = await listCompanyVehicles(subdomain);
+  // Optional: the page still works if branches cannot be loaded.
+  const locations = (await settle(listCompanyLocations(subdomain))) ?? [];
   const url = companyHref(company);
+  const profiles = [company.website, ...Object.values(company.socials)].filter(
+    (link): link is string => !!link,
+  );
 
   return (
     <>
-      <CompanyBrandStyle branding={company.branding} />
+      <CompanyBrandStyle brand={company.brand} />
       <JsonLd
         data={{
           "@context": "https://schema.org",
           "@type": "AutoRental",
           name: company.name,
           url,
-          ...(company.branding.motto && { slogan: company.branding.motto }),
-          ...(company.about && { description: company.about }),
-          ...(company.branding.logoUrl && { logo: company.branding.logoUrl }),
-          image: company.branding.coverImage.at(-1)?.url,
-          ...(company.website && { sameAs: company.website }),
+          ...(company.brand.headline && { slogan: company.brand.headline }),
+          ...(company.description && { description: company.description }),
+          ...(company.logoUrl && { logo: company.logoUrl }),
+          ...(company.brand.bannerUrl && { image: company.brand.bannerUrl }),
+          ...(profiles.length > 0 && { sameAs: profiles }),
           ...(company.phone && { telephone: company.phone }),
-          address: company.locations.map((location) => ({
-            "@type": "PostalAddress" as const,
-            streetAddress: location.address,
+          ...(company.email && { email: company.email }),
+          address: {
+            "@type": "PostalAddress",
+            ...(company.address && { streetAddress: company.address }),
             addressCountry: company.country,
-          })),
+          },
         }}
       />
       <SiteHeader variant="overlay" />
@@ -92,17 +103,6 @@ export default async function CompanyPage({ params }: PageProps) {
             </ul>
           </section>
 
-          <section aria-labelledby="stats-heading">
-            <h2 id="stats-heading" className="sr-only">
-              {company.name} in numbers
-            </h2>
-            <CompanyStats
-              {...company.stats}
-              vehicleCount={vehicles.length}
-              locationCount={company.locations.length}
-            />
-          </section>
-
           <section aria-labelledby="about-heading">
             <SectionHeading
               id="about-heading"
@@ -111,15 +111,29 @@ export default async function CompanyPage({ params }: PageProps) {
             <CompanyAbout company={company} />
           </section>
 
-          {company.locations.length > 0 && (
+          {locations.length > 0 ? (
             <section aria-labelledby="locations-heading">
               <SectionHeading
                 id="locations-heading"
-                title="Where to pick up"
-                description="Choose a location to see it on the map."
+                title="Pick-up locations"
+                description={
+                  locations.length > 1
+                    ? "Choose a branch to see it on the map."
+                    : undefined
+                }
               />
-              <CompanyLocations locations={company.locations} />
+              <CompanyLocations locations={locations} />
             </section>
+          ) : (
+            company.address && (
+              <section aria-labelledby="location-heading">
+                <SectionHeading
+                  id="location-heading"
+                  title="Where to find us"
+                />
+                <CompanyMap address={company.address} />
+              </section>
+            )
           )}
         </div>
       </main>
