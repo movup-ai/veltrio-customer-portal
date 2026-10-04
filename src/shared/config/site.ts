@@ -1,4 +1,16 @@
-const url = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+/** Public origin of the marketplace. A deployed build must be told what it is. */
+function siteUrl() {
+  const url = process.env.NEXT_PUBLIC_SITE_URL;
+  if (url) return url;
+  if (process.env.NODE_ENV === "production") {
+    throw new Error(
+      "NEXT_PUBLIC_SITE_URL is not set. Set it to the marketplace's public origin, e.g. https://www.example.com, and rebuild.",
+    );
+  }
+  return "http://localhost:3000";
+}
+
+const url = siteUrl();
 
 export const siteConfig = {
   name: "Veltrio",
@@ -6,11 +18,8 @@ export const siteConfig = {
   description:
     "Discover, compare and book rental cars from independent rental companies. Upfront prices, clear terms, one simple booking.",
   url,
-  /** Host that company subdomains hang off, e.g. "veltrio.autos" for abc-rental.veltrio.autos. */
-  // "www" is never part of it, whichever variable it comes from.
-  rootDomain: (
-    process.env.NEXT_PUBLIC_ROOT_DOMAIN || new URL(url).host
-  ).replace(/^www\./, ""),
+  /** Host that company subdomains hang off: the site's host without "www", e.g. "veltrio.autos" for abc-rental.veltrio.autos. */
+  rootDomain: new URL(url).host.replace(/^www\./, ""),
   locale: "en_US",
 } as const;
 
