@@ -1,5 +1,5 @@
 import { tenantUrl } from "@/shared/lib/tenant";
-import type { Vehicle, VehiclePhoto } from "./types";
+import type { Vehicle, VehicleDetail, VehiclePhoto } from "./types";
 
 export function vehicleName(vehicle: Pick<Vehicle, "make" | "model">) {
   return `${vehicle.make} ${vehicle.model}`;
@@ -37,4 +37,12 @@ export function groupPhotos(photos: VehiclePhoto[]): PhotoGroup[] {
     groups.set(label, group);
   });
   return [...groups.values()];
+}
+
+/** A vehicle's reserved days in the shape the booking calendar takes. */
+export function bookedRanges(vehicle: Pick<VehicleDetail, "occupancy">) {
+  return vehicle.occupancy.ranges.map(({ start, end }) => ({
+    from: start,
+    to: end,
+  }));
 }

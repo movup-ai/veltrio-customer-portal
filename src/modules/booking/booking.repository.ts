@@ -1,14 +1,15 @@
-import type { BookedRange } from "./types";
+import { mockCreateBooking } from "./mocks/booking.mock";
+import type { BookingConfirmation, BookingRequest } from "./types";
 
 /**
- * Dates a vehicle cannot be booked.
+ * Sends a renter's booking request to the company. Called from the browser.
  *
- * TODO(api): there is no public availability endpoint yet, so every future
- * date shows as free. Replace the body with the real call; callers do not change.
+ * TODO(api): mock. Creating a booking is staff-only in the API today, so this
+ * returns an invented reference and saves nothing. Replace with the public
+ * endpoint once it exists; callers do not change.
  */
-export async function listBookedRanges(
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  vehicleId: string,
-): Promise<BookedRange[]> {
-  return [];
+export function createBooking(
+  request: BookingRequest,
+): Promise<BookingConfirmation> {
+  return mockCreateBooking(request);
 }

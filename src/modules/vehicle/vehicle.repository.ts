@@ -1,7 +1,12 @@
 import { cache } from "react";
-import { apiGetAll } from "@/shared/api/client";
-import type { Vehicle } from "./types";
-import { toVehicle, type VehicleDto } from "./vehicle.api";
+import { ApiError, apiGet, apiGetAll } from "@/shared/api/client";
+import type { Vehicle, VehicleDetail } from "./types";
+import {
+  toVehicle,
+  toVehicleDetail,
+  type VehicleDetailDto,
+  type VehicleDto,
+} from "./vehicle.api";
 
 /** Data access for vehicles. Components never call the API directly. */
 
@@ -11,24 +16,20 @@ export const listVehicles = cache(async (): Promise<Vehicle[]> => {
   return vehicles.map(toVehicle);
 });
 
-/**
- * One vehicle by its company's subdomain and its slug; null when it is not listed.
- *
- * TODO(api): there is no public single-vehicle endpoint yet, so this searches
- * the full list. Replace the body when one exists; callers do not change.
- */
-export async function getVehicle(
-  subdomain: string,
-  uri: string,
-): Promise<Vehicle | null> {
-  const vehicles = await listVehicles();
-  return (
-    vehicles.find(
-      (vehicle) =>
-        vehicle.company.subdomain === subdomain && vehicle.uri === uri,
-    ) ?? null
-  );
-}
+/** One vehicle's page by its company's subdomain and its slug; null when it is not listed. */
+export const getVehicle = cache(
+  async (subdomain: string, uri: string): Promise<VehicleDetail | null> => {
+    try {
+      const vehicle = await apiGet<VehicleDetailDto>(
+        `/marketplace/companies/${encodeURIComponent(subdomain)}/vehicles/${encodeURIComponent(uri)}`,
+      );
+      return toVehicleDetail(vehicle);
+    } catch (error) {
+      if (error instanceof ApiError && error.status === 404) return null;
+      throw error;
+    }
+  },
+);
 
 /** A company's listed vehicles, newest first. */
 export async function listCompanyVehicles(

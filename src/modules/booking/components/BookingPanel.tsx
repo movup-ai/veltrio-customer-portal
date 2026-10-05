@@ -22,6 +22,8 @@ interface BookingPanelProps {
   dailyRateCents: number | null;
   /** Dates that are already reserved. */
   booked: BookedRange[];
+  /** Last date availability is known for, "YYYY-MM-DD"; later days cannot be picked. */
+  through: string;
 }
 
 /** Price, availability calendar and the call to action. Dates and times live in the URL. */
@@ -29,6 +31,7 @@ export function BookingPanel({
   uri,
   dailyRateCents,
   booked,
+  through,
 }: BookingPanelProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -92,6 +95,7 @@ export function BookingPanel({
           times={times}
           onTimesChange={(next) => update(range, next)}
           unavailable={unavailable}
+          lastDate={fromIsoDate(through)}
         />
       </div>
 

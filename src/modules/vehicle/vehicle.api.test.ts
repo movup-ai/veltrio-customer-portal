@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { toVehicle, type VehicleDto } from "./vehicle.api";
+import { toVehicle, toVehicleDetail, type VehicleDto } from "./vehicle.api";
 
 const dto: VehicleDto = {
   id: "1",
@@ -38,5 +38,30 @@ describe("toVehicle", () => {
 
   it("fills missing optional specs with null", () => {
     expect(toVehicle(dto).specs.horsepower).toBeNull();
+  });
+});
+
+describe("toVehicleDetail", () => {
+  it("adds the rate options and occupancy to the listing", () => {
+    const detail = toVehicleDetail({
+      ...dto,
+      rateOptions: [
+        {
+          id: "r1",
+          label: "Daily",
+          basis: "day",
+          rateCents: 31900,
+          includedMiles: 100,
+          unlimitedMileage: false,
+        },
+      ],
+      occupancy: {
+        ranges: [{ start: "2026-10-10", end: "2026-10-12" }],
+        through: "2027-04-02",
+      },
+    });
+    expect(detail.uri).toBe("bmw-m4-2025");
+    expect(detail.rateOptions[0]?.rateCents).toBe(31900);
+    expect(detail.occupancy.through).toBe("2027-04-02");
   });
 });

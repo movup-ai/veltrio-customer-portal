@@ -85,3 +85,27 @@ export interface Vehicle {
   specs: VehicleSpecs;
   company: VehicleCompany;
 }
+
+export type BillingBasis = "hour" | "day" | "week" | "month" | "fixed";
+
+export interface RateOption {
+  id: string;
+  label: string;
+  basis: BillingBasis;
+  rateCents: number;
+  includedMiles: number | null;
+  unlimitedMileage: boolean;
+}
+
+/** When a vehicle is already taken. Dates are inclusive "YYYY-MM-DD". */
+export interface VehicleOccupancy {
+  ranges: { start: string; end: string }[];
+  /** Last day `ranges` is complete for; nothing later can be booked yet. */
+  through: string;
+}
+
+/** One vehicle's page: the listing plus its rates and availability. */
+export interface VehicleDetail extends Vehicle {
+  rateOptions: RateOption[];
+  occupancy: VehicleOccupancy;
+}

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import { listBookedRanges } from "@/modules/booking/booking.repository";
 import { BookingPanel } from "@/modules/booking/components/BookingPanel";
 import { MobileBookingBar } from "@/modules/booking/components/MobileBookingBar";
 import { companyHref } from "@/modules/company/company.utils";
@@ -13,7 +12,11 @@ import { VehicleHeader } from "@/modules/vehicle/components/VehicleHeader";
 import { VehicleSpecs } from "@/modules/vehicle/components/VehicleSpecs";
 import type { Vehicle } from "@/modules/vehicle/types";
 import { getVehicle } from "@/modules/vehicle/vehicle.repository";
-import { vehicleHref, vehicleName } from "@/modules/vehicle/vehicle.utils";
+import {
+  bookedRanges,
+  vehicleHref,
+  vehicleName,
+} from "@/modules/vehicle/vehicle.utils";
 import { siteConfig } from "@/shared/config/site";
 import { formatMoney } from "@/shared/lib/format";
 import { buildMetadata, JsonLd } from "@/shared/lib/seo";
@@ -60,7 +63,6 @@ export default async function VehiclePage({ params }: PageProps) {
   const vehicle = await getVehicle(subdomain, uri);
   if (!vehicle) notFound();
 
-  const booked = await listBookedRanges(vehicle.id);
   const name = vehicleName(vehicle);
   const url = vehicleHref(vehicle);
 
@@ -147,7 +149,8 @@ export default async function VehiclePage({ params }: PageProps) {
                   <BookingPanel
                     uri={vehicle.uri}
                     dailyRateCents={vehicle.dailyRateCents}
-                    booked={booked}
+                    booked={bookedRanges(vehicle)}
+                    through={vehicle.occupancy.through}
                   />
                 </Suspense>
               </div>

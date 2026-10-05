@@ -1,8 +1,11 @@
 import type {
   PhotoVariant,
+  RateOption,
   Vehicle,
   VehicleCompany,
+  VehicleDetail,
   VehicleFeature,
+  VehicleOccupancy,
   VehicleSpecs,
   VehicleType,
 } from "./types";
@@ -68,6 +71,30 @@ export function toVehicle(dto: VehicleDto): Vehicle {
       id: dto.company.id,
       name: dto.company.name,
       subdomain: dto.company.subdomain,
+    },
+  };
+}
+
+/** MarketplaceVehicleDetail from the API. */
+export interface VehicleDetailDto extends VehicleDto {
+  rateOptions: RateOption[];
+  occupancy: VehicleOccupancy;
+}
+
+export function toVehicleDetail(dto: VehicleDetailDto): VehicleDetail {
+  return {
+    ...toVehicle(dto),
+    rateOptions: dto.rateOptions.map((option) => ({
+      id: option.id,
+      label: option.label,
+      basis: option.basis,
+      rateCents: option.rateCents,
+      includedMiles: option.includedMiles,
+      unlimitedMileage: option.unlimitedMileage,
+    })),
+    occupancy: {
+      ranges: dto.occupancy.ranges.map(({ start, end }) => ({ start, end })),
+      through: dto.occupancy.through,
     },
   };
 }
