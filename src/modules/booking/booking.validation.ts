@@ -192,7 +192,7 @@ export function validateBooking(
 /** The parts of a booking request that come from a valid form. */
 export function toBookingRequestParts(
   values: BookingFormValues,
-): Pick<BookingRequest, "customer" | "documents" | "payment" | "notes"> {
+): Pick<BookingRequest, "customer" | "payment" | "notes"> {
   const customer: BookingCustomer = {
     name: values.name.trim(),
     email: values.email.trim(),
@@ -206,10 +206,6 @@ export function toBookingRequestParts(
   const method = values.paymentMethod as PaymentMethod;
   return {
     customer,
-    documents: {
-      licence: values.licencePhoto as File,
-      insurance: values.insurancePhoto as File,
-    },
     payment: {
       method,
       timing:

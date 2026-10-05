@@ -34,32 +34,78 @@ export interface BookingCustomer {
   licenceExpiry: string | null;
 }
 
-/** What is sent to create a booking. Shaped after the API's BookingCreate, plus what it lacks today. */
+/** A renter's booking request for one vehicle. Becomes the API's MarketplaceBookingCreate. */
 export interface BookingRequest {
-  vehicleId: string;
   customer: BookingCustomer;
+  /** Branch names, as on the vehicle's `location`. */
   pickupLocation: string;
   returnLocation: string;
   /** Branch-local date and time, e.g. "2026-10-10T10:00". */
   pickupAt: string;
   returnAt: string;
-  documents: { licence: File; insurance: File };
   payment: { method: PaymentMethod; timing: PaymentTiming | null };
   notes: string | null;
 }
 
-export interface BookingConfirmation {
-  /** What the renter quotes to the company, e.g. "VB-7K2Q9D". */
+/** Why a booking request was not taken. */
+export type BookingFailure =
+  | "unavailable"
+  | "pickup_in_past"
+  | "location_unavailable"
+  | "rejected"
+  | "failed";
+
+export type BookingResult =
+  | {
+      ok: true;
+      /** What the renter quotes to the company. */
+      reference: string;
+      /** Proof that documents sent next belong to this booking; good for an hour. */
+      uploadToken: string;
+    }
+  | { ok: false; reason: BookingFailure };
+
+/** The scans a renter sends with a booking. */
+export type DocumentKind = "licence" | "insurance";
+
+/** Which booking a document belongs to, and the proof that the sender made it. */
+export interface BookingUploadTarget {
+  subdomain: string;
   reference: string;
+  uploadToken: string;
+}
+
+/** A storage form the browser posts one file to, and the document it fills. */
+export interface DocumentUploadSlot {
+  documentId: string;
+  url: string;
+  fields: Record<string, string>;
+}
+
+/** One rate the rental is billed at, e.g. "Daily × 3". */
+export interface BookingQuoteLine {
+  /** The rate's name as the company wrote it, e.g. "Daily". */
+  label: string;
+  count: number;
+  unitCents: number;
+  amountCents: number;
+  /** Set when a day of an hourly rate is billed as this many hours. */
+  cappedHours: number | null;
 }
 
 export interface BookingQuote {
-  days: number;
-  dailyRateCents: number;
+  /** Length of the rental in hours. */
+  hours: number;
+  lines: BookingQuoteLine[];
+  /** The lines added up, before any discount or tax. */
   rentalCents: number;
+  /** Length-of-rental discount, when the rental reaches one. */
+  discount: { percentOff: number; amountCents: number } | null;
+  /** 0 when the company charges no tax. */
   taxRatePct: number;
+  /** Charged on the rental after the discount. */
   taxCents: number;
   totalCents: number;
-  /** Refundable security deposit; not part of the total. */
-  depositCents: number;
+  /** Refundable security deposit, not part of the total; null when the company sets none. */
+  depositCents: number | null;
 }

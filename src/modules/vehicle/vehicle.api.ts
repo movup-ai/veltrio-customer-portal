@@ -1,4 +1,5 @@
 import type {
+  DiscountTier,
   PhotoVariant,
   RateOption,
   Vehicle,
@@ -78,8 +79,15 @@ export function toVehicle(dto: VehicleDto): Vehicle {
 /** MarketplaceVehicleDetail from the API. */
 export interface VehicleDetailDto extends VehicleDto {
   rateOptions: RateOption[];
+  // The three below are absent from API builds that predate them.
+  discountTiers?: DiscountTier[];
+  billableHoursPerDay?: number;
+  fees?: { taxRatePct: number | null; depositCents: number | null };
   occupancy: VehicleOccupancy;
 }
+
+/** The API's own default for a vehicle that has not set its hours per day. */
+const DEFAULT_BILLABLE_HOURS_PER_DAY = 8;
 
 export function toVehicleDetail(dto: VehicleDetailDto): VehicleDetail {
   return {
@@ -89,9 +97,22 @@ export function toVehicleDetail(dto: VehicleDetailDto): VehicleDetail {
       label: option.label,
       basis: option.basis,
       rateCents: option.rateCents,
+      blockDuration: option.blockDuration,
+      blockDurationUnit: option.blockDurationUnit,
       includedMiles: option.includedMiles,
       unlimitedMileage: option.unlimitedMileage,
     })),
+    discountTiers: (dto.discountTiers ?? []).map(({ minDays, percentOff }) => ({
+      minDays,
+      percentOff,
+    })),
+    billableHoursPerDay:
+      dto.billableHoursPerDay ?? DEFAULT_BILLABLE_HOURS_PER_DAY,
+    fees: {
+      // No tax rate set means no tax.
+      taxRatePct: dto.fees?.taxRatePct ?? 0,
+      depositCents: dto.fees?.depositCents ?? null,
+    },
     occupancy: {
       ranges: dto.occupancy.ranges.map(({ start, end }) => ({ start, end })),
       through: dto.occupancy.through,

@@ -1,6 +1,11 @@
 import { CircleCheck } from "lucide-react";
 import { Button } from "@/shared/ui/atoms/Button";
-import type { PaymentMethod, PaymentTiming } from "../types";
+import type { DocumentKind, PaymentMethod, PaymentTiming } from "../types";
+
+const DOCUMENT_NAMES: Record<DocumentKind, string> = {
+  licence: "driving licence photo",
+  insurance: "insurance card photo",
+};
 
 interface BookingConfirmedProps {
   reference: string;
@@ -10,6 +15,10 @@ interface BookingConfirmedProps {
   payment: { method: PaymentMethod; timing: PaymentTiming | null };
   /** The company's storefront. */
   companyHref: string;
+  /** Scans that did not upload; the booking itself went through. */
+  missingDocuments: DocumentKind[];
+  retrying: boolean;
+  onRetryDocuments: () => void;
 }
 
 function nextSteps({
@@ -41,6 +50,9 @@ export function BookingConfirmed({
   email,
   payment,
   companyHref,
+  missingDocuments,
+  retrying,
+  onRetryDocuments,
 }: BookingConfirmedProps) {
   return (
     <div>
@@ -65,6 +77,33 @@ export function BookingConfirmed({
         .
       </p>
 
+      {missingDocuments.length > 0 && (
+        <div
+          role="alert"
+          className="mt-6 max-w-prose rounded-md border border-border p-4"
+        >
+          <p className="font-medium">
+            Your{" "}
+            {missingDocuments.map((kind) => DOCUMENT_NAMES[kind]).join(" and ")}{" "}
+            did not upload.
+          </p>
+          <p className="mt-1 text-sm text-foreground-secondary">
+            Your request is with {companyName} either way. Try again now, or
+            bring the {missingDocuments.length === 1 ? "document" : "documents"}{" "}
+            to pick-up.
+          </p>
+          <Button
+            size="sm"
+            variant="dark"
+            className="mt-3"
+            disabled={retrying}
+            onClick={onRetryDocuments}
+          >
+            {retrying ? "Uploading…" : "Try again"}
+          </Button>
+        </div>
+      )}
+
       <h2 className="mt-10 text-h4 font-semibold">What happens next</h2>
       <ol className="mt-4 grid max-w-prose gap-4">
         {nextSteps({ companyName, email, payment }).map((step, index) => (
@@ -80,8 +119,8 @@ export function BookingConfirmed({
         ))}
       </ol>
       <p className="mt-6 max-w-prose text-sm text-muted">
-        Nothing has been charged. The car is not held for you until the company
-        confirms.
+        Nothing has been charged. Your dates are held while the company reviews
+        the request.
       </p>
 
       <Button asChild variant="dark" className="mt-8">

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { quoteBooking } from "@/modules/booking/booking.quote";
 import { parseBookingDates } from "@/modules/booking/booking.utils";
@@ -48,7 +49,7 @@ export default async function BookVehiclePage({
   // No usable dates: back to the vehicle page to choose them.
   if (!dates) redirect(vehicleHref(vehicle));
 
-  const quote = quoteBooking(vehicle.dailyRateCents, dates);
+  const quote = quoteBooking(vehicle, dates);
 
   return (
     <>
@@ -57,6 +58,8 @@ export default async function BookVehiclePage({
         <div className="group/booking grid gap-x-18 gap-y-10 lg:grid-cols-[minmax(0,1fr)_25rem]">
           <BookingForm
             vehicleId={vehicle.id}
+            subdomain={subdomain}
+            uri={uri}
             location={vehicle.location}
             dates={dates}
             quote={quote}
@@ -70,13 +73,14 @@ export default async function BookVehiclePage({
                 dates={dates}
                 quote={quote}
                 action={
-                  <a
+                  // A Link, not a page load: photos added to the form survive the trip.
+                  <Link
                     href={`${vehicleHref(vehicle)}?${new URLSearchParams({ ...dates })}#booking`}
                     // Hidden once the request has been sent.
                     className="text-sm font-semibold underline underline-offset-4 group-has-[[data-booking-sent]]/booking:hidden"
                   >
                     Change dates
-                  </a>
+                  </Link>
                 }
               />
             </div>

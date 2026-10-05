@@ -12,7 +12,12 @@ import {
   DateRangePicker,
   type RangeTimes,
 } from "@/shared/ui/molecules/DateRangePicker";
-import { bookingHref, rentalDays } from "../booking.utils";
+import {
+  quoteBooking,
+  rentalLength,
+  type VehiclePricing,
+} from "../booking.quote";
+import { bookingHref } from "../booking.utils";
 import type { BookedRange } from "../types";
 
 interface BookingPanelProps {
@@ -20,6 +25,8 @@ interface BookingPanelProps {
   uri: string;
   /** Lowest per-day rate in cents; null when the company lists no daily rate. */
   dailyRateCents: number | null;
+  /** The vehicle's rates and fees, for pricing the chosen dates. */
+  pricing: VehiclePricing;
   /** Dates that are already reserved. */
   booked: BookedRange[];
   /** Last date availability is known for, "YYYY-MM-DD"; later days cannot be picked. */
@@ -30,6 +37,7 @@ interface BookingPanelProps {
 export function BookingPanel({
   uri,
   dailyRateCents,
+  pricing,
   booked,
   through,
 }: BookingPanelProps) {
@@ -70,7 +78,15 @@ export function BookingPanel({
     return start && end ? [{ from: start, to: end }] : [];
   });
 
-  const days = from && to ? rentalDays(from, to) : null;
+  const quote =
+    from && to
+      ? quoteBooking(pricing, {
+          pickup: toIsoDate(from),
+          pickupTime: times.pickup,
+          return: toIsoDate(to),
+          returnTime: times.return,
+        })
+      : null;
 
   return (
     <div className="rounded-xl border border-border bg-surface p-6 shadow-2">
@@ -106,14 +122,14 @@ export function BookingPanel({
               {format(from, "MMM d")}, {formatTime(times.pickup)} –{" "}
               {format(to, "MMM d")}, {formatTime(times.return)}
             </span>
-            {dailyRateCents !== null && days !== null && (
+            {quote && (
               <span className="text-muted">
                 {" "}
-                · {days} {days === 1 ? "day" : "days"} ·{" "}
+                · {rentalLength(quote)} ·{" "}
                 <span className="font-semibold text-foreground">
-                  {formatMoney(dailyRateCents * days)}
+                  {formatMoney(quote.totalCents)}
                 </span>{" "}
-                before fees and taxes
+                {quote.taxRatePct > 0 ? "including taxes" : "total"}
               </span>
             )}
           </>

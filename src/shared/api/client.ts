@@ -22,22 +22,40 @@ export class ApiError extends Error {
     readonly status: number,
     readonly code: string,
     message: string,
+    /** What the API adds to the message, e.g. the fields a 422 rejected. */
+    readonly details: unknown = null,
   ) {
     super(message);
     this.name = "ApiError";
   }
 }
 
+async function toApiError(response: Response) {
+  const body = await response.json().catch(() => null);
+  return new ApiError(
+    response.status,
+    body?.error?.code ?? "unknown",
+    body?.error?.message ?? response.statusText,
+    body?.error?.details ?? null,
+  );
+}
+
+/**
+ * How long a response is reused before the backend is asked again, in seconds.
+ * Off in development, so a change in the database shows on the next reload.
+ */
+const DEFAULT_REVALIDATE = process.env.NODE_ENV === "development" ? 0 : 60;
+
 interface ApiGetOptions {
   query?: Record<string, string | number | undefined>;
-  /** Seconds the response may be served from Next's data cache. */
+  /** Seconds the response may be served from Next's data cache; 0 always asks the backend. */
   revalidate?: number;
 }
 
 /** GET a JSON resource from the backend. Server-side only. */
 export async function apiGet<T>(
   path: string,
-  { query = {}, revalidate = 60 }: ApiGetOptions = {},
+  { query = {}, revalidate = DEFAULT_REVALIDATE }: ApiGetOptions = {},
 ): Promise<T> {
   const url = new URL(apiBase() + path);
   for (const [key, value] of Object.entries(query)) {
@@ -46,14 +64,20 @@ export async function apiGet<T>(
 
   const response = await fetch(url, { next: { revalidate } });
 
-  if (!response.ok) {
-    const body = await response.json().catch(() => null);
-    throw new ApiError(
-      response.status,
-      body?.error?.code ?? "unknown",
-      body?.error?.message ?? response.statusText,
-    );
-  }
+  if (!response.ok) throw await toApiError(response);
+  return response.json() as Promise<T>;
+}
+
+/** POST JSON to the backend and read its JSON answer. Server-side only. */
+export async function apiPost<T>(path: string, body: unknown): Promise<T> {
+  const response = await fetch(apiBase() + path, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+    cache: "no-store",
+  });
+
+  if (!response.ok) throw await toApiError(response);
   return response.json() as Promise<T>;
 }
 

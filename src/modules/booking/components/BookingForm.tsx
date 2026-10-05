@@ -4,6 +4,8 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import { track } from "@/shared/lib/analytics";
 import { Button } from "@/shared/ui/atoms/Button";
 import { TextAreaField } from "@/shared/ui/molecules/TextAreaField";
+import { uploadBookingDocuments } from "../booking.documents";
+import { clearBookingDraft } from "../booking.draft";
 import { useBookingForm } from "../booking.form";
 import { createBooking } from "../booking.repository";
 import {
@@ -13,7 +15,10 @@ import {
 } from "../booking.validation";
 import type {
   BookingDates,
+  BookingFailure,
   BookingQuote,
+  BookingUploadTarget,
+  DocumentKind,
   PaymentMethod,
   PaymentTiming,
 } from "../types";
@@ -23,8 +28,23 @@ import { BookingDriverSection } from "./BookingDriverSection";
 import { BookingPaymentSection } from "./BookingPaymentSection";
 import { BookingSection } from "./BookingSection";
 
+const FAILURE_MESSAGES: Record<BookingFailure, string> = {
+  unavailable:
+    "This vehicle is no longer available for those dates. Change your dates and try again.",
+  pickup_in_past:
+    "That pick-up time has already passed. Change your dates and try again.",
+  location_unavailable:
+    "The company is not handing over vehicles at this branch right now. Contact them to arrange a pick-up.",
+  rejected:
+    "The company's system did not accept these details. Check them and try again.",
+  failed: "The request could not be sent. Check your connection and try again.",
+};
+
 interface BookingFormProps {
   vehicleId: string;
+  /** The company's subdomain and the vehicle's URL segment: which vehicle is being booked. */
+  subdomain: string;
+  uri: string;
   /** Pick-up and return branch. */
   location: string;
   dates: BookingDates;
@@ -35,10 +55,13 @@ interface BookingFormProps {
 }
 
 type Status =
-  | { step: "form"; sending: boolean; failed: boolean }
+  | { step: "form"; sending: boolean; failure: BookingFailure | null }
   | {
       step: "sent";
-      reference: string;
+      target: BookingUploadTarget;
+      /** Scans that have not reached the company yet. */
+      missing: DocumentKind[];
+      retrying: boolean;
       email: string;
       payment: { method: PaymentMethod; timing: PaymentTiming | null };
     };
@@ -46,17 +69,19 @@ type Status =
 /** Collects the renter's details, documents and payment preference, then sends the request. */
 export function BookingForm({
   vehicleId,
+  subdomain,
+  uri,
   location,
   dates,
   quote,
   companyName,
   companyHref,
 }: BookingFormProps) {
-  const { form, submit, errorCount } = useBookingForm(dates.return);
+  const { form, submit, errorCount } = useBookingForm(dates.return, uri);
   const [status, setStatus] = useState<Status>({
     step: "form",
     sending: false,
-    failed: false,
+    failure: null,
   });
   // Bumped on each failed send, to move focus to the first field to fix.
   const [attempt, setAttempt] = useState(0);
@@ -94,33 +119,65 @@ export function BookingForm({
       return;
     }
     const parts = toBookingRequestParts(form.values);
-    setStatus({ step: "form", sending: true, failed: false });
-    try {
-      const { reference } = await createBooking({
-        vehicleId,
-        ...parts,
-        pickupLocation: location,
-        returnLocation: location,
-        pickupAt: `${dates.pickup}T${dates.pickupTime}`,
-        returnAt: `${dates.return}T${dates.returnTime}`,
-      });
-      track("booking_requested", { vehicleId });
-      setStatus({
-        step: "sent",
-        reference,
-        email: parts.customer.email,
-        payment: parts.payment,
-      });
-    } catch {
-      setStatus({ step: "form", sending: false, failed: true });
+    setStatus({ step: "form", sending: true, failure: null });
+    // Rejects only when the server could not be reached at all.
+    const result = await createBooking(subdomain, uri, {
+      ...parts,
+      pickupLocation: location,
+      returnLocation: location,
+      pickupAt: `${dates.pickup}T${dates.pickupTime}`,
+      returnAt: `${dates.return}T${dates.returnTime}`,
+    }).catch(() => ({ ok: false, reason: "failed" }) as const);
+    if (!result.ok) {
+      setStatus({ step: "form", sending: false, failure: result.reason });
+      return;
     }
+    clearBookingDraft();
+    track("booking_requested", { vehicleId });
+    const target = {
+      subdomain,
+      reference: result.reference,
+      uploadToken: result.uploadToken,
+    };
+    setStatus({
+      step: "sent",
+      target,
+      // The booking stands whether or not its scans arrive.
+      missing: await sendDocuments(target, ["licence", "insurance"]),
+      retrying: false,
+      email: parts.customer.email,
+      payment: parts.payment,
+    });
+  };
+
+  const sendDocuments = (target: BookingUploadTarget, kinds: DocumentKind[]) =>
+    uploadBookingDocuments(
+      target,
+      Object.fromEntries(
+        kinds.map((kind) => [
+          kind,
+          kind === "licence"
+            ? form.values.licencePhoto
+            : form.values.insurancePhoto,
+        ]),
+      ),
+    );
+
+  const retryDocuments = async () => {
+    if (status.step !== "sent") return;
+    setStatus({ ...status, retrying: true });
+    const missing = await sendDocuments(status.target, status.missing);
+    setStatus({ ...status, missing, retrying: false });
   };
 
   if (status.step === "sent") {
     return (
       <div ref={rootRef} data-booking-sent>
         <BookingConfirmed
-          reference={status.reference}
+          reference={status.target.reference}
+          missingDocuments={status.missing}
+          retrying={status.retrying}
+          onRetryDocuments={retryDocuments}
           email={status.email}
           payment={status.payment}
           companyName={companyName}
@@ -172,13 +229,12 @@ export function BookingForm({
                 : `${errorCount} fields above need your attention.`}
             </p>
           )}
-          {status.failed && (
+          {status.failure && (
             <p
               role="alert"
               className="mb-4 text-sm font-medium text-primary-hover"
             >
-              The request could not be sent. Check your connection and try
-              again.
+              {FAILURE_MESSAGES[status.failure]}
             </p>
           )}
           <Button

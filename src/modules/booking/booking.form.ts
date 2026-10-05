@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { loadBookingDraft, saveBookingDraft } from "./booking.draft";
 import {
   EMPTY_BOOKING_FORM,
   validateBooking,
@@ -23,8 +24,21 @@ export interface BookingFormApi {
  * State for the booking form. Every change re-validates the whole form, and a
  * field's message appears once the renter has left that field or tried to send.
  */
-export function useBookingForm(returnDate: string) {
+export function useBookingForm(returnDate: string, uri: string) {
   const [values, setValues] = useState(EMPTY_BOOKING_FORM);
+
+  // After mount, so the first render matches the server's empty form.
+  useEffect(() => {
+    const draft = loadBookingDraft(uri);
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- reading browser storage once
+    if (draft) setValues(draft);
+  }, [uri]);
+
+  useEffect(() => {
+    // Still the untouched form: nothing to keep, and a draft may be about to load.
+    if (values !== EMPTY_BOOKING_FORM) saveBookingDraft(uri, values);
+  }, [uri, values]);
+
   const [touched, setTouched] = useState<Set<BookingField>>(new Set());
   const [submitted, setSubmitted] = useState(false);
 

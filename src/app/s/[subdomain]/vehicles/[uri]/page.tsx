@@ -149,6 +149,12 @@ export default async function VehiclePage({ params }: PageProps) {
                   <BookingPanel
                     uri={vehicle.uri}
                     dailyRateCents={vehicle.dailyRateCents}
+                    pricing={{
+                      rateOptions: vehicle.rateOptions,
+                      discountTiers: vehicle.discountTiers,
+                      billableHoursPerDay: vehicle.billableHoursPerDay,
+                      fees: vehicle.fees,
+                    }}
                     booked={bookedRanges(vehicle)}
                     through={vehicle.occupancy.through}
                   />

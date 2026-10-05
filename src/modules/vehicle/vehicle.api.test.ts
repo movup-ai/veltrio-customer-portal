@@ -42,26 +42,57 @@ describe("toVehicle", () => {
 });
 
 describe("toVehicleDetail", () => {
-  it("adds the rate options and occupancy to the listing", () => {
-    const detail = toVehicleDetail({
-      ...dto,
-      rateOptions: [
-        {
-          id: "r1",
-          label: "Daily",
-          basis: "day",
-          rateCents: 31900,
-          includedMiles: 100,
-          unlimitedMileage: false,
-        },
-      ],
-      occupancy: {
-        ranges: [{ start: "2026-10-10", end: "2026-10-12" }],
-        through: "2027-04-02",
+  const detail = {
+    ...dto,
+    rateOptions: [
+      {
+        id: "r1",
+        label: "Daily",
+        basis: "day" as const,
+        rateCents: 31900,
+        blockDuration: null,
+        blockDurationUnit: null,
+        includedMiles: 100,
+        unlimitedMileage: false,
       },
+    ],
+    discountTiers: [{ minDays: 3, percentOff: 10 }],
+    billableHoursPerDay: 6,
+    fees: { taxRatePct: 8, depositCents: 50000 },
+    occupancy: {
+      ranges: [{ start: "2026-10-10", end: "2026-10-12" }],
+      through: "2027-04-02",
+    },
+  };
+
+  it("adds rates, discounts, fees and occupancy to the listing", () => {
+    const vehicle = toVehicleDetail(detail);
+    expect(vehicle.uri).toBe("bmw-m4-2025");
+    expect(vehicle.rateOptions[0]?.rateCents).toBe(31900);
+    expect(vehicle.discountTiers).toEqual([{ minDays: 3, percentOff: 10 }]);
+    expect(vehicle.billableHoursPerDay).toBe(6);
+    expect(vehicle.fees).toEqual({ taxRatePct: 8, depositCents: 50000 });
+    expect(vehicle.occupancy.through).toBe("2027-04-02");
+  });
+
+  it("treats a tax rate that is not set as 0% and keeps a missing deposit as none", () => {
+    const vehicle = toVehicleDetail({
+      ...detail,
+      fees: { taxRatePct: null, depositCents: null },
     });
-    expect(detail.uri).toBe("bmw-m4-2025");
-    expect(detail.rateOptions[0]?.rateCents).toBe(31900);
-    expect(detail.occupancy.through).toBe("2027-04-02");
+    expect(vehicle.fees).toEqual({ taxRatePct: 0, depositCents: null });
+  });
+
+  it("falls back to no discounts, 8 hours a day and no fees for an older API", () => {
+    const older = {
+      ...dto,
+      rateOptions: detail.rateOptions,
+      occupancy: detail.occupancy,
+    };
+    expect(toVehicleDetail(older)).toMatchObject({
+      discountTiers: [],
+      billableHoursPerDay: 8,
+      fees: { taxRatePct: 0, depositCents: null },
+    });
   });
 });

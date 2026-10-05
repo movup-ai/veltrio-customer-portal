@@ -1,17 +1,7 @@
 import { addDays } from "date-fns";
 import { describe, expect, it } from "vitest";
 import { toIsoDate } from "@/shared/lib/date";
-import { bookingHref, parseBookingDates, rentalDays } from "./booking.utils";
-
-describe("rentalDays", () => {
-  it("counts calendar days between pick-up and return", () => {
-    expect(rentalDays(new Date(2026, 9, 10), new Date(2026, 9, 13))).toBe(3);
-  });
-
-  it("charges one day for a same-day rental", () => {
-    expect(rentalDays(new Date(2026, 9, 10), new Date(2026, 9, 10))).toBe(1);
-  });
-});
+import { bookingHref, parseBookingDates } from "./booking.utils";
 
 describe("bookingHref", () => {
   it("keeps the dates and times in the URL", () => {

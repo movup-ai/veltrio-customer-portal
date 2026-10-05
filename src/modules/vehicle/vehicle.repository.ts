@@ -22,6 +22,8 @@ export const getVehicle = cache(
     try {
       const vehicle = await apiGet<VehicleDetailDto>(
         `/marketplace/companies/${encodeURIComponent(subdomain)}/vehicles/${encodeURIComponent(uri)}`,
+        // Never cached: prices and free dates must be current when someone books.
+        { revalidate: 0 },
       );
       return toVehicleDetail(vehicle);
     } catch (error) {

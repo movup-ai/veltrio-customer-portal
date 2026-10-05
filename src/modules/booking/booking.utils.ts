@@ -1,12 +1,7 @@
-import { differenceInCalendarDays, startOfToday } from "date-fns";
+import { startOfToday } from "date-fns";
 import { fromIsoDate } from "@/shared/lib/date";
 import { parseTime } from "@/shared/lib/time";
 import type { BookedRange, BookingDates } from "./types";
-
-/** Billable days between pick-up and return; a same-day rental counts as one. */
-export function rentalDays(pickup: Date, dropoff: Date) {
-  return Math.max(1, differenceInCalendarDays(dropoff, pickup));
-}
 
 /** Path of the booking flow for a vehicle, dates and times. */
 export function bookingHref(uri: string, dates: BookingDates) {

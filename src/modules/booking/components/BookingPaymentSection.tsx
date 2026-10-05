@@ -22,9 +22,10 @@ export function BookingPaymentSection({
 }: BookingPaymentSectionProps) {
   const { values, errors, set, touch } = form;
   const rental = quote ? formatMoney(quote.totalCents) : "the rental";
-  const deposit = quote
-    ? `${formatMoney(quote.depositCents)} deposit`
-    : "security deposit";
+  const deposit =
+    quote?.depositCents != null
+      ? `${formatMoney(quote.depositCents)} deposit`
+      : "security deposit";
 
   const timings: RadioCardOption<PaymentTiming>[] = [
     {

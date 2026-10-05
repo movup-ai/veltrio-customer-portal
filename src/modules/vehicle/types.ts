@@ -93,6 +93,9 @@ export interface RateOption {
   label: string;
   basis: BillingBasis;
   rateCents: number;
+  /** For a fixed package: how long one block lasts. */
+  blockDuration: number | null;
+  blockDurationUnit: "hours" | "days" | "weeks" | "months" | null;
   includedMiles: number | null;
   unlimitedMileage: boolean;
 }
@@ -104,8 +107,26 @@ export interface VehicleOccupancy {
   through: string;
 }
 
-/** One vehicle's page: the listing plus its rates and availability. */
+/** Percent off a rental that lasts at least `minDays`. */
+export interface DiscountTier {
+  minDays: number;
+  percentOff: number;
+}
+
+/** Charges set on the vehicle, apart from its rates. */
+export interface VehicleFees {
+  /** Sales tax on the rental, in percent; 0 when the company has not set one. */
+  taxRatePct: number;
+  /** Refundable security deposit in cents; null when the company has not set one. */
+  depositCents: number | null;
+}
+
+/** One vehicle's page: the listing plus what it costs and when it is free. Mirrors MarketplaceVehicleDetail. */
 export interface VehicleDetail extends Vehicle {
   rateOptions: RateOption[];
+  discountTiers: DiscountTier[];
+  /** Most an hourly rate bills per day when there is no daily rate; 24 turns the cap off. */
+  billableHoursPerDay: number;
+  fees: VehicleFees;
   occupancy: VehicleOccupancy;
 }

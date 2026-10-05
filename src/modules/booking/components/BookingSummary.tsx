@@ -76,30 +76,50 @@ export function BookingSummary({
         {quote ? (
           <>
             <dl className="grid gap-2.5">
-              <div className="flex justify-between gap-4">
-                <dt>
-                  {formatMoney(quote.dailyRateCents)} × {quote.days}{" "}
-                  {quote.days === 1 ? "day" : "days"}
-                </dt>
-                <dd>{formatMoney(quote.rentalCents)}</dd>
-              </div>
-              <div className="flex justify-between gap-4">
-                <dt>Taxes ({quote.taxRatePct}%)</dt>
-                <dd>{formatMoney(quote.taxCents)}</dd>
-              </div>
+              {quote.lines.map((line) => (
+                <div
+                  key={`${line.label}-${line.unitCents}`}
+                  className="flex justify-between gap-4"
+                >
+                  <dt>
+                    {line.label}: {formatMoney(line.unitCents)} × {line.count}
+                    {line.cappedHours !== null && (
+                      <span className="block text-meta text-muted">
+                        A day is billed as {line.cappedHours} hours.
+                      </span>
+                    )}
+                  </dt>
+                  <dd>{formatMoney(line.amountCents)}</dd>
+                </div>
+              ))}
+              {quote.discount && (
+                <div className="flex justify-between gap-4 text-success">
+                  <dt>Discount ({quote.discount.percentOff}% off)</dt>
+                  <dd>−{formatMoney(quote.discount.amountCents)}</dd>
+                </div>
+              )}
+              {quote.taxRatePct > 0 && (
+                <div className="flex justify-between gap-4">
+                  <dt>Taxes ({quote.taxRatePct}%)</dt>
+                  <dd>{formatMoney(quote.taxCents)}</dd>
+                </div>
+              )}
               <div className="flex justify-between gap-4 border-t border-border pt-3 text-ui font-bold">
                 <dt>Total</dt>
                 <dd>{formatMoney(quote.totalCents)}</dd>
               </div>
             </dl>
-            <p className="mt-4 rounded-md bg-surface-muted p-3 text-meta text-muted">
-              A refundable security deposit of {formatMoney(quote.depositCents)}{" "}
-              is released when the car comes back.
-            </p>
+            {quote.depositCents !== null && (
+              <p className="mt-4 rounded-md bg-surface-muted p-3 text-meta text-muted">
+                A refundable security deposit of{" "}
+                {formatMoney(quote.depositCents)} is released when the car comes
+                back.
+              </p>
+            )}
           </>
         ) : (
           <p className="text-muted">
-            {vehicle.company.name} has no daily rate for this vehicle and will
+            {vehicle.company.name} has not set a rate for this vehicle and will
             confirm the price with you.
           </p>
         )}
