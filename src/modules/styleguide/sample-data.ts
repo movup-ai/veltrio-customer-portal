@@ -23,6 +23,7 @@ const base = {
     id: "sample-c1",
     name: "Coastline Exotics",
     subdomain: "coastline-exotics",
+    timeZone: "America/New_York",
   },
 };
 

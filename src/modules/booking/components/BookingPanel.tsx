@@ -7,12 +7,18 @@ import type { DateRange } from "react-day-picker";
 import { fromIsoDate, toIsoDate } from "@/shared/lib/date";
 import { formatMoney } from "@/shared/lib/format";
 import { DEFAULT_TIME, formatTime, parseTime } from "@/shared/lib/time";
+import { todayIn } from "@/shared/lib/time-zone";
 import { Button } from "@/shared/ui/atoms/Button";
 import {
   DateRangePicker,
   type RangeTimes,
 } from "@/shared/ui/molecules/DateRangePicker";
-import { bookingHref, rentalDays } from "../booking.utils";
+import {
+  quoteBooking,
+  rentalLength,
+  type VehiclePricing,
+} from "../booking.quote";
+import { bookingHref } from "../booking.utils";
 import type { BookedRange } from "../types";
 
 interface BookingPanelProps {
@@ -20,15 +26,24 @@ interface BookingPanelProps {
   uri: string;
   /** Lowest per-day rate in cents; null when the company lists no daily rate. */
   dailyRateCents: number | null;
+  /** The vehicle's rates and fees, for pricing the chosen dates. */
+  pricing: VehiclePricing;
+  /** The company's IANA zone: whose today it is, and whose clock the times are on. */
+  timeZone: string;
   /** Dates that are already reserved. */
   booked: BookedRange[];
+  /** Last date availability is known for, "YYYY-MM-DD"; later days cannot be picked. */
+  through: string;
 }
 
 /** Price, availability calendar and the call to action. Dates and times live in the URL. */
 export function BookingPanel({
   uri,
   dailyRateCents,
+  pricing,
+  timeZone,
   booked,
+  through,
 }: BookingPanelProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -67,7 +82,19 @@ export function BookingPanel({
     return start && end ? [{ from: start, to: end }] : [];
   });
 
-  const days = from && to ? rentalDays(from, to) : null;
+  const quote =
+    from && to
+      ? quoteBooking(
+          pricing,
+          {
+            pickup: toIsoDate(from),
+            pickupTime: times.pickup,
+            return: toIsoDate(to),
+            returnTime: times.return,
+          },
+          timeZone,
+        )
+      : null;
 
   return (
     <div className="rounded-xl border border-border bg-surface p-6 shadow-2">
@@ -92,6 +119,8 @@ export function BookingPanel({
           times={times}
           onTimesChange={(next) => update(range, next)}
           unavailable={unavailable}
+          firstDate={fromIsoDate(todayIn(timeZone))}
+          lastDate={fromIsoDate(through)}
         />
       </div>
 
@@ -102,14 +131,14 @@ export function BookingPanel({
               {format(from, "MMM d")}, {formatTime(times.pickup)} –{" "}
               {format(to, "MMM d")}, {formatTime(times.return)}
             </span>
-            {dailyRateCents !== null && days !== null && (
+            {quote && (
               <span className="text-muted">
                 {" "}
-                · {days} {days === 1 ? "day" : "days"} ·{" "}
+                · {rentalLength(quote)} ·{" "}
                 <span className="font-semibold text-foreground">
-                  {formatMoney(dailyRateCents * days)}
+                  {formatMoney(quote.totalCents)}
                 </span>{" "}
-                before fees and taxes
+                {quote.taxRatePct > 0 ? "including taxes" : "total"}
               </span>
             )}
           </>

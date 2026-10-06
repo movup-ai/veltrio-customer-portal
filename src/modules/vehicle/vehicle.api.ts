@@ -1,8 +1,13 @@
+import { isTimeZone } from "@/shared/lib/time-zone";
 import type {
+  DiscountTier,
   PhotoVariant,
+  RateOption,
   Vehicle,
   VehicleCompany,
+  VehicleDetail,
   VehicleFeature,
+  VehicleOccupancy,
   VehicleSpecs,
   VehicleType,
 } from "./types";
@@ -29,7 +34,10 @@ export interface VehicleDto {
   dailyRateCents: number | null;
   specs: Pick<VehicleSpecs, "transmission" | "fuelType" | "seats" | "doors"> &
     Partial<VehicleSpecs>;
-  company: VehicleCompany;
+  // `timezone` is missing from older API builds.
+  company: Pick<VehicleCompany, "id" | "name" | "subdomain"> & {
+    timezone?: string;
+  };
 }
 
 /** Maps an API vehicle to the marketplace model. */
@@ -68,6 +76,52 @@ export function toVehicle(dto: VehicleDto): Vehicle {
       id: dto.company.id,
       name: dto.company.name,
       subdomain: dto.company.subdomain,
+      // The API falls back to UTC for a zone it does not know, and so does this.
+      timeZone: isTimeZone(dto.company.timezone) ? dto.company.timezone : "UTC",
+    },
+  };
+}
+
+/** MarketplaceVehicleDetail from the API. */
+export interface VehicleDetailDto extends VehicleDto {
+  rateOptions: RateOption[];
+  // The three below are absent from API builds that predate them.
+  discountTiers?: DiscountTier[];
+  billableHoursPerDay?: number;
+  fees?: { taxRatePct: number | null; depositCents: number | null };
+  occupancy: VehicleOccupancy;
+}
+
+/** The API's own default for a vehicle that has not set its hours per day. */
+const DEFAULT_BILLABLE_HOURS_PER_DAY = 8;
+
+export function toVehicleDetail(dto: VehicleDetailDto): VehicleDetail {
+  return {
+    ...toVehicle(dto),
+    rateOptions: dto.rateOptions.map((option) => ({
+      id: option.id,
+      label: option.label,
+      basis: option.basis,
+      rateCents: option.rateCents,
+      blockDuration: option.blockDuration,
+      blockDurationUnit: option.blockDurationUnit,
+      includedMiles: option.includedMiles,
+      unlimitedMileage: option.unlimitedMileage,
+    })),
+    discountTiers: (dto.discountTiers ?? []).map(({ minDays, percentOff }) => ({
+      minDays,
+      percentOff,
+    })),
+    billableHoursPerDay:
+      dto.billableHoursPerDay ?? DEFAULT_BILLABLE_HOURS_PER_DAY,
+    fees: {
+      // No tax rate set means no tax.
+      taxRatePct: dto.fees?.taxRatePct ?? 0,
+      depositCents: dto.fees?.depositCents ?? null,
+    },
+    occupancy: {
+      ranges: dto.occupancy.ranges.map(({ start, end }) => ({ start, end })),
+      through: dto.occupancy.through,
     },
   };
 }
