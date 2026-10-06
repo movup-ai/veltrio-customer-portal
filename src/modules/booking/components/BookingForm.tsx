@@ -54,17 +54,19 @@ interface BookingFormProps {
   companyHref: string;
 }
 
+interface SentStatus {
+  step: "sent";
+  target: BookingUploadTarget;
+  /** Scans that have not reached the company yet. */
+  missing: DocumentKind[];
+  uploading: boolean;
+  email: string;
+  payment: { method: PaymentMethod; timing: PaymentTiming | null };
+}
+
 type Status =
   | { step: "form"; sending: boolean; failure: BookingFailure | null }
-  | {
-      step: "sent";
-      target: BookingUploadTarget;
-      /** Scans that have not reached the company yet. */
-      missing: DocumentKind[];
-      retrying: boolean;
-      email: string;
-      payment: { method: PaymentMethod; timing: PaymentTiming | null };
-    };
+  | SentStatus;
 
 /** Collects the renter's details, documents and payment preference, then sends the request. */
 export function BookingForm({
@@ -134,40 +136,33 @@ export function BookingForm({
     }
     clearBookingDraft();
     track("booking_requested", { vehicleId });
-    const target = {
-      subdomain,
-      reference: result.reference,
-      uploadToken: result.uploadToken,
-    };
-    setStatus({
+    // The booking stands whether or not its scans arrive, so it is shown before they are sent.
+    await sendDocuments({
       step: "sent",
-      target,
-      // The booking stands whether or not its scans arrive.
-      missing: await sendDocuments(target, ["licence", "insurance"]),
-      retrying: false,
+      target: {
+        subdomain,
+        reference: result.reference,
+        uploadToken: result.uploadToken,
+      },
+      missing: ["licence", "insurance"],
+      uploading: true,
       email: parts.customer.email,
       payment: parts.payment,
     });
   };
 
-  const sendDocuments = (target: BookingUploadTarget, kinds: DocumentKind[]) =>
-    uploadBookingDocuments(
-      target,
-      Object.fromEntries(
-        kinds.map((kind) => [
-          kind,
-          kind === "licence"
-            ? form.values.licencePhoto
-            : form.values.insurancePhoto,
-        ]),
-      ),
+  /** Uploads the scans a sent booking still lacks, showing its confirmation meanwhile. */
+  const sendDocuments = async (sent: SentStatus) => {
+    setStatus({ ...sent, uploading: true });
+    const photos = {
+      licence: form.values.licencePhoto,
+      insurance: form.values.insurancePhoto,
+    };
+    const missing = await uploadBookingDocuments(
+      sent.target,
+      Object.fromEntries(sent.missing.map((kind) => [kind, photos[kind]])),
     );
-
-  const retryDocuments = async () => {
-    if (status.step !== "sent") return;
-    setStatus({ ...status, retrying: true });
-    const missing = await sendDocuments(status.target, status.missing);
-    setStatus({ ...status, missing, retrying: false });
+    setStatus({ ...sent, missing, uploading: false });
   };
 
   if (status.step === "sent") {
@@ -176,8 +171,8 @@ export function BookingForm({
         <BookingConfirmed
           reference={status.target.reference}
           missingDocuments={status.missing}
-          retrying={status.retrying}
-          onRetryDocuments={retryDocuments}
+          uploading={status.uploading}
+          onRetryDocuments={() => sendDocuments(status)}
           email={status.email}
           payment={status.payment}
           companyName={companyName}

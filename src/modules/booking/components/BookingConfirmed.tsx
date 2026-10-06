@@ -15,9 +15,10 @@ interface BookingConfirmedProps {
   payment: { method: PaymentMethod; timing: PaymentTiming | null };
   /** The company's storefront. */
   companyHref: string;
-  /** Scans that did not upload; the booking itself went through. */
+  /** Scans not with the company yet; the booking itself went through. */
   missingDocuments: DocumentKind[];
-  retrying: boolean;
+  /** True while those scans are being sent. */
+  uploading: boolean;
   onRetryDocuments: () => void;
 }
 
@@ -51,7 +52,7 @@ export function BookingConfirmed({
   payment,
   companyHref,
   missingDocuments,
-  retrying,
+  uploading,
   onRetryDocuments,
 }: BookingConfirmedProps) {
   return (
@@ -77,31 +78,39 @@ export function BookingConfirmed({
         .
       </p>
 
-      {missingDocuments.length > 0 && (
-        <div
-          role="alert"
-          className="mt-6 max-w-prose rounded-md border border-border p-4"
-        >
-          <p className="font-medium">
-            Your{" "}
-            {missingDocuments.map((kind) => DOCUMENT_NAMES[kind]).join(" and ")}{" "}
-            did not upload.
-          </p>
-          <p className="mt-1 text-sm text-foreground-secondary">
-            Your request is with {companyName} either way. Try again now, or
-            bring the {missingDocuments.length === 1 ? "document" : "documents"}{" "}
-            to pick-up.
-          </p>
-          <Button
-            size="sm"
-            variant="dark"
-            className="mt-3"
-            disabled={retrying}
-            onClick={onRetryDocuments}
+      {uploading ? (
+        <p role="status" className="mt-6 max-w-prose text-sm font-medium">
+          Sending your documents… Keep this page open until they are through.
+        </p>
+      ) : (
+        missingDocuments.length > 0 && (
+          <div
+            role="alert"
+            className="mt-6 max-w-prose rounded-md border border-border p-4"
           >
-            {retrying ? "Uploading…" : "Try again"}
-          </Button>
-        </div>
+            <p className="font-medium">
+              Your{" "}
+              {missingDocuments
+                .map((kind) => DOCUMENT_NAMES[kind])
+                .join(" and ")}{" "}
+              did not upload.
+            </p>
+            <p className="mt-1 text-sm text-foreground-secondary">
+              Your request is with {companyName} either way. Try again now, or
+              bring the{" "}
+              {missingDocuments.length === 1 ? "document" : "documents"} to
+              pick-up.
+            </p>
+            <Button
+              size="sm"
+              variant="dark"
+              className="mt-3"
+              onClick={onRetryDocuments}
+            >
+              Try again
+            </Button>
+          </div>
+        )
       )}
 
       <h2 className="mt-10 text-h4 font-semibold">What happens next</h2>
