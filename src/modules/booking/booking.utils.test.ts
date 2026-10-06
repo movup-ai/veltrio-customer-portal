@@ -1,6 +1,4 @@
-import { addDays } from "date-fns";
 import { describe, expect, it } from "vitest";
-import { toIsoDate } from "@/shared/lib/date";
 import { bookingHref, parseBookingDates } from "./booking.utils";
 
 describe("bookingHref", () => {
@@ -19,8 +17,10 @@ describe("bookingHref", () => {
 });
 
 describe("parseBookingDates", () => {
-  const day = (offset: number) => toIsoDate(addDays(new Date(), offset));
-  const open = { booked: [], through: day(180) };
+  const TODAY = Date.parse("2026-10-10T00:00:00Z");
+  const day = (offset: number) =>
+    new Date(TODAY + offset * 86_400_000).toISOString().slice(0, 10);
+  const open = { booked: [], through: day(180), today: day(0) };
   const params = (pickup: string, dropoff: string) => ({
     pickup,
     pickupTime: "10:00",
@@ -48,6 +48,10 @@ describe("parseBookingDates", () => {
     expect(parseBookingDates(params(day(-1), day(2)), open)).toBeNull();
     expect(parseBookingDates(params(day(6), day(3)), open)).toBeNull();
     expect(parseBookingDates(params(day(3), day(200)), open)).toBeNull();
+  });
+
+  it("accepts a pick-up on the company's own today", () => {
+    expect(parseBookingDates(params(day(0), day(2)), open)).not.toBeNull();
   });
 
   it("rejects a window that touches a reserved day", () => {

@@ -1,4 +1,3 @@
-import { startOfToday } from "date-fns";
 import { fromIsoDate } from "@/shared/lib/date";
 import { parseTime } from "@/shared/lib/time";
 import type { BookedRange, BookingDates } from "./types";
@@ -16,6 +15,8 @@ interface Availability {
   booked: BookedRange[];
   /** Last date availability is known for, "YYYY-MM-DD". */
   through: string;
+  /** Today at the company's branches, "YYYY-MM-DD". */
+  today: string;
 }
 
 /**
@@ -25,7 +26,7 @@ interface Availability {
  */
 export function parseBookingDates(
   raw: RawParams,
-  { booked, through }: Availability,
+  { booked, through, today }: Availability,
 ): BookingDates | null {
   const first = (key: string) => {
     const value = raw[key];
@@ -41,10 +42,10 @@ export function parseBookingDates(
   if (!pickup || !dropoff || !from || !to || !pickupTime || !returnTime) {
     return null;
   }
-  if (from < startOfToday() || dropoff > through) return null;
+  // ISO dates compare correctly as strings.
+  if (pickup < today || dropoff > through) return null;
   if (dropoff < pickup) return null;
   if (dropoff === pickup && returnTime <= pickupTime) return null;
-  // ISO dates compare correctly as strings.
   if (booked.some((range) => range.from <= dropoff && range.to >= pickup)) {
     return null;
   }

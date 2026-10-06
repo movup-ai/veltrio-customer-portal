@@ -12,6 +12,7 @@ import {
   vehicleHref,
   vehicleName,
 } from "@/modules/vehicle/vehicle.utils";
+import { todayIn } from "@/shared/lib/time-zone";
 import { SiteHeader } from "@/shared/ui/organisms/SiteHeader";
 
 interface PageProps {
@@ -45,11 +46,12 @@ export default async function BookVehiclePage({
   const dates = parseBookingDates(await searchParams, {
     booked: bookedRanges(vehicle),
     through: vehicle.occupancy.through,
+    today: todayIn(vehicle.company.timeZone),
   });
   // No usable dates: back to the vehicle page to choose them.
   if (!dates) redirect(vehicleHref(vehicle));
 
-  const quote = quoteBooking(vehicle, dates);
+  const quote = quoteBooking(vehicle, dates, vehicle.company.timeZone);
 
   return (
     <>

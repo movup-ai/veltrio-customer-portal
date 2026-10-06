@@ -18,6 +18,8 @@ interface DateRangePickerProps {
   months?: number;
   /** Ranges that cannot be picked or spanned, e.g. existing bookings. */
   unavailable?: { from: Date; to: Date }[];
+  /** First day that can be picked. Defaults to today on the viewer's clock. */
+  firstDate?: Date;
   /** Last day that can be picked. */
   lastDate?: Date;
   /** Adds pick-up and return time selectors under the calendar. */
@@ -33,6 +35,7 @@ export function DateRangePicker({
   onChange,
   months,
   unavailable = [],
+  firstDate,
   lastDate,
   times,
   onTimesChange,
@@ -52,7 +55,7 @@ export function DateRangePicker({
         selected={value}
         onSelect={onChange}
         disabled={[
-          { before: startOfToday() },
+          { before: firstDate ?? startOfToday() },
           ...(lastDate ? [{ after: lastDate }] : []),
           ...unavailable,
         ]}

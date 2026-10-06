@@ -64,6 +64,8 @@ export interface VehicleCompany {
   id: string;
   name: string;
   subdomain: string;
+  /** IANA zone its branches keep, e.g. "America/New_York"; rental times are on this clock. */
+  timeZone: string;
 }
 
 export interface Vehicle {

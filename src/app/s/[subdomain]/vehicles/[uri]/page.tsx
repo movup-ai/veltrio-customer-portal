@@ -155,6 +155,7 @@ export default async function VehiclePage({ params }: PageProps) {
                       billableHoursPerDay: vehicle.billableHoursPerDay,
                       fees: vehicle.fees,
                     }}
+                    timeZone={vehicle.company.timeZone}
                     booked={bookedRanges(vehicle)}
                     through={vehicle.occupancy.through}
                   />

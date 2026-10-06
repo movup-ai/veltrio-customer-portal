@@ -1,3 +1,4 @@
+import { isTimeZone } from "@/shared/lib/time-zone";
 import type {
   DiscountTier,
   PhotoVariant,
@@ -33,7 +34,10 @@ export interface VehicleDto {
   dailyRateCents: number | null;
   specs: Pick<VehicleSpecs, "transmission" | "fuelType" | "seats" | "doors"> &
     Partial<VehicleSpecs>;
-  company: VehicleCompany;
+  // `timezone` is missing from older API builds.
+  company: Pick<VehicleCompany, "id" | "name" | "subdomain"> & {
+    timezone?: string;
+  };
 }
 
 /** Maps an API vehicle to the marketplace model. */
@@ -72,6 +76,8 @@ export function toVehicle(dto: VehicleDto): Vehicle {
       id: dto.company.id,
       name: dto.company.name,
       subdomain: dto.company.subdomain,
+      // The API falls back to UTC for a zone it does not know, and so does this.
+      timeZone: isTimeZone(dto.company.timezone) ? dto.company.timezone : "UTC",
     },
   };
 }

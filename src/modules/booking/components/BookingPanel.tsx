@@ -7,6 +7,7 @@ import type { DateRange } from "react-day-picker";
 import { fromIsoDate, toIsoDate } from "@/shared/lib/date";
 import { formatMoney } from "@/shared/lib/format";
 import { DEFAULT_TIME, formatTime, parseTime } from "@/shared/lib/time";
+import { todayIn } from "@/shared/lib/time-zone";
 import { Button } from "@/shared/ui/atoms/Button";
 import {
   DateRangePicker,
@@ -27,6 +28,8 @@ interface BookingPanelProps {
   dailyRateCents: number | null;
   /** The vehicle's rates and fees, for pricing the chosen dates. */
   pricing: VehiclePricing;
+  /** The company's IANA zone: whose today it is, and whose clock the times are on. */
+  timeZone: string;
   /** Dates that are already reserved. */
   booked: BookedRange[];
   /** Last date availability is known for, "YYYY-MM-DD"; later days cannot be picked. */
@@ -38,6 +41,7 @@ export function BookingPanel({
   uri,
   dailyRateCents,
   pricing,
+  timeZone,
   booked,
   through,
 }: BookingPanelProps) {
@@ -80,12 +84,16 @@ export function BookingPanel({
 
   const quote =
     from && to
-      ? quoteBooking(pricing, {
-          pickup: toIsoDate(from),
-          pickupTime: times.pickup,
-          return: toIsoDate(to),
-          returnTime: times.return,
-        })
+      ? quoteBooking(
+          pricing,
+          {
+            pickup: toIsoDate(from),
+            pickupTime: times.pickup,
+            return: toIsoDate(to),
+            returnTime: times.return,
+          },
+          timeZone,
+        )
       : null;
 
   return (
@@ -111,6 +119,7 @@ export function BookingPanel({
           times={times}
           onTimesChange={(next) => update(range, next)}
           unavailable={unavailable}
+          firstDate={fromIsoDate(todayIn(timeZone))}
           lastDate={fromIsoDate(through)}
         />
       </div>
