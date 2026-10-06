@@ -59,6 +59,18 @@ export function zonedInstant(date: string, time: string, zone: string) {
   return real.length > 0 ? Math.min(...real) : candidates[0]!;
 }
 
+/** A moment as the clock in `zone` shows it, e.g. "Thu, Oct 22, 9:30 AM". */
+export function formatInZone(instant: string | number | Date, zone: string) {
+  return new Intl.DateTimeFormat("en-US", {
+    timeZone: zone,
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  }).format(new Date(instant));
+}
+
 /** Today's date in `zone`, "YYYY-MM-DD". */
 export function todayIn(zone: string, now = Date.now()) {
   return new Date(wallClock(zone, now)).toISOString().slice(0, 10);

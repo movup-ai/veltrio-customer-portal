@@ -38,6 +38,8 @@ export interface CompanyProfile extends Company {
   description: string | null;
   /** ISO 4217 code of the company's prices, e.g. "USD". */
   currency: string;
+  /** IANA zone its branches keep, e.g. "America/New_York". */
+  timeZone: string;
   email: string | null;
   phone: string | null;
   address: string | null;
