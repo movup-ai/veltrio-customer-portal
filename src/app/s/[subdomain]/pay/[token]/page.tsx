@@ -1,15 +1,12 @@
-import { Lock } from "lucide-react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import type { ReactNode } from "react";
 import {
   getCompanyProfile,
   listCompanyLocations,
 } from "@/modules/company/company.repository";
-import { CompanyLogo } from "@/modules/company/components/CompanyLogo";
+import { CompanyBadge } from "@/modules/company/components/CompanyBadge";
 import { PaymentAction } from "@/modules/payment/components/PaymentAction";
 import { PaymentAmounts } from "@/modules/payment/components/PaymentAmounts";
-import { PaymentNotice } from "@/modules/payment/components/PaymentNotice";
 import { PaymentTrip } from "@/modules/payment/components/PaymentTrip";
 import {
   getPaymentLink,
@@ -17,6 +14,8 @@ import {
 } from "@/modules/payment/payment.repository";
 import { settle } from "@/shared/lib/settle";
 import { Button } from "@/shared/ui/atoms/Button";
+import { StatusNotice } from "@/shared/ui/molecules/StatusNotice";
+import { RenterPanel } from "@/shared/ui/organisms/RenterPanel";
 
 interface PageProps {
   params: Promise<{ subdomain: string; token: string }>;
@@ -36,19 +35,11 @@ export async function generateMetadata({
   };
 }
 
-function Panel({ children }: { children: ReactNode }) {
+function Panel({ children }: { children: React.ReactNode }) {
   return (
-    <main id="main" className="container-page py-10 md:py-16">
-      <div className="mx-auto grid max-w-lg gap-4">
-        <div className="grid gap-6 rounded-xl border border-border bg-surface p-6 shadow-2 md:p-8">
-          {children}
-        </div>
-        <p className="flex items-center justify-center gap-1.5 text-meta text-muted">
-          <Lock aria-hidden className="size-3.5" />
-          Secure payment by Stripe. Card details go straight to Stripe.
-        </p>
-      </div>
-    </main>
+    <RenterPanel footnote="Secure payment by Stripe. Card details go straight to Stripe.">
+      {children}
+    </RenterPanel>
   );
 }
 
@@ -68,7 +59,7 @@ export default async function PayPage({ params, searchParams }: PageProps) {
   if (!result) {
     return (
       <Panel>
-        <PaymentNotice
+        <StatusNotice
           tone="waiting"
           title="We couldn't load your payment"
           // Says nothing about money: a failed read cannot tell whether a payment went through.
@@ -87,7 +78,7 @@ export default async function PayPage({ params, searchParams }: PageProps) {
   if (!link) {
     return (
       <Panel>
-        <PaymentNotice
+        <StatusNotice
           tone="warning"
           title="This payment link isn't valid"
           body={`It may have been replaced by a newer one. Ask ${company.name} for a new link.`}
@@ -104,20 +95,11 @@ export default async function PayPage({ params, searchParams }: PageProps) {
   return (
     <Panel>
       <header className="grid gap-5">
-        {/* The company leads: the renter is dealing with them, not with Veltrio. */}
-        <div className="flex items-center gap-3">
-          <CompanyLogo
-            name={company.name}
-            logoUrl={company.logoUrl}
-            className="size-11 rounded-md"
-          />
-          <div className="min-w-0">
-            <p className="truncate text-ui font-semibold">{company.name}</p>
-            <p className="font-mono text-caption text-muted">
-              Booking {link.reference}
-            </p>
-          </div>
-        </div>
+        <CompanyBadge
+          name={company.name}
+          logoUrl={company.logoUrl}
+          caption={`Booking ${link.reference}`}
+        />
         <div>
           <h1 className="font-display text-h3">
             {depositOnly ? "Security deposit" : "Pay for your rental"}

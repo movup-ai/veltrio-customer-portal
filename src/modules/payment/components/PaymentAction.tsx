@@ -4,10 +4,10 @@ import { ReceiptText } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { Button } from "@/shared/ui/atoms/Button";
+import { StatusNotice } from "@/shared/ui/molecules/StatusNotice";
 import { checkoutCopy, outcomeCopy, paymentStep } from "../payment.utils";
 import type { PaymentLink } from "../types";
 import { PaymentCheckout } from "./PaymentCheckout";
-import { PaymentNotice } from "./PaymentNotice";
 
 const PROCESSING_POLL_MS = 4000;
 
@@ -65,7 +65,7 @@ export function PaymentAction({
 
   if (step.kind === "processing") {
     return (
-      <PaymentNotice
+      <StatusNotice
         tone="waiting"
         title="Payment processing"
         body="Your bank is still confirming the payment. This page updates on its own."
@@ -75,7 +75,7 @@ export function PaymentAction({
 
   const copy = outcomeCopy(step.outcome, link);
   return (
-    <PaymentNotice
+    <StatusNotice
       {...copy}
       action={
         receiptHref &&
