@@ -1,3 +1,4 @@
+import { isTimeZone } from "@/shared/lib/time-zone";
 import type { Company, CompanyProfile } from "./types";
 
 /** MarketplaceCompanyRead from the API. */
@@ -9,6 +10,8 @@ export interface CompanyDto {
   website: string | null;
   country: string;
   currency: string;
+  // Missing from older API builds.
+  timezone?: string;
   contactEmail: string | null;
   contactPhone: string | null;
   address: string | null;
@@ -44,6 +47,7 @@ export function toCompanyProfile(dto: CompanyDto): CompanyProfile {
     ...toCompany(dto),
     description: dto.description,
     currency: dto.currency,
+    timeZone: isTimeZone(dto.timezone) ? dto.timezone : "UTC",
     email: dto.contactEmail,
     phone: dto.contactPhone,
     address: dto.address,

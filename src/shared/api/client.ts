@@ -9,6 +9,11 @@ function apiBase() {
   return base;
 }
 
+/** Absolute address of an API path, for links the browser opens itself. */
+export function apiUrl(path: string) {
+  return apiBase() + path;
+}
+
 /** The API's pagination envelope. */
 export interface Page<T> {
   items: T[];
