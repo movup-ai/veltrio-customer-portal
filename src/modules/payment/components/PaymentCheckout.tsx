@@ -115,19 +115,26 @@ export function PaymentCheckout({
 const FAILED =
   "The payment didn't go through. Check your connection and try again.";
 
-/** Places a deposit hold on a method that has just paid; returns why it could not, or null. */
+const HOLD_FAILED = "The deposit hold didn't go through.";
+
+/**
+ * Places a deposit hold on a method that has just paid; returns why it could not, or null.
+ * Never throws: by now the payment has gone through, and that must not be reported as failed.
+ */
 async function placeHold(stripe: Stripe, holdSecret: string, methodId: string) {
-  const hold = await stripe.confirmPayment({
-    clientSecret: holdSecret,
-    confirmParams: {
-      payment_method: methodId,
-      return_url: window.location.href,
-    },
-    redirect: "if_required",
-  });
-  return hold.error
-    ? (hold.error.message ?? "The deposit hold didn't go through.")
-    : null;
+  try {
+    const hold = await stripe.confirmPayment({
+      clientSecret: holdSecret,
+      confirmParams: {
+        payment_method: methodId,
+        return_url: window.location.href,
+      },
+      redirect: "if_required",
+    });
+    return hold.error ? (hold.error.message ?? HOLD_FAILED) : null;
+  } catch {
+    return HOLD_FAILED;
+  }
 }
 
 interface CheckoutFormProps extends Omit<
@@ -193,32 +200,30 @@ function CheckoutForm({
     if (!stripe || !elements) return;
     setSubmitting(true);
     setError(null);
-    try {
-      // Leaves the page only for methods that need it; a card or wallet answers here.
-      // A renter who does leave comes back to this page, which then places the hold.
-      const result = await stripe.confirmPayment({
+    // Leaves the page only for methods that need it; a card or wallet answers here.
+    // A renter who does leave comes back to this page, which then places the hold.
+    const result = await stripe
+      .confirmPayment({
         elements,
         confirmParams: { return_url: window.location.href },
         redirect: "if_required",
-      });
-      if (result.error) {
-        setError(result.error.message ?? "The payment didn't go through.");
-        return;
-      }
-      const method = result.paymentIntent.payment_method;
-      const methodId = typeof method === "string" ? method : method?.id;
-      // The card just used, so the renter does not type it twice.
-      onSettled(
-        depositSecret && methodId
-          ? await placeHold(stripe, depositSecret, methodId)
-          : null,
-      );
-    } catch {
-      // Stripe could not be reached at all; the form stays usable.
-      setError(FAILED);
-    } finally {
+      })
+      // Stripe could not be reached at all.
+      .catch(() => ({ error: { message: FAILED } }) as const);
+    if (result.error) {
       setSubmitting(false);
+      setError(result.error.message ?? "The payment didn't go through.");
+      return;
     }
+    // Paid from here on: whatever happens to the hold, the page re-reads the link.
+    const method = result.paymentIntent.payment_method;
+    const methodId = typeof method === "string" ? method : method?.id;
+    const holdError =
+      depositSecret && methodId
+        ? await placeHold(stripe, depositSecret, methodId)
+        : null;
+    setSubmitting(false);
+    onSettled(holdError);
   };
 
   return (

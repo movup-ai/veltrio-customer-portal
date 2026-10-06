@@ -70,6 +70,22 @@ describe("PaymentCheckout", () => {
     expect(onSettled).not.toHaveBeenCalled();
   });
 
+  it("reports a paid rental as paid when only the hold could not be sent", async () => {
+    confirmPayment
+      .mockResolvedValueOnce({ paymentIntent: { payment_method: "pm_1" } })
+      .mockRejectedValueOnce(new TypeError("Failed to fetch"));
+    render(<PaymentCheckout {...props} depositSecret="pi_deposit_secret" />);
+    submit();
+
+    // The page re-reads the link, with the hold's failure and nothing about the payment.
+    await vi.waitFor(() =>
+      expect(onSettled).toHaveBeenCalledWith(
+        "The deposit hold didn't go through.",
+      ),
+    );
+    expect(screen.queryByRole("alert")).toBeNull();
+  });
+
   it("finishes the hold for a renter who comes back from paying elsewhere", async () => {
     retrievePaymentIntent.mockResolvedValueOnce({
       paymentIntent: { status: "succeeded", payment_method: "pm_bank" },
