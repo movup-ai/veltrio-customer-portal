@@ -6,9 +6,9 @@ import {
   useElements,
   useStripe,
 } from "@stripe/react-stripe-js";
-import { loadStripe, type Appearance } from "@stripe/stripe-js";
+import { loadStripe, type Appearance, type Stripe } from "@stripe/stripe-js";
 import { Lock } from "lucide-react";
-import { useMemo, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { Button } from "@/shared/ui/atoms/Button";
 import { Skeleton } from "@/shared/ui/atoms/Skeleton";
 
@@ -54,6 +54,11 @@ interface PaymentCheckoutProps {
   depositSecret: string | null;
   submitLabel: string;
   consent: string | null;
+  /**
+   * On a deposit form: the client secret of a payment the renter has just come back from
+   * paying elsewhere, so the hold can go on that same method without asking again.
+   */
+  paidSecret: string | null;
   /** Why the last attempt did not go through, kept while the page re-reads the link. */
   initialError: string | null;
   /** Called once Stripe has answered; the page then reads the outcome back from the API. */
@@ -67,6 +72,7 @@ interface PaymentCheckoutProps {
 export function PaymentCheckout({
   stripeAccountId,
   clientSecret,
+  paidSecret,
   ...form
 }: PaymentCheckoutProps) {
   const stripe = useMemo(
@@ -98,61 +104,121 @@ export function PaymentCheckout({
         fonts: FONTS,
       }}
     >
-      <CheckoutForm {...form} />
+      <CheckoutForm
+        {...form}
+        resume={paidSecret ? { paidSecret, holdSecret: clientSecret } : null}
+      />
     </Elements>
   );
+}
+
+const FAILED =
+  "The payment didn't go through. Check your connection and try again.";
+
+/** Places a deposit hold on a method that has just paid; returns why it could not, or null. */
+async function placeHold(stripe: Stripe, holdSecret: string, methodId: string) {
+  const hold = await stripe.confirmPayment({
+    clientSecret: holdSecret,
+    confirmParams: {
+      payment_method: methodId,
+      return_url: window.location.href,
+    },
+    redirect: "if_required",
+  });
+  return hold.error
+    ? (hold.error.message ?? "The deposit hold didn't go through.")
+    : null;
+}
+
+interface CheckoutFormProps extends Omit<
+  PaymentCheckoutProps,
+  "stripeAccountId" | "clientSecret" | "paidSecret"
+> {
+  /** A hold to place, without asking, on the method a returning renter just paid with. */
+  resume: { paidSecret: string; holdSecret: string } | null;
 }
 
 function CheckoutForm({
   depositSecret,
   submitLabel,
   consent,
+  resume,
   initialError,
   onSettled,
-}: Omit<PaymentCheckoutProps, "stripeAccountId" | "clientSecret">) {
+}: CheckoutFormProps) {
   const stripe = useStripe();
   const elements = useElements();
   // Stripe's frame takes a moment to draw its fields.
   const [ready, setReady] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
+  const [submitting, setSubmitting] = useState(resume !== null);
   const [error, setError] = useState(initialError);
+  const resumed = useRef(false);
+
+  useEffect(() => {
+    if (!stripe || !resume || resumed.current) return;
+    resumed.current = true;
+    const finishHold = async () => {
+      try {
+        const { paymentIntent } = await stripe.retrievePaymentIntent(
+          resume.paidSecret,
+        );
+        const method = paymentIntent?.payment_method;
+        const methodId = typeof method === "string" ? method : method?.id;
+        if (paymentIntent?.status === "succeeded" && methodId) {
+          const failure = await placeHold(stripe, resume.holdSecret, methodId);
+          if (!failure) {
+            onSettled(null);
+            return;
+          }
+        }
+        // Not every method that can pay can also hold a deposit.
+        setError(
+          "Your payment went through, but the deposit could not be held on the same payment method. Enter a card for the hold.",
+        );
+      } catch {
+        setError(
+          "Your payment went through. Enter a card for the deposit hold.",
+        );
+      } finally {
+        // Drop Stripe's return parameters so a reload does not try again.
+        window.history.replaceState(null, "", window.location.pathname);
+        setSubmitting(false);
+      }
+    };
+    void finishHold();
+  }, [stripe, resume, onSettled]);
 
   const pay = async (event: FormEvent) => {
     event.preventDefault();
     if (!stripe || !elements) return;
     setSubmitting(true);
     setError(null);
-    const returnUrl = window.location.href;
-    // Leaves the page only for methods that need it; a card or wallet answers here.
-    const result = await stripe.confirmPayment({
-      elements,
-      confirmParams: { return_url: returnUrl },
-      redirect: "if_required",
-    });
-    if (result.error) {
-      setSubmitting(false);
-      setError(result.error.message ?? "The payment didn't go through.");
-      return;
-    }
-    const method = result.paymentIntent.payment_method;
-    const methodId = typeof method === "string" ? method : method?.id;
-    if (depositSecret && methodId) {
-      // The card just used, so the renter does not type it twice.
-      const hold = await stripe.confirmPayment({
-        clientSecret: depositSecret,
-        confirmParams: { payment_method: methodId, return_url: returnUrl },
+    try {
+      // Leaves the page only for methods that need it; a card or wallet answers here.
+      // A renter who does leave comes back to this page, which then places the hold.
+      const result = await stripe.confirmPayment({
+        elements,
+        confirmParams: { return_url: window.location.href },
         redirect: "if_required",
       });
-      setSubmitting(false);
+      if (result.error) {
+        setError(result.error.message ?? "The payment didn't go through.");
+        return;
+      }
+      const method = result.paymentIntent.payment_method;
+      const methodId = typeof method === "string" ? method : method?.id;
+      // The card just used, so the renter does not type it twice.
       onSettled(
-        hold.error
-          ? (hold.error.message ?? "The deposit hold didn't go through.")
+        depositSecret && methodId
+          ? await placeHold(stripe, depositSecret, methodId)
           : null,
       );
-      return;
+    } catch {
+      // Stripe could not be reached at all; the form stays usable.
+      setError(FAILED);
+    } finally {
+      setSubmitting(false);
     }
-    setSubmitting(false);
-    onSettled(null);
   };
 
   return (

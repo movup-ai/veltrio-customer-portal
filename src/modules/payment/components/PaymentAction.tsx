@@ -2,7 +2,7 @@
 
 import { ReceiptText } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Button } from "@/shared/ui/atoms/Button";
 import { checkoutCopy, outcomeCopy, paymentStep } from "../payment.utils";
 import type { PaymentLink } from "../types";
@@ -15,10 +15,16 @@ interface PaymentActionProps {
   link: PaymentLink;
   /** The renter's receipt as a PDF, once money has been taken. */
   receiptHref: string | null;
+  /** Client secret of a payment the renter has just returned from completing elsewhere. */
+  returnedPaymentSecret: string | null;
 }
 
 /** The part of the page that changes: the card form, a wait, or how the link ended. */
-export function PaymentAction({ link, receiptHref }: PaymentActionProps) {
+export function PaymentAction({
+  link,
+  receiptHref,
+  returnedPaymentSecret,
+}: PaymentActionProps) {
   const router = useRouter();
   const step = paymentStep(link);
   // A hold the bank turned down after the payment went through, shown on the deposit form.
@@ -32,6 +38,15 @@ export function PaymentAction({ link, receiptHref }: PaymentActionProps) {
     return () => clearInterval(timer);
   }, [processing, router]);
 
+  // Stable, so the checkout's own effects do not re-run on every render.
+  const onSettled = useCallback(
+    (error: string | null) => {
+      setDepositError(error);
+      router.refresh();
+    },
+    [router],
+  );
+
   if (step.kind === "checkout") {
     const copy = checkoutCopy(step.mode, link);
     return (
@@ -41,11 +56,9 @@ export function PaymentAction({ link, receiptHref }: PaymentActionProps) {
         depositSecret={step.depositSecret}
         submitLabel={copy.submit}
         consent={copy.consent}
+        paidSecret={step.mode === "deposit" ? returnedPaymentSecret : null}
         initialError={step.mode === "deposit" ? depositError : null}
-        onSettled={(error) => {
-          setDepositError(error);
-          router.refresh();
-        }}
+        onSettled={onSettled}
       />
     );
   }

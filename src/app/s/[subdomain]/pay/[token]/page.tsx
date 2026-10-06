@@ -20,6 +20,7 @@ import { Button } from "@/shared/ui/atoms/Button";
 
 interface PageProps {
   params: Promise<{ subdomain: string; token: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
 export async function generateMetadata({
@@ -51,8 +52,11 @@ function Panel({ children }: { children: ReactNode }) {
   );
 }
 
-export default async function PayPage({ params }: PageProps) {
+export default async function PayPage({ params, searchParams }: PageProps) {
   const { subdomain, token } = await params;
+  // Set by Stripe when the renter comes back from paying on another site.
+  const returned = await searchParams;
+  const returnedSecret = returned.payment_intent_client_secret;
   const company = await getCompanyProfile(subdomain);
   if (!company) notFound();
 
@@ -67,7 +71,8 @@ export default async function PayPage({ params }: PageProps) {
         <PaymentNotice
           tone="waiting"
           title="We couldn't load your payment"
-          body={`Nothing has been charged. Try again in a moment, or contact ${company.name} if it keeps happening.`}
+          // Says nothing about money: a failed read cannot tell whether a payment went through.
+          body={`We can't show where this payment stands right now. If you have already paid, you don't need to pay again. Try again in a moment, or contact ${company.name} if it keeps happening.`}
           action={
             <Button asChild variant="dark">
               <a href={`/pay/${encodeURIComponent(token)}`}>Try again</a>
@@ -132,6 +137,12 @@ export default async function PayPage({ params }: PageProps) {
       <PaymentAction
         link={link}
         receiptHref={link.receipt && receiptPdfUrl(link.receipt)}
+        returnedPaymentSecret={
+          returned.redirect_status === "succeeded" &&
+          typeof returnedSecret === "string"
+            ? returnedSecret
+            : null
+        }
       />
     </Panel>
   );
