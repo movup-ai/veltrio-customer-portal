@@ -74,10 +74,14 @@ export async function apiGet<T>(
 }
 
 /** POST JSON to the backend and read its JSON answer. Server-side only. */
-export async function apiPost<T>(path: string, body: unknown): Promise<T> {
+export async function apiPost<T>(
+  path: string,
+  body: unknown,
+  headers: Record<string, string> = {},
+): Promise<T> {
   const response = await fetch(apiBase() + path, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", ...headers },
     body: JSON.stringify(body),
     cache: "no-store",
   });

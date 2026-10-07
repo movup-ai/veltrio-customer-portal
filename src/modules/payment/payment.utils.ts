@@ -68,7 +68,7 @@ export function paymentStep(link: PaymentLink): PaymentStep {
 }
 
 /** The amounts a link names, as money in its own currency. */
-export function paymentAmounts(link: PaymentLink) {
+function paymentAmounts(link: PaymentLink) {
   return {
     amount: formatMoney(link.charge?.amountCents ?? 0, link.currency),
     deposit: formatMoney(

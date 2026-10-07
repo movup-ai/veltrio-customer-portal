@@ -22,7 +22,7 @@ interface PaymentTripProps {
 const label = (value: string) =>
   value.charAt(0).toUpperCase() + value.slice(1).replaceAll("_", " ");
 
-/** The car and when it changes hands: what the renter is paying for. */
+/** The car and when it changes hands: what the renter is paying for, or paid for. */
 export function PaymentTrip({
   link,
   timeZone,

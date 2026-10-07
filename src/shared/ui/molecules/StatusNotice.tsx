@@ -8,7 +8,7 @@ const TONES = {
   warning: { Icon: CircleAlert, className: "bg-accent-soft text-primary" },
 } as const;
 
-interface PaymentNoticeProps {
+interface StatusNoticeProps {
   tone: keyof typeof TONES;
   title: string;
   body: string;
@@ -16,13 +16,8 @@ interface PaymentNoticeProps {
   action?: ReactNode;
 }
 
-/** Where a payment link stands when there is no form to fill in. */
-export function PaymentNotice({
-  tone,
-  title,
-  body,
-  action,
-}: PaymentNoticeProps) {
+/** Where a renter's link stands when there is nothing to fill in: done, waiting, or no longer usable. */
+export function StatusNotice({ tone, title, body, action }: StatusNoticeProps) {
   const { Icon, className } = TONES[tone];
   return (
     <div role="status" className="flex flex-col items-center py-2 text-center">

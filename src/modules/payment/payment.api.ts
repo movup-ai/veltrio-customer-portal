@@ -1,4 +1,9 @@
-import type { PaymentLink, PaymentPart, PaymentPartStatus } from "./types";
+import type {
+  PaymentLink,
+  PaymentPart,
+  PaymentPartStatus,
+  Receipt,
+} from "./types";
 
 interface PaymentPartDto {
   status: string;
@@ -64,10 +69,53 @@ export function toPaymentLink(dto: PaymentLinkDto): PaymentLink {
     deposit: toPart(dto.deposit),
     receipt: receipt
       ? {
-          tenantId: receipt.tenantId,
           bookingId: receipt.bookingId,
           token: receipt.token,
         }
       : null,
+  };
+}
+
+/** PublicReceiptRead from the API. */
+export interface ReceiptDto extends Omit<Receipt, "payments"> {
+  payments: {
+    kind: string;
+    method: string | null;
+    amountCents: number;
+    refundedCents: number;
+    completedAt: string | null;
+  }[];
+}
+
+export function toReceipt(dto: ReceiptDto): Receipt {
+  const specs = dto.vehicleSpecs;
+  return {
+    number: dto.number,
+    companyName: dto.companyName,
+    reference: dto.reference,
+    renterName: dto.renterName,
+    vehicleName: dto.vehicleName,
+    vehiclePhotoUrl: dto.vehiclePhotoUrl,
+    vehicleSpecs: specs && {
+      year: specs.year,
+      vehicleType: specs.vehicleType,
+      transmission: specs.transmission,
+      fuelType: specs.fuelType,
+      seats: specs.seats,
+    },
+    pickupAt: dto.pickupAt,
+    returnAt: dto.returnAt,
+    pickupLocation: dto.pickupLocation,
+    currency: dto.currency,
+    totalCents: dto.totalCents,
+    receivedCents: dto.receivedCents,
+    balanceCents: dto.balanceCents,
+    payments: dto.payments.map((payment) => ({
+      kind: payment.kind === "deposit" ? "deposit" : "rental",
+      method: payment.method,
+      amountCents: payment.amountCents,
+      refundedCents: payment.refundedCents,
+      completedAt: payment.completedAt,
+    })),
   };
 }

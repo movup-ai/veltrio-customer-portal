@@ -4,16 +4,16 @@ import { ReceiptText } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { Button } from "@/shared/ui/atoms/Button";
+import { StatusNotice } from "@/shared/ui/molecules/StatusNotice";
 import { checkoutCopy, outcomeCopy, paymentStep } from "../payment.utils";
 import type { PaymentLink } from "../types";
 import { PaymentCheckout } from "./PaymentCheckout";
-import { PaymentNotice } from "./PaymentNotice";
 
 const PROCESSING_POLL_MS = 4000;
 
 interface PaymentActionProps {
   link: PaymentLink;
-  /** The renter's receipt as a PDF, once money has been taken. */
+  /** The renter's receipt page, once money has been taken. */
   receiptHref: string | null;
   /** Client secret of a payment the renter has just returned from completing elsewhere. */
   returnedPaymentSecret: string | null;
@@ -65,7 +65,7 @@ export function PaymentAction({
 
   if (step.kind === "processing") {
     return (
-      <PaymentNotice
+      <StatusNotice
         tone="waiting"
         title="Payment processing"
         body="Your bank is still confirming the payment. This page updates on its own."
@@ -75,15 +75,15 @@ export function PaymentAction({
 
   const copy = outcomeCopy(step.outcome, link);
   return (
-    <PaymentNotice
+    <StatusNotice
       {...copy}
       action={
         receiptHref &&
         step.outcome !== "closed" && (
           <Button asChild variant="outline">
-            <a href={receiptHref} target="_blank" rel="noreferrer">
+            <a href={receiptHref}>
               <ReceiptText aria-hidden className="size-4" />
-              Download receipt
+              View receipt
             </a>
           </Button>
         )
