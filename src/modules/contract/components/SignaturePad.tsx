@@ -6,6 +6,7 @@ import SignaturePadCore from "signature_pad";
 import { cn } from "@/shared/lib/cn";
 import { Button } from "@/shared/ui/atoms/Button";
 import { fieldFocus } from "@/shared/ui/atoms/Field";
+import { shrinkStrokes } from "../contract.utils";
 
 /** Dark ink on white, whatever the page looks like: the PDF prints it on white paper. */
 const INK = "#0f1012";
@@ -41,14 +42,21 @@ export function SignaturePad({ onChange, label, invalid }: SignaturePadProps) {
     padRef.current = pad;
 
     // Sized in device pixels, or strokes blur on a phone. Resizing wipes a canvas, so the
-    // strokes are kept and drawn again at the new size.
+    // strokes are kept and drawn again, shrunk when the box got narrower (a phone turned
+    // upright) so none of the signature is cut off.
+    let width = 0;
     const resize = () => {
+      // A phone fires this while scrolling too; only a new width needs a redraw.
+      if (canvas.offsetWidth === width) return;
+      const strokes = shrinkStrokes(pad.toData(), width, canvas.offsetWidth);
+      width = canvas.offsetWidth;
       const ratio = Math.max(window.devicePixelRatio || 1, 1);
-      const strokes = pad.toData();
-      canvas.width = canvas.offsetWidth * ratio;
+      canvas.width = width * ratio;
       canvas.height = canvas.offsetHeight * ratio;
       canvas.getContext("2d")?.scale(ratio, ratio);
       pad.fromData(strokes);
+      // What is sent must be what the box now shows.
+      if (!pad.isEmpty()) onChangeRef.current(pad.toDataURL("image/png"));
     };
     resize();
     // From the first touch, not the release: the prompt must not sit under a stroke in progress.

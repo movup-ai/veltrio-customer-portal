@@ -24,3 +24,24 @@ export function signatureProblems(draft: SignatureDraft) {
   }
   return problems;
 }
+
+/**
+ * A drawing's strokes, shrunk to fit a box that went from `from` to `to` pixels wide. Both
+ * axes shrink together so the signature keeps its shape; a box that grew leaves them alone.
+ */
+export function shrinkStrokes<S extends { points: { x: number; y: number }[] }>(
+  strokes: S[],
+  from: number,
+  to: number,
+): S[] {
+  if (from <= 0 || to >= from) return strokes;
+  const factor = to / from;
+  return strokes.map((stroke) => ({
+    ...stroke,
+    points: stroke.points.map((point) => ({
+      ...point,
+      x: point.x * factor,
+      y: point.y * factor,
+    })),
+  }));
+}

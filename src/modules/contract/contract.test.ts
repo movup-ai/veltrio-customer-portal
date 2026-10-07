@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { ApiError } from "@/shared/api/client";
 import { toAgreement, toSignFailure, type AgreementDto } from "./contract.api";
-import { signatureProblems } from "./contract.utils";
+import { shrinkStrokes, signatureProblems } from "./contract.utils";
 
 const dto: AgreementDto = {
   companyName: "movup",
@@ -75,5 +75,34 @@ describe("signatureProblems", () => {
         }),
       ),
     ).toEqual(["name", "signature", "consent"]);
+  });
+});
+
+describe("shrinkStrokes", () => {
+  const strokes = [
+    {
+      penColor: "#0f1012",
+      points: [
+        { x: 100, y: 40, time: 1 },
+        { x: 600, y: 120, time: 2 },
+      ],
+    },
+  ];
+
+  it("shrinks both axes together when the box gets narrower, keeping the rest", () => {
+    expect(shrinkStrokes(strokes, 700, 350)).toEqual([
+      {
+        penColor: "#0f1012",
+        points: [
+          { x: 50, y: 20, time: 1 },
+          { x: 300, y: 60, time: 2 },
+        ],
+      },
+    ]);
+  });
+
+  it("leaves the drawing alone when the box grows, or on the first sizing", () => {
+    expect(shrinkStrokes(strokes, 350, 700)).toBe(strokes);
+    expect(shrinkStrokes(strokes, 0, 700)).toBe(strokes);
   });
 });
