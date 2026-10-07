@@ -13,7 +13,7 @@ const PROCESSING_POLL_MS = 4000;
 
 interface PaymentActionProps {
   link: PaymentLink;
-  /** The renter's receipt as a PDF, once money has been taken. */
+  /** The renter's receipt page, once money has been taken. */
   receiptHref: string | null;
   /** Client secret of a payment the renter has just returned from completing elsewhere. */
   returnedPaymentSecret: string | null;
@@ -81,9 +81,9 @@ export function PaymentAction({
         receiptHref &&
         step.outcome !== "closed" && (
           <Button asChild variant="outline">
-            <a href={receiptHref} target="_blank" rel="noreferrer">
+            <a href={receiptHref}>
               <ReceiptText aria-hidden className="size-4" />
-              Download receipt
+              View receipt
             </a>
           </Button>
         )

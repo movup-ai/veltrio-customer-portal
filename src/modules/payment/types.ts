@@ -16,9 +16,8 @@ export interface PaymentPart {
   clientSecret: string | null;
 }
 
-/** Where to fetch the renter's receipt once money has been taken. */
+/** What the renter's receipt link is built from, once money has been taken. */
 export interface PaymentReceipt {
-  tenantId: string;
   bookingId: string;
   token: string;
 }
@@ -54,4 +53,49 @@ export interface PaymentLink {
   /** The hold this link places; null on a link that only takes the payment. */
   deposit: PaymentPart | null;
   receipt: PaymentReceipt | null;
+}
+
+/** What a renter's receipt link is made of, on a company's subdomain. */
+export interface ReceiptLink {
+  subdomain: string;
+  bookingId: string;
+  token: string;
+}
+
+/** Money taken on a booking: a rental payment, or a deposit captured for damage or fuel. */
+export interface ReceiptPayment {
+  kind: "rental" | "deposit";
+  /** How it was paid, e.g. "Visa · 4242" or "Cash"; null when not recorded. */
+  method: string | null;
+  amountCents: number;
+  /** Given back out of this payment; 0 when none was. */
+  refundedCents: number;
+  /** An instant, as an ISO string. */
+  completedAt: string | null;
+}
+
+/** What a renter's receipt page shows. Mirrors the API's PublicReceiptRead. */
+export interface Receipt extends Pick<
+  PaymentLink,
+  | "companyName"
+  | "reference"
+  | "renterName"
+  | "vehicleName"
+  | "vehiclePhotoUrl"
+  | "vehicleSpecs"
+  | "pickupAt"
+  | "returnAt"
+  | "pickupLocation"
+  | "currency"
+> {
+  /** The receipt's own number, e.g. "RCT-BK-10001". */
+  number: string;
+  /** What the booking costs in all. */
+  totalCents: number;
+  /** Taken so far, net of refunds. */
+  receivedCents: number;
+  /** Still owed on the rental; 0 when settled. */
+  balanceCents: number;
+  /** Oldest first. */
+  payments: ReceiptPayment[];
 }

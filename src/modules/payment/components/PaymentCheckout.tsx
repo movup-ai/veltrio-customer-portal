@@ -22,28 +22,27 @@ const FONTS = [
   },
 ];
 
+const INPUT_BORDER = "#e6e2da";
+
 /** The page's look for Stripe's frame. Stripe takes literal colours, not CSS variables. */
-function appearance(): Appearance {
-  const border = "#e6e2da";
-  return {
-    theme: "stripe",
-    variables: {
-      colorPrimary: "#d63f1a",
-      colorText: "#0f1012",
-      colorTextSecondary: "#5e6068",
-      colorTextPlaceholder: "#8c8e95",
-      colorBackground: "#ffffff",
-      colorDanger: "#b8330f",
-      fontFamily: '"Inter Tight", system-ui, sans-serif',
-      fontSizeBase: "15px",
-      borderRadius: "12px",
-    },
-    rules: {
-      ".Input": { borderColor: border, boxShadow: "none" },
-      ".Tab": { borderColor: border, boxShadow: "none" },
-    },
-  };
-}
+const APPEARANCE: Appearance = {
+  theme: "stripe",
+  variables: {
+    colorPrimary: "#d63f1a",
+    colorText: "#0f1012",
+    colorTextSecondary: "#5e6068",
+    colorTextPlaceholder: "#8c8e95",
+    colorBackground: "#ffffff",
+    colorDanger: "#b8330f",
+    fontFamily: '"Inter Tight", system-ui, sans-serif',
+    fontSizeBase: "15px",
+    borderRadius: "12px",
+  },
+  rules: {
+    ".Input": { borderColor: INPUT_BORDER, boxShadow: "none" },
+    ".Tab": { borderColor: INPUT_BORDER, boxShadow: "none" },
+  },
+};
 
 interface PaymentCheckoutProps {
   /** The company's Stripe account: the payment is a direct charge on it. */
@@ -100,7 +99,7 @@ export function PaymentCheckout({
       stripe={stripe}
       options={{
         clientSecret,
-        appearance: appearance(),
+        appearance: APPEARANCE,
         fonts: FONTS,
       }}
     >

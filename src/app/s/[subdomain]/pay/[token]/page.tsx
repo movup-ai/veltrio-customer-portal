@@ -10,7 +10,7 @@ import { PaymentAmounts } from "@/modules/payment/components/PaymentAmounts";
 import { PaymentTrip } from "@/modules/payment/components/PaymentTrip";
 import {
   getPaymentLink,
-  receiptPdfUrl,
+  receiptHref,
 } from "@/modules/payment/payment.repository";
 import { settle } from "@/shared/lib/settle";
 import { Button } from "@/shared/ui/atoms/Button";
@@ -118,7 +118,7 @@ export default async function PayPage({ params, searchParams }: PageProps) {
       <PaymentAmounts link={link} />
       <PaymentAction
         link={link}
-        receiptHref={link.receipt && receiptPdfUrl(link.receipt)}
+        receiptHref={link.receipt && receiptHref(link.receipt)}
         returnedPaymentSecret={
           returned.redirect_status === "succeeded" &&
           typeof returnedSecret === "string"
