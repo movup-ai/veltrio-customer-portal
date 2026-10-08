@@ -17,6 +17,8 @@ interface PaymentTripProps {
   timeZone: string;
   /** Street address of the pick-up branch, when the company has one on file. */
   pickupAddress: string | null;
+  /** A later return this link asks for, shown beside the one in force until it is paid. */
+  newReturnAt?: string | null;
 }
 
 const label = (value: string) =>
@@ -27,6 +29,7 @@ export function PaymentTrip({
   link,
   timeZone,
   pickupAddress,
+  newReturnAt,
 }: PaymentTripProps) {
   const specs = link.vehicleSpecs;
   return (
@@ -72,6 +75,14 @@ export function PaymentTrip({
         </dd>
         <dt className="text-muted">Return</dt>
         <dd className="font-medium">{formatInZone(link.returnAt, timeZone)}</dd>
+        {newReturnAt && (
+          <>
+            <dt className="text-muted">New return</dt>
+            <dd className="font-semibold">
+              {formatInZone(newReturnAt, timeZone)}
+            </dd>
+          </>
+        )}
       </dl>
     </div>
   );

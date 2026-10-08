@@ -1,7 +1,12 @@
 import { describe, expect, it } from "vitest";
 import { toPaymentLink, type PaymentLinkDto } from "./payment.api";
-import { checkoutCopy, outcomeCopy, paymentStep } from "./payment.utils";
-import type { PaymentPart } from "./types";
+import {
+  checkoutCopy,
+  extensionConsentProblems,
+  outcomeCopy,
+  paymentStep,
+} from "./payment.utils";
+import type { PaymentExtension, PaymentPart } from "./types";
 
 const dto: PaymentLinkDto = {
   companyName: "Thewheeldeal",
@@ -134,5 +139,87 @@ describe("copy", () => {
       outcomeCopy("paid_deposit_later", link(part("paid", 22000), null)).body,
     ).toContain("$2,000 security deposit");
     expect(outcomeCopy("closed", done).tone).toBe("warning");
+  });
+});
+
+describe("a link for a later return", () => {
+  const extended = (overrides: Partial<PaymentExtension> = {}) => ({
+    ...link(null, null),
+    extension: {
+      ...part("open", 11770),
+      clientSecret: null,
+      newReturnAt: "2026-10-25T09:30:00-04:00",
+      expiresAt: "2026-10-23T09:30:00-04:00",
+      accepted: false,
+      applied: false,
+      agreementNumber: "AGR-BK-10001",
+      ...overrides,
+    },
+  });
+
+  it("reads the extension from the API, and none from a link without one", () => {
+    const sent = extended().extension;
+    expect(toPaymentLink({ ...dto, extension: sent }).extension).toEqual(sent);
+    expect(toPaymentLink(dto).extension).toBeNull();
+  });
+
+  it("asks the renter to agree before it shows a card form", () => {
+    const waiting = extended();
+    expect(paymentStep(waiting)).toEqual({
+      kind: "consent",
+      extension: waiting.extension,
+    });
+  });
+
+  it("takes the payment once they have agreed, with no deposit hold", () => {
+    const agreed = extended({ accepted: true, clientSecret: "secret_ext" });
+    expect(paymentStep(agreed)).toEqual({
+      kind: "checkout",
+      mode: "extension",
+      stripeAccountId: "acct_1",
+      clientSecret: "secret_ext",
+      depositSecret: null,
+    });
+    expect(checkoutCopy("extension", agreed)).toEqual({
+      submit: "Pay $117.70",
+      consent: null,
+    });
+  });
+
+  it("waits while the bank confirms, then says the rental is extended", () => {
+    expect(paymentStep(extended({ status: "processing" })).kind).toBe(
+      "processing",
+    );
+    const paid = extended({ status: "paid", accepted: true, applied: true });
+    expect(paymentStep(paid)).toEqual({ kind: "outcome", outcome: "extended" });
+    expect(outcomeCopy("extended", paid).body).toContain(
+      "Thewheeldeal has your payment of $117.70",
+    );
+  });
+
+  it("does not call a payment that came too late an extension", () => {
+    const late = extended({ status: "paid", accepted: true });
+    expect(paymentStep(late)).toEqual({
+      kind: "outcome",
+      outcome: "extension_late",
+    });
+    const copy = outcomeCopy("extension_late", late);
+    expect(copy.tone).toBe("warning");
+    expect(copy.body).toContain("will refund it");
+  });
+
+  it("is over once it is withdrawn or out of time", () => {
+    expect(paymentStep(extended({ status: "closed" }))).toEqual({
+      kind: "outcome",
+      outcome: "closed",
+    });
+  });
+
+  it("needs a name and a ticked box before the agreement is sent", () => {
+    expect(extensionConsentProblems("Kevin Hart", true)).toEqual({});
+    expect(Object.keys(extensionConsentProblems("  ", false))).toEqual([
+      "name",
+      "consent",
+    ]);
   });
 });
