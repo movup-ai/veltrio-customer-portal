@@ -16,6 +16,8 @@ export interface SearchQuery {
   pickupTime?: string;
   returnTime?: string;
   type?: VehicleType;
+  /** Make slug, e.g. "land-rover". */
+  make?: string;
 }
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
@@ -26,6 +28,7 @@ const KEYS = [
   "return",
   "returnTime",
   "type",
+  "make",
 ] as const;
 
 export function buildSearchUrl(query: SearchQuery = {}) {
@@ -56,7 +59,8 @@ export function parseSearchParams(raw: RawParams): SearchQuery {
   const type = first("type");
   const pickup = date("pickup");
   const returnDate = date("return");
-  const validRange = pickup && returnDate && returnDate > pickup;
+  // The same day is a rental of a few hours.
+  const validRange = pickup && returnDate && returnDate >= pickup;
 
   return {
     location: first("location") || undefined,
@@ -67,5 +71,6 @@ export function parseSearchParams(raw: RawParams): SearchQuery {
     type: VEHICLE_TYPES.includes(type as VehicleType)
       ? (type as VehicleType)
       : undefined,
+    make: first("make")?.toLowerCase() || undefined,
   };
 }

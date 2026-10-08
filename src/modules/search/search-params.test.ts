@@ -24,6 +24,7 @@ describe("parseSearchParams", () => {
       return: "2026-10-13",
       returnTime: "18:00",
       type: "suv",
+      make: "land-rover",
     } as const;
     const params = Object.fromEntries(
       new URLSearchParams(buildSearchUrl(query).split("?")[1]),
@@ -45,15 +46,25 @@ describe("parseSearchParams", () => {
       pickupTime: undefined,
       returnTime: undefined,
       type: undefined,
+      make: undefined,
     });
   });
 
-  it("drops a range whose return is not after pick-up", () => {
+  it("drops a range whose return is before pick-up", () => {
     const parsed = parseSearchParams({
       pickup: "2026-10-13",
       return: "2026-10-10",
     });
     expect(parsed.pickup).toBeUndefined();
     expect(parsed.return).toBeUndefined();
+  });
+
+  it("keeps a pick-up and return on the same day", () => {
+    const parsed = parseSearchParams({
+      pickup: "2026-10-09",
+      return: "2026-10-09",
+    });
+    expect(parsed.pickup).toBe("2026-10-09");
+    expect(parsed.return).toBe("2026-10-09");
   });
 });

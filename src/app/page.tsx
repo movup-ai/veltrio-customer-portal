@@ -2,16 +2,20 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { listCompanies } from "@/modules/company/company.repository";
 import { CompanyCard } from "@/modules/company/components/CompanyCard";
-import { CollectionsSection } from "@/modules/marketing/components/CollectionsSection";
+import { BrowseSection } from "@/modules/marketing/components/BrowseSection";
+import { FaqSection } from "@/modules/marketing/components/FaqSection";
 import { HeroSection } from "@/modules/marketing/components/HeroSection";
 import { HostCtaSection } from "@/modules/marketing/components/HostCtaSection";
+import { HowItWorksSection } from "@/modules/marketing/components/HowItWorksSection";
 import { ValuePropsSection } from "@/modules/marketing/components/ValuePropsSection";
 import {
-  collections,
+  faqs,
   hero,
   hostCta,
+  howItWorks,
   valueProps,
 } from "@/modules/marketing/landing.content";
+import { browseByMake, browseByType } from "@/modules/marketing/landing.utils";
 import { SearchCapsule } from "@/modules/search/components/SearchCapsule";
 import { VehicleCard } from "@/modules/vehicle/components/VehicleCard";
 import { VehicleCardSkeleton } from "@/modules/vehicle/components/VehicleCardSkeleton";
@@ -60,6 +64,28 @@ async function VehiclesRow() {
         />
       ))}
     </ScrollRow>
+  );
+}
+
+/** Ways into the listed vehicles, built from what is actually listed. */
+async function BrowseSections() {
+  const vehicles = await settle(listVehicles());
+  if (!vehicles || vehicles.length === 0) return null;
+  return (
+    <>
+      <BrowseSection
+        id="types"
+        title="Browse by vehicle type"
+        description="From city cars to seven-seaters, whatever the trip needs."
+        items={browseByType(vehicles)}
+      />
+      <BrowseSection
+        id="makes"
+        title="Browse by make"
+        description="Know what you want to drive? Start with the badge."
+        items={browseByMake(vehicles)}
+      />
+    </>
   );
 }
 
@@ -126,14 +152,18 @@ export default function HomePage() {
             <VehiclesRow />
           </Suspense>
 
-          <CollectionsSection
-            eyebrow="Collections"
+          <Suspense fallback={null}>
+            <BrowseSections />
+          </Suspense>
+
+          <HowItWorksSection
+            eyebrow="How it works"
             title={
               <>
-                Curated for the drive, <em>not the errand.</em>
+                From browsing to the keys, <em>in four steps.</em>
               </>
             }
-            collections={collections}
+            steps={howItWorks}
           />
 
           <ValuePropsSection
@@ -150,6 +180,16 @@ export default function HomePage() {
           <Suspense fallback={null}>
             <CompaniesRow />
           </Suspense>
+
+          <FaqSection
+            eyebrow="Questions"
+            title={
+              <>
+                Good to know <em>before you book.</em>
+              </>
+            }
+            faqs={faqs}
+          />
 
           <HostCtaSection {...hostCta} />
         </div>

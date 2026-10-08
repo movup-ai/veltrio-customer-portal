@@ -20,14 +20,17 @@ export function SearchField({
     <button
       type="button"
       className={cn(
-        "flex min-w-0 flex-1 flex-col justify-center rounded-lg bg-background px-4 py-3 text-left transition-colors hover:bg-surface-muted data-[state=open]:bg-surface data-[state=open]:shadow-2 md:bg-transparent",
+        "flex min-w-0 flex-1 flex-col justify-center rounded-lg bg-background px-4 py-1.5 text-left transition-colors hover:bg-surface-muted data-[state=open]:bg-surface data-[state=open]:shadow-2 md:bg-transparent",
         className,
       )}
       {...props}
     >
       <span className="type-label text-muted">{label}</span>
       <span
-        className={cn("mt-1 truncate", value ? "font-semibold" : "text-muted")}
+        className={cn(
+          "mt-0.5 truncate",
+          value ? "font-semibold" : "text-muted",
+        )}
       >
         {value ?? placeholder}
       </span>

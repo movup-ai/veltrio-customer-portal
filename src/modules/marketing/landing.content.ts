@@ -8,6 +8,8 @@ import { buildSearchUrl } from "@/modules/search/search-params";
 import { unsplash } from "@/shared/lib/unsplash";
 import type { FooterColumn } from "@/shared/ui/organisms/SiteFooter";
 import type { Collection } from "./components/CollectionsSection";
+import type { Faq } from "./components/FaqSection";
+import type { HowItWorksStep } from "./components/HowItWorksSection";
 import type { ValueProp } from "./components/ValuePropsSection";
 
 /**
@@ -78,6 +80,57 @@ export const valueProps: ValueProp[] = [
     title: "Book with the company",
     description:
       "Your booking goes straight to the team that hands you the keys.",
+  },
+];
+
+export const howItWorks: HowItWorksStep[] = [
+  {
+    title: "Find your car",
+    description:
+      "Browse cars from independent rental companies and compare the price, deposit and terms of each.",
+  },
+  {
+    title: "Request to book",
+    description:
+      "Send your details with a photo of your licence and insurance card. Nothing is charged yet.",
+  },
+  {
+    title: "The company confirms",
+    description:
+      "The rental company reviews your request, then sends a secure link to pay online, unless you chose to pay cash at pick-up.",
+  },
+  {
+    title: "Pick up and drive",
+    description:
+      "Sign the rental agreement online and collect the car at the company's branch.",
+  },
+];
+
+export const faqs: Faq[] = [
+  {
+    question: "Who am I renting from?",
+    answer:
+      "A professional rental company, never a private owner. Veltrio lists their vehicles, and your booking and rental agreement are with the company that hands you the keys.",
+  },
+  {
+    question: "When do I pay?",
+    answer:
+      "Not when you send a request. Once the company accepts it, they send you a secure link to pay online. You can also choose to pay cash at pick-up.",
+  },
+  {
+    question: "What do I need to book?",
+    answer:
+      "You must be at least 18 and hold a valid driving licence. The booking form asks for your contact details and a photo of your licence and insurance card.",
+  },
+  {
+    question: "Is there a security deposit?",
+    answer:
+      "Each company sets its own. When a vehicle has one, the amount is shown before you book, and it is released when the car comes back.",
+  },
+  {
+    question: "Can I return the car to a different location?",
+    answer:
+      "Yes, when the company has more than one branch. You choose the return branch while booking; pick-up is always at the branch where the car is kept.",
   },
 ];
 

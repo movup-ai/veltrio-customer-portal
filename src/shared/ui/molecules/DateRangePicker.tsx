@@ -22,6 +22,10 @@ interface DateRangePickerProps {
   firstDate?: Date;
   /** Last day that can be picked. */
   lastDate?: Date;
+  /** Lets pick-up and return fall on the same day, which the first click then selects. */
+  sameDay?: boolean;
+  /** Rings the chosen days instead of filling them. */
+  outlined?: boolean;
   /** Adds pick-up and return time selectors under the calendar. */
   times?: RangeTimes;
   onTimesChange?: (times: RangeTimes) => void;
@@ -37,6 +41,8 @@ export function DateRangePicker({
   unavailable = [],
   firstDate,
   lastDate,
+  sameDay,
+  outlined,
   times,
   onTimesChange,
   actions,
@@ -49,7 +55,8 @@ export function DateRangePicker({
     <div>
       <DayPicker
         mode="range"
-        min={1}
+        min={sameDay ? 0 : 1}
+        className={outlined ? "rdp-outlined" : undefined}
         excludeDisabled
         numberOfMonths={count}
         selected={value}
