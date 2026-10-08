@@ -7,6 +7,7 @@ import { SearchFilters } from "@/modules/search/components/SearchFilters";
 import {
   buildSearchUrl,
   parseSearchParams,
+  tripQuery,
 } from "@/modules/search/search-params";
 import {
   filterVehicles,
@@ -58,21 +59,18 @@ export default async function SearchPage({ searchParams }: PageProps) {
   const count = vehicles.length;
 
   // Carried to the vehicle page, so its booking panel opens on the searched dates.
-  const trip =
-    pickup && end
-      ? `?${new URLSearchParams({
-          pickup,
-          ...(query.pickupTime && { pickupTime: query.pickupTime }),
-          return: end,
-          ...(query.returnTime && { returnTime: query.returnTime }),
-        })}`
-      : "";
+  const trip = tripQuery(query);
 
   return (
     <>
       <SiteHeader />
       <main id="main" className="container-page pt-6 pb-16">
-        <SearchCapsule initialQuery={query} cities={cities} />
+        <SearchCapsule
+          // Back and Forward change the search without leaving the page: start the bar afresh.
+          key={[query.location, trip].join()}
+          initialQuery={query}
+          cities={cities}
+        />
         <div className="mt-4">
           <SearchFilters query={query} {...searchFacets(found ?? [])} />
         </div>

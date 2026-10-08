@@ -65,6 +65,26 @@ export function buildSearchUrl(query: SearchQuery = {}) {
   return qs ? `/search?${qs}` : "/search";
 }
 
+/**
+ * The searched dates and times as a query string for a vehicle page, whose booking panel
+ * opens on them: "?pickup=…&return=…", or "" when no dates were searched.
+ */
+export function tripQuery({
+  pickup,
+  pickupTime,
+  return: end,
+  returnTime,
+}: SearchQuery) {
+  if (!pickup || !end) return "";
+  const params = new URLSearchParams({
+    pickup,
+    ...(pickupTime && { pickupTime }),
+    return: end,
+    ...(returnTime && { returnTime }),
+  });
+  return `?${params}`;
+}
+
 type RawParams = Record<string, string | string[] | undefined>;
 
 /** Reads a search query from URL params, dropping anything malformed. */

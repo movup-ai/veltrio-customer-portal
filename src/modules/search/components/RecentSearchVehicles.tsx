@@ -5,11 +5,13 @@ import { useEffect, useState } from "react";
 import { VehicleTile } from "@/modules/vehicle/components/VehicleTile";
 import type { Vehicle } from "@/modules/vehicle/types";
 import { findVehicles } from "@/modules/vehicle/vehicle.actions";
+import { vehicleHref } from "@/modules/vehicle/vehicle.utils";
 import { fromIsoDate, toIsoDate } from "@/shared/lib/date";
 import { Skeleton } from "@/shared/ui/atoms/Skeleton";
 import { SectionHeading } from "@/shared/ui/molecules/SectionHeading";
 import { cityLabel, findCity, type City } from "../cities";
 import { loadRecentSearch } from "../recent-search";
+import { tripQuery } from "../search-params";
 
 /** Tiles shown at most; the search itself lists the rest. */
 const MAX_VEHICLES = 6;
@@ -36,6 +38,8 @@ function summary(city: City | undefined, pickup?: string, end?: string) {
  */
 export function RecentSearchVehicles({ cities }: { cities: City[] }) {
   const [description, setDescription] = useState<string>();
+  // The saved dates and times, for each tile's link to open the vehicle on them.
+  const [trip, setTrip] = useState("");
   const [vehicles, setVehicles] = useState<Vehicle[]>();
 
   useEffect(() => {
@@ -45,6 +49,7 @@ export function RecentSearchVehicles({ cities }: { cities: City[] }) {
     if (!city && !(pickup && end)) return;
     // eslint-disable-next-line react-hooks/set-state-in-effect -- reading browser storage once
     setDescription(summary(city, pickup, end));
+    setTrip(tripQuery(recent ?? {}));
     findVehicles({ pickup, return: end, city: city?.city, state: city?.state })
       .then((found) => setVehicles(found.slice(0, MAX_VEHICLES)))
       // A row of suggestions is not worth an error message.
@@ -63,7 +68,10 @@ export function RecentSearchVehicles({ cities }: { cities: City[] }) {
         {vehicles
           ? vehicles.map((vehicle) => (
               <li key={vehicle.id}>
-                <VehicleTile vehicle={vehicle} />
+                <VehicleTile
+                  vehicle={vehicle}
+                  href={vehicleHref(vehicle) + trip}
+                />
               </li>
             ))
           : Array.from({ length: 3 }, (_, index) => (

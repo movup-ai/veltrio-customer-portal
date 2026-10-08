@@ -5,7 +5,14 @@ import type { Vehicle } from "../types";
 import { vehicleHref, vehicleName } from "../vehicle.utils";
 
 /** A compact vehicle link: small photo beside the name. Opens the vehicle in a new tab. */
-export function VehicleTile({ vehicle }: { vehicle: Vehicle }) {
+export function VehicleTile({
+  vehicle,
+  href,
+}: {
+  vehicle: Vehicle;
+  /** Where the tile leads when not the plain vehicle page, e.g. with searched dates attached. */
+  href?: string;
+}) {
   const photo = vehicle.photos[0];
   const rate = vehicle.dailyRateCents;
   return (
@@ -32,7 +39,7 @@ export function VehicleTile({ vehicle }: { vehicle: Vehicle }) {
         </p>
         {/* The stretched link makes the whole tile clickable with one tab stop. */}
         <a
-          href={vehicleHref(vehicle)}
+          href={href ?? vehicleHref(vehicle)}
           target="_blank"
           rel="noopener"
           className="mt-2 inline-block text-sm font-semibold underline underline-offset-4 after:absolute after:inset-0"

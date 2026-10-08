@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildSearchUrl, parseSearchParams } from "./search-params";
+import { buildSearchUrl, parseSearchParams, tripQuery } from "./search-params";
 
 describe("buildSearchUrl", () => {
   it("builds a readable URL and omits empty values", () => {
@@ -12,6 +12,30 @@ describe("buildSearchUrl", () => {
     ).toBe("/search?location=miami&pickup=2026-10-10&return=2026-10-13");
     expect(buildSearchUrl({ type: "suv" })).toBe("/search?type=suv");
     expect(buildSearchUrl()).toBe("/search");
+  });
+});
+
+describe("tripQuery", () => {
+  it("carries the searched dates and times, and nothing else", () => {
+    expect(
+      tripQuery({
+        location: "miami-fl",
+        pickup: "2026-10-09",
+        pickupTime: "10:00",
+        return: "2026-10-12",
+        returnTime: "11:00",
+        type: "suv",
+      }),
+    ).toBe(
+      "?pickup=2026-10-09&pickupTime=10%3A00&return=2026-10-12&returnTime=11%3A00",
+    );
+    expect(tripQuery({ pickup: "2026-10-09", return: "2026-10-12" })).toBe(
+      "?pickup=2026-10-09&return=2026-10-12",
+    );
+  });
+
+  it("is empty when no dates were searched", () => {
+    expect(tripQuery({ location: "miami-fl" })).toBe("");
   });
 });
 
