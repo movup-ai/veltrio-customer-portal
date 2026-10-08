@@ -2,17 +2,18 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { listCompanies } from "@/modules/company/company.repository";
 import { CompanyCard } from "@/modules/company/components/CompanyCard";
-import { CollectionsSection } from "@/modules/marketing/components/CollectionsSection";
-import { HeroSection } from "@/modules/marketing/components/HeroSection";
+import { BrowseSection } from "@/modules/marketing/components/BrowseSection";
 import { HostCtaSection } from "@/modules/marketing/components/HostCtaSection";
-import { ValuePropsSection } from "@/modules/marketing/components/ValuePropsSection";
+import { SearchBanner } from "@/modules/marketing/components/SearchBanner";
+import { hostCta, intro } from "@/modules/marketing/landing.content";
 import {
-  collections,
-  hero,
-  hostCta,
-  valueProps,
-} from "@/modules/marketing/landing.content";
+  browseByCity,
+  browseByMake,
+  browseByType,
+} from "@/modules/marketing/landing.utils";
+import { RecentSearchVehicles } from "@/modules/search/components/RecentSearchVehicles";
 import { SearchCapsule } from "@/modules/search/components/SearchCapsule";
+import { listCities } from "@/modules/search/search.repository";
 import { VehicleCard } from "@/modules/vehicle/components/VehicleCard";
 import { VehicleCardSkeleton } from "@/modules/vehicle/components/VehicleCardSkeleton";
 import { listVehicles } from "@/modules/vehicle/vehicle.repository";
@@ -57,9 +58,32 @@ async function VehiclesRow() {
           vehicle={vehicle}
           index={index}
           priority={index < 4}
+          newTab
         />
       ))}
     </ScrollRow>
+  );
+}
+
+/** Ways into the listed vehicles, built from what is actually listed. */
+async function BrowseSections() {
+  const vehicles = await settle(listVehicles());
+  if (!vehicles || vehicles.length === 0) return null;
+  return (
+    <>
+      <BrowseSection
+        id="types"
+        title="Browse by vehicle type"
+        description="From city cars to seven-seaters, whatever the trip needs."
+        items={browseByType(vehicles)}
+      />
+      <BrowseSection
+        id="makes"
+        title="Browse by make"
+        description="Know what you want to drive? Start with the badge."
+        items={browseByMake(vehicles)}
+      />
+    </>
   );
 }
 
@@ -79,7 +103,9 @@ async function CompaniesRow() {
   );
 }
 
-export default function HomePage() {
+export default async function HomePage() {
+  // Without the list the search simply has no city to offer.
+  const cities = (await settle(listCities())) ?? [];
   return (
     <>
       <JsonLd
@@ -101,19 +127,13 @@ export default function HomePage() {
       />
       <SiteHeader variant="overlay" />
       <main id="main">
-        <HeroSection
-          {...hero}
-          title={
-            <>
-              Drive something{" "}
-              <em className="text-accent-on-inverse">remarkable.</em>
-            </>
-          }
-        >
-          <SearchCapsule />
-        </HeroSection>
+        <SearchBanner {...intro} imageClassName="object-[center_62%]">
+          <SearchCapsule cities={cities} />
+        </SearchBanner>
 
         <div className="container-page space-y-16 pt-10 md:pt-12">
+          <RecentSearchVehicles cities={cities} />
+
           <Suspense
             fallback={
               <ScrollRow {...ALL_VEHICLES}>
@@ -126,32 +146,24 @@ export default function HomePage() {
             <VehiclesRow />
           </Suspense>
 
-          <CollectionsSection
-            eyebrow="Collections"
-            title={
-              <>
-                Curated for the drive, <em>not the errand.</em>
-              </>
-            }
-            collections={collections}
-          />
+          {cities.length > 0 && (
+            <BrowseSection
+              id="cities"
+              title="Browse by city"
+              description="Pick up where the rental companies are."
+              items={browseByCity(cities)}
+            />
+          )}
 
-          <ValuePropsSection
-            eyebrow="Why Veltrio"
-            title={
-              <>
-                Every price, every term,{" "}
-                <em className="text-accent-on-inverse">side by side.</em>
-              </>
-            }
-            values={valueProps}
-          />
+          <Suspense fallback={null}>
+            <BrowseSections />
+          </Suspense>
 
           <Suspense fallback={null}>
             <CompaniesRow />
           </Suspense>
 
-          <HostCtaSection {...hostCta} />
+          {siteConfig.portalUrl && <HostCtaSection {...hostCta} />}
         </div>
       </main>
     </>

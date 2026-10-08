@@ -2,20 +2,32 @@ import Link from "next/link";
 import { siteConfig, siteHref } from "@/shared/config/site";
 import { Logo } from "@/shared/ui/atoms/Logo";
 
+interface FooterLink {
+  /** A marketplace path, or a full address such as the portal's or a `mailto:`. */
+  href: string;
+  label: string;
+}
+
 export interface FooterColumn {
   title: string;
-  links: { href: string; label: string }[];
+  links: FooterLink[];
 }
 
 interface SiteFooterProps {
   columns: FooterColumn[];
+  /** Links beside the copyright line, e.g. Contact. */
+  legalLinks?: FooterLink[];
 }
 
-export function SiteFooter({ columns }: SiteFooterProps) {
+/**
+ * The marketplace footer. A page that renders `data-minimal-footer` (a payment, an agreement
+ * to sign) gets only the bottom line, so nothing leads the renter away from it.
+ */
+export function SiteFooter({ columns, legalLinks = [] }: SiteFooterProps) {
   return (
-    <footer className="mt-20 bg-surface-muted pt-14 pb-8">
+    <footer className="mt-20 bg-surface-muted pt-14 pb-8 group-has-[[data-minimal-footer]]/page:mt-0 group-has-[[data-minimal-footer]]/page:pt-8">
       <div className="container-page">
-        <div className="grid grid-cols-2 gap-8 md:grid-cols-[1.4fr_repeat(3,1fr)]">
+        <div className="grid grid-cols-2 gap-8 group-has-[[data-minimal-footer]]/page:hidden md:grid-cols-[1.4fr_repeat(3,1fr)]">
           <div className="col-span-2 md:col-span-1">
             <Logo />
             <p className="mt-4 max-w-xs text-meta text-muted">
@@ -42,9 +54,26 @@ export function SiteFooter({ columns }: SiteFooterProps) {
             </nav>
           ))}
         </div>
-        <p className="mt-10 border-t border-border pt-6 text-meta text-muted">
-          © {new Date().getFullYear()} {siteConfig.name}
-        </p>
+        <div className="mt-10 flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-t border-border pt-6 text-meta text-muted group-has-[[data-minimal-footer]]/page:mt-0 group-has-[[data-minimal-footer]]/page:border-0 group-has-[[data-minimal-footer]]/page:pt-0">
+          <p>
+            © {new Date().getFullYear()} {siteConfig.name}
+          </p>
+          {legalLinks.length > 0 && (
+            <ul className="flex flex-wrap gap-x-6 gap-y-2">
+              {legalLinks.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={siteHref(link.href)}
+                    prefetch={false}
+                    className="hover:text-foreground"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       </div>
     </footer>
   );

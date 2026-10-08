@@ -5,7 +5,10 @@ import {
   JetBrains_Mono,
 } from "next/font/google";
 import type { ReactNode } from "react";
-import { footerColumns } from "@/modules/marketing/landing.content";
+import {
+  footerColumns,
+  footerLegalLinks,
+} from "@/modules/marketing/landing.content";
 import { siteConfig } from "@/shared/config/site";
 import { SiteFooter } from "@/shared/ui/organisms/SiteFooter";
 import "@/styles/globals.css";
@@ -49,7 +52,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       lang="en"
       className={`${display.variable} ${sans.variable} ${mono.variable}`}
     >
-      <body>
+      <body className="group/page">
         <a
           href="#main"
           className="sr-only z-50 rounded-full bg-foreground px-4 py-2 text-on-inverse focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
@@ -57,7 +60,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           Skip to content
         </a>
         {children}
-        <SiteFooter columns={footerColumns} />
+        <SiteFooter columns={footerColumns} legalLinks={footerLegalLinks} />
       </body>
     </html>
   );

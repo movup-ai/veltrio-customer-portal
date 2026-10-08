@@ -43,6 +43,8 @@ export interface BookingFormValues {
   insurancePhoto: File | null;
   paymentMethod: PaymentMethod | "";
   paymentTiming: PaymentTiming | "";
+  /** The branch the car comes back to; empty for the one it is picked up at. */
+  returnLocation: string;
   notes: string;
 }
 
@@ -62,6 +64,7 @@ export const EMPTY_BOOKING_FORM: BookingFormValues = {
   insurancePhoto: null,
   paymentMethod: "",
   paymentTiming: "",
+  returnLocation: "",
   notes: "",
 };
 

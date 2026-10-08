@@ -5,9 +5,12 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { buildSearchUrl } from "@/modules/search/search-params";
+import { siteConfig } from "@/shared/config/site";
 import { unsplash } from "@/shared/lib/unsplash";
 import type { FooterColumn } from "@/shared/ui/organisms/SiteFooter";
 import type { Collection } from "./components/CollectionsSection";
+import type { Faq } from "./components/FaqSection";
+import type { HowItWorksStep } from "./components/HowItWorksSection";
 import type { ValueProp } from "./components/ValuePropsSection";
 
 /**
@@ -21,6 +24,24 @@ export const hero = {
     "Compare cars from independent rental companies. Every price upfront, every term in plain sight, one simple booking.",
   image: {
     variants: unsplash("1603584173870-7f23fdae1b7a", [800, 1600, 2400], 3 / 2),
+    alt: "Grey Audi R8 parked on a mountain road at sunset",
+  },
+};
+
+/** The landing page opens on its search, under the title alone. */
+export const intro = {
+  title: "Rent from independent car rental companies",
+  image: {
+    variants: [{ url: "/images/landing.jpg", width: 5357, height: 3164 }],
+    alt: "White Chevrolet Camaro in a dark garage, with more cars on lifts behind it",
+  },
+};
+
+export const howItWorksHero = {
+  description:
+    "Request a car from a professional rental company in minutes. Nothing is charged until the company confirms your booking.",
+  image: {
+    variants: [{ url: "/images/how-it-works.jpg", width: 2000, height: 1335 }],
     alt: "Grey Audi R8 parked on a mountain road at sunset",
   },
 };
@@ -55,6 +76,21 @@ export const collections: Collection[] = [
   },
 ];
 
+/** Closes the how-it-works page by sending the reader back to the cars. */
+export const browseCta = {
+  eyebrow: "Ready when you are",
+  title: "Find the car for your next trip.",
+  description:
+    "Browse every vehicle listed by independent rental companies and request yours.",
+  cta: { label: "Browse vehicles", href: "/" },
+  image: intro.image,
+};
+
+export const valuePropsImage = {
+  variants: [{ url: "/images/why-veltrio.jpg", width: 2000, height: 2996 }],
+  alt: "Black Audi RS 6 seen head-on on a dirt track at dusk",
+};
+
 export const valueProps: ValueProp[] = [
   {
     icon: ShieldCheck,
@@ -81,36 +117,101 @@ export const valueProps: ValueProp[] = [
   },
 ];
 
+export const howItWorks: HowItWorksStep[] = [
+  {
+    title: "Find your car",
+    description:
+      "Browse cars from independent rental companies and compare the price, deposit and terms of each.",
+  },
+  {
+    title: "Request to book",
+    description:
+      "Send your details with a photo of your licence and insurance card. Nothing is charged yet.",
+  },
+  {
+    title: "The company confirms",
+    description:
+      "The rental company reviews your request, then sends a secure link to pay online, unless you chose to pay cash at pick-up.",
+  },
+  {
+    title: "Pick up and drive",
+    description:
+      "Sign the rental agreement online and collect the car at the company's branch.",
+  },
+];
+
+export const faqs: Faq[] = [
+  {
+    question: "Who am I renting from?",
+    answer:
+      "A professional rental company, never a private owner. Veltrio lists their vehicles, and your booking and rental agreement are with the company that hands you the keys.",
+  },
+  {
+    question: "When do I pay?",
+    answer:
+      "Not when you send a request. Once the company accepts it, they send you a secure link to pay online. You can also choose to pay cash at pick-up.",
+  },
+  {
+    question: "What do I need to book?",
+    answer:
+      "You must be at least 18 and hold a valid driving licence. The booking form asks for your contact details and a photo of your licence and insurance card.",
+  },
+  {
+    question: "Is there a security deposit?",
+    answer:
+      "Each company sets its own. When a vehicle has one, the amount is shown before you book, and it is released when the car comes back.",
+  },
+  {
+    question: "Can I return the car to a different location?",
+    answer:
+      "Yes, when the company has more than one branch. You choose the return branch while booking; pick-up is always at the branch where the car is kept.",
+  },
+];
+
+/** Shown only once the portal's address is configured; until then there is nowhere to send a company. */
 export const hostCta = {
   eyebrow: "For rental companies",
   title: "Your fleet, in front of people who care what they drive.",
   description:
     "List your vehicles on Veltrio and keep your own pricing, terms and brand.",
-  cta: { label: "List your fleet", href: "/for-companies" },
+  cta: { label: "List your fleet", href: siteConfig.portalUrl ?? "" },
   image: {
     variants: unsplash("1492144534655-ae79c964c9d7", [800, 1600], 16 / 7),
     alt: "White Chevrolet Camaro in a dimly lit garage",
   },
 };
 
+/** City and company links land on sections of the landing page. */
 export const footerColumns: FooterColumn[] = [
   {
-    title: "Drive",
+    title: "Explore",
     links: [
-      { href: "/search", label: "Explore vehicles" },
-      { href: buildSearchUrl({ type: "sport" }), label: "Sports cars" },
-      { href: buildSearchUrl({ type: "suv" }), label: "SUVs" },
+      { href: "/search", label: "Browse vehicles" },
+      { href: "/#cities", label: "Browse by city" },
+      { href: "/#companies", label: "Rental companies" },
     ],
   },
-  {
-    title: "Rental companies",
-    links: [{ href: "/for-companies", label: "List your fleet" }],
-  },
+  ...(siteConfig.portalUrl
+    ? [
+        {
+          title: "For rental companies",
+          links: [
+            { href: siteConfig.portalUrl, label: "List your fleet" },
+            { href: siteConfig.portalUrl, label: "Company sign in" },
+          ],
+        },
+      ]
+    : []),
   {
     title: "Veltrio",
     links: [
-      { href: "/privacy", label: "Privacy" },
-      { href: "/terms", label: "Terms" },
+      { href: "/how-it-works", label: "How it works" },
+      { href: "/how-it-works#faq", label: "FAQ" },
     ],
   },
 ];
+
+/** Beside the copyright line on every page. Privacy and Terms join it once their text exists. */
+export const footerLegalLinks = siteConfig.supportEmail
+  ? [{ href: `mailto:${siteConfig.supportEmail}`, label: "Contact" }]
+  : [];

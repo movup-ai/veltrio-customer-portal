@@ -82,8 +82,20 @@ export function Select<T extends string>({
               "mt-1.5 flex items-center justify-between gap-3 text-left data-[state=open]:border-graphite",
             )}
           >
-            <span id={valueId} className={cn(!selected && "text-placeholder")}>
+            <span
+              id={valueId}
+              className={cn(
+                "min-w-0 truncate",
+                !selected && "text-placeholder",
+              )}
+            >
               {selected?.label ?? placeholder}
+              {selected?.detail && (
+                <span className="text-muted">
+                  {" · "}
+                  {selected.detail}
+                </span>
+              )}
             </span>
             <ChevronDown
               aria-hidden

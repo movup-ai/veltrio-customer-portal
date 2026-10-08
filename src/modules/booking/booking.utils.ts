@@ -51,3 +51,12 @@ export function parseBookingDates(
   }
   return { pickup, pickupTime, return: dropoff, returnTime };
 }
+
+/** Where the car comes back: the renter's choice while that branch is open, else where it was picked up. */
+export function returnBranch(
+  chosen: string,
+  pickup: string,
+  branches: string[],
+) {
+  return branches.includes(chosen) ? chosen : pickup;
+}

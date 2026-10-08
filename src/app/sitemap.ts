@@ -12,6 +12,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const companies = (await settle(listCompanies())) ?? [];
   return [
     { url: siteConfig.url, changeFrequency: "daily", priority: 1 },
+    {
+      url: `${siteConfig.url}/how-it-works`,
+      changeFrequency: "monthly",
+      priority: 0.5,
+    },
     ...companies.map((company) => ({
       url: companyHref(company),
       changeFrequency: "daily" as const,

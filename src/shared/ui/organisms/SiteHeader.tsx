@@ -2,11 +2,14 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { siteHref } from "@/shared/config/site";
+import { siteConfig, siteHref } from "@/shared/config/site";
 import { cn } from "@/shared/lib/cn";
 import { Logo } from "@/shared/ui/atoms/Logo";
 
-const NAV_LINKS = [{ href: "/design", label: "Design System" }];
+const NAV_LINKS = [
+  { href: "/how-it-works", label: "How it works" },
+  { href: "/design", label: "Design System" },
+];
 
 interface SiteHeaderProps {
   /**
@@ -52,12 +55,14 @@ export function SiteHeader({ variant = "solid" }: SiteHeaderProps) {
             </Link>
           ))}
         </nav>
-        <Link
-          href={siteHref("/for-companies")}
-          className="ml-auto flex h-10 items-center rounded-full px-4 text-sm font-semibold hover:bg-current/10"
-        >
-          List your fleet
-        </Link>
+        {siteConfig.portalUrl && (
+          <a
+            href={siteConfig.portalUrl}
+            className="ml-auto flex h-10 items-center rounded-full px-4 text-sm font-semibold hover:bg-current/10"
+          >
+            List your fleet
+          </a>
+        )}
       </div>
     </header>
   );

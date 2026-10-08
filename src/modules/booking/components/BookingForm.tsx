@@ -3,11 +3,13 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { track } from "@/shared/lib/analytics";
 import { Button } from "@/shared/ui/atoms/Button";
+import { Select } from "@/shared/ui/molecules/Select";
 import { TextAreaField } from "@/shared/ui/molecules/TextAreaField";
 import { uploadBookingDocuments } from "../booking.documents";
 import { clearBookingDraft } from "../booking.draft";
 import { useBookingForm } from "../booking.form";
 import { createBooking } from "../booking.repository";
+import { returnBranch } from "../booking.utils";
 import {
   BOOKING_FIELD_ORDER,
   NOTES_MAX_LENGTH,
@@ -26,6 +28,7 @@ import { BookingConfirmed } from "./BookingConfirmed";
 import { BookingDocumentsSection } from "./BookingDocumentsSection";
 import { BookingDriverSection } from "./BookingDriverSection";
 import { BookingPaymentSection } from "./BookingPaymentSection";
+import { useBookingReturn } from "./BookingReturn";
 import { BookingSection } from "./BookingSection";
 
 const FAILURE_MESSAGES: Record<BookingFailure, string> = {
@@ -45,8 +48,10 @@ interface BookingFormProps {
   /** The company's subdomain and the vehicle's URL segment: which vehicle is being booked. */
   subdomain: string;
   uri: string;
-  /** Pick-up and return branch. */
+  /** The vehicle's branch, where it is picked up. */
   location: string;
+  /** Each open branch's address by its name; any of them can take the car back. */
+  addresses: Record<string, string>;
   dates: BookingDates;
   /** Null when the company has not priced the rental yet. */
   quote: BookingQuote | null;
@@ -74,6 +79,7 @@ export function BookingForm({
   subdomain,
   uri,
   location,
+  addresses,
   dates,
   quote,
   companyName,
@@ -88,6 +94,20 @@ export function BookingForm({
   // Bumped on each failed send, to move focus to the first field to fix.
   const [attempt, setAttempt] = useState(0);
   const rootRef = useRef<HTMLDivElement>(null);
+  const branches = Object.keys(addresses);
+  const returnLocation = returnBranch(
+    form.values.returnLocation,
+    location,
+    branches,
+  );
+  const canReturnElsewhere = branches.some((branch) => branch !== location);
+  const [, showReturnLocation] = useBookingReturn();
+
+  // Keeps the summary beside the form on the branch chosen here, or restored from a draft.
+  useEffect(
+    () => showReturnLocation(returnLocation),
+    [returnLocation, showReturnLocation],
+  );
 
   useEffect(() => {
     if (attempt === 0) return;
@@ -126,7 +146,7 @@ export function BookingForm({
     const result = await createBooking(subdomain, uri, {
       ...parts,
       pickupLocation: location,
-      returnLocation: location,
+      returnLocation,
       pickupAt: `${dates.pickup}T${dates.pickupTime}`,
       returnAt: `${dates.return}T${dates.returnTime}`,
     }).catch(() => ({ ok: false, reason: "failed" }) as const);
@@ -191,6 +211,23 @@ export function BookingForm({
       </p>
 
       <form noValidate onSubmit={onSubmit} className="mt-8 grid gap-5">
+        {canReturnElsewhere && (
+          <BookingSection
+            title="Return location"
+            description={`You pick the car up at ${location}. Bring it back there, or to another ${companyName} branch.`}
+          >
+            <Select
+              label="Return to"
+              options={branches.map((branch) => ({
+                value: branch,
+                label: branch,
+                detail: addresses[branch],
+              }))}
+              value={returnLocation}
+              onChange={(branch) => form.set("returnLocation", branch)}
+            />
+          </BookingSection>
+        )}
         <BookingDriverSection form={form} />
         <BookingDocumentsSection form={form} />
         <BookingPaymentSection

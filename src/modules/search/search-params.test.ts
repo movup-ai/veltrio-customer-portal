@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildSearchUrl, parseSearchParams } from "./search-params";
+import { buildSearchUrl, parseSearchParams, tripQuery } from "./search-params";
 
 describe("buildSearchUrl", () => {
   it("builds a readable URL and omits empty values", () => {
@@ -15,6 +15,30 @@ describe("buildSearchUrl", () => {
   });
 });
 
+describe("tripQuery", () => {
+  it("carries the searched dates and times, and nothing else", () => {
+    expect(
+      tripQuery({
+        location: "miami-fl",
+        pickup: "2026-10-09",
+        pickupTime: "10:00",
+        return: "2026-10-12",
+        returnTime: "11:00",
+        type: "suv",
+      }),
+    ).toBe(
+      "?pickup=2026-10-09&pickupTime=10%3A00&return=2026-10-12&returnTime=11%3A00",
+    );
+    expect(tripQuery({ pickup: "2026-10-09", return: "2026-10-12" })).toBe(
+      "?pickup=2026-10-09&return=2026-10-12",
+    );
+  });
+
+  it("is empty when no dates were searched", () => {
+    expect(tripQuery({ location: "miami-fl" })).toBe("");
+  });
+});
+
 describe("parseSearchParams", () => {
   it("round-trips a valid query", () => {
     const query = {
@@ -24,6 +48,7 @@ describe("parseSearchParams", () => {
       return: "2026-10-13",
       returnTime: "18:00",
       type: "suv",
+      make: "land-rover",
     } as const;
     const params = Object.fromEntries(
       new URLSearchParams(buildSearchUrl(query).split("?")[1]),
@@ -45,15 +70,25 @@ describe("parseSearchParams", () => {
       pickupTime: undefined,
       returnTime: undefined,
       type: undefined,
+      make: undefined,
     });
   });
 
-  it("drops a range whose return is not after pick-up", () => {
+  it("drops a range whose return is before pick-up", () => {
     const parsed = parseSearchParams({
       pickup: "2026-10-13",
       return: "2026-10-10",
     });
     expect(parsed.pickup).toBeUndefined();
     expect(parsed.return).toBeUndefined();
+  });
+
+  it("keeps a pick-up and return on the same day", () => {
+    const parsed = parseSearchParams({
+      pickup: "2026-10-09",
+      return: "2026-10-09",
+    });
+    expect(parsed.pickup).toBe("2026-10-09");
+    expect(parsed.return).toBe("2026-10-09");
   });
 });

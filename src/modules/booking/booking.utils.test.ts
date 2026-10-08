@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { bookingHref, parseBookingDates } from "./booking.utils";
+import { bookingHref, parseBookingDates, returnBranch } from "./booking.utils";
 
 describe("bookingHref", () => {
   it("keeps the dates and times in the URL", () => {
@@ -62,5 +62,18 @@ describe("parseBookingDates", () => {
     expect(
       parseBookingDates(params(day(8), day(9)), { ...open, booked }),
     ).not.toBeNull();
+  });
+});
+
+describe("returnBranch", () => {
+  const branches = ["Downtown", "Airport"];
+
+  it("is the branch the renter chose", () => {
+    expect(returnBranch("Airport", "Downtown", branches)).toBe("Airport");
+  });
+
+  it("is the pick-up branch when nothing is chosen or the choice has closed", () => {
+    expect(returnBranch("", "Downtown", branches)).toBe("Downtown");
+    expect(returnBranch("Harbour", "Downtown", branches)).toBe("Downtown");
   });
 });
