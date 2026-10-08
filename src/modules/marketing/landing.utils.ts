@@ -1,4 +1,5 @@
-import type { LucideIcon } from "lucide-react";
+import { MapPin, type LucideIcon } from "lucide-react";
+import { cityLabel, citySlug, type City } from "@/modules/search/cities";
 import { buildSearchUrl } from "@/modules/search/search-params";
 import type { Vehicle } from "@/modules/vehicle/types";
 import { VEHICLE_TYPE_META } from "@/modules/vehicle/vehicle-types";
@@ -27,6 +28,16 @@ function tally(
     else items.set(key, { ...item, count: 1 });
   }
   return [...items.values()].sort((a, b) => b.count - a.count);
+}
+
+/** The cities with vehicles to rent, in the API's order: the fullest first. */
+export function browseByCity(cities: City[]): BrowseItem[] {
+  return cities.map((city) => ({
+    label: cityLabel(city),
+    count: city.vehicleCount,
+    href: buildSearchUrl({ location: citySlug(city) }),
+    icon: MapPin,
+  }));
 }
 
 /** The vehicle types that have at least one vehicle listed. */

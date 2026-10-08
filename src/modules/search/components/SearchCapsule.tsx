@@ -18,7 +18,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/shared/ui/molecules/Popover";
-import { MARKETS, type Market } from "../markets";
+import { cityLabel, citySlug, findCity, type City } from "../cities";
 import { loadRecentSearch, saveRecentSearch } from "../recent-search";
 import { buildSearchUrl, type SearchQuery } from "../search-params";
 import { completeTrip, type Trip } from "../trip";
@@ -31,7 +31,8 @@ type Field = "location" | "dates" | `${End}Time`;
 interface SearchCapsuleProps {
   /** Pre-fills the fields, e.g. from the current URL on the results page. */
   initialQuery?: SearchQuery;
-  markets?: Market[];
+  /** Cities with vehicles to rent, as the API lists them. */
+  cities: City[];
   className?: string;
 }
 
@@ -56,7 +57,7 @@ function Segment({ label, children }: { label: string; children: ReactNode }) {
 
 export function SearchCapsule({
   initialQuery,
-  markets = MARKETS,
+  cities,
   className,
 }: SearchCapsuleProps) {
   const router = useRouter();
@@ -84,7 +85,7 @@ export function SearchCapsule({
     });
   }, [initialQuery]);
 
-  const market = markets.find((m) => m.slug === location);
+  const city = findCity(cities, location);
   const from = fromIsoDate(trip.pickup);
   const to = fromIsoDate(trip.return);
   const popoverProps = (field: Field) => ({
@@ -152,31 +153,50 @@ export function SearchCapsule({
           <SearchField
             label="Where"
             placeholder="Choose a city"
-            value={market && `${market.name}, ${market.region}`}
+            value={city && cityLabel(city)}
           />
         </PopoverTrigger>
         <PopoverContent align="start" className="w-80 p-3">
-          <ul aria-label="Cities">
-            {markets.map((m) => (
-              <li key={m.slug}>
-                <button
-                  type="button"
-                  aria-pressed={m.slug === location}
-                  onClick={() => {
-                    setLocation(m.slug);
-                    setOpenField(null);
-                  }}
-                  className="flex w-full items-center gap-4 rounded-md p-2 text-left hover:bg-surface-muted aria-pressed:bg-surface-muted"
-                >
-                  <span className="grid size-11 place-items-center rounded-md bg-surface-muted">
-                    <MapPin aria-hidden className="size-5" strokeWidth={1.75} />
-                  </span>
-                  <span className="font-semibold">
-                    {m.name}, {m.region}
-                  </span>
-                </button>
-              </li>
-            ))}
+          {cities.length === 0 && (
+            <p className="p-2 text-sm text-muted">
+              No cities are available right now.
+            </p>
+          )}
+          <ul aria-label="Cities" className="max-h-80 overflow-y-auto">
+            {cities.map((option) => {
+              const slug = citySlug(option);
+              return (
+                <li key={slug}>
+                  <button
+                    type="button"
+                    aria-pressed={slug === location}
+                    onClick={() => {
+                      setLocation(slug);
+                      setOpenField(null);
+                    }}
+                    className="flex w-full items-center gap-4 rounded-md p-2 text-left hover:bg-surface-muted aria-pressed:bg-surface-muted"
+                  >
+                    <span className="grid size-11 place-items-center rounded-md bg-surface-muted">
+                      <MapPin
+                        aria-hidden
+                        className="size-5"
+                        strokeWidth={1.75}
+                      />
+                    </span>
+                    <span>
+                      <span className="block font-semibold">
+                        {cityLabel(option)}
+                      </span>
+                      <span className="block text-sm text-muted">
+                        {option.vehicleCount === 1
+                          ? "1 car"
+                          : `${option.vehicleCount} cars`}
+                      </span>
+                    </span>
+                  </button>
+                </li>
+              );
+            })}
           </ul>
         </PopoverContent>
       </Popover>

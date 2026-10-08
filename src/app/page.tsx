@@ -15,9 +15,14 @@ import {
   howItWorks,
   valueProps,
 } from "@/modules/marketing/landing.content";
-import { browseByMake, browseByType } from "@/modules/marketing/landing.utils";
+import {
+  browseByCity,
+  browseByMake,
+  browseByType,
+} from "@/modules/marketing/landing.utils";
 import { RecentSearchVehicles } from "@/modules/search/components/RecentSearchVehicles";
 import { SearchCapsule } from "@/modules/search/components/SearchCapsule";
+import { listCities } from "@/modules/search/search.repository";
 import { VehicleCard } from "@/modules/vehicle/components/VehicleCard";
 import { VehicleCardSkeleton } from "@/modules/vehicle/components/VehicleCardSkeleton";
 import { listVehicles } from "@/modules/vehicle/vehicle.repository";
@@ -107,7 +112,9 @@ async function CompaniesRow() {
   );
 }
 
-export default function HomePage() {
+export default async function HomePage() {
+  // Without the list the search simply has no city to offer.
+  const cities = (await settle(listCities())) ?? [];
   return (
     <>
       <JsonLd
@@ -138,11 +145,11 @@ export default function HomePage() {
             </>
           }
         >
-          <SearchCapsule />
+          <SearchCapsule cities={cities} />
         </HeroSection>
 
         <div className="container-page space-y-16 pt-10 md:pt-12">
-          <RecentSearchVehicles />
+          <RecentSearchVehicles cities={cities} />
 
           <Suspense
             fallback={
@@ -155,6 +162,15 @@ export default function HomePage() {
           >
             <VehiclesRow />
           </Suspense>
+
+          {cities.length > 0 && (
+            <BrowseSection
+              id="cities"
+              title="Browse by city"
+              description="Pick up where the rental companies are."
+              items={browseByCity(cities)}
+            />
+          )}
 
           <Suspense fallback={null}>
             <BrowseSections />

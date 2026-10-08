@@ -1,5 +1,6 @@
 import type { Company } from "@/modules/company/types";
 import { collections } from "@/modules/marketing/landing.content";
+import type { City } from "@/modules/search/cities";
 import type { Vehicle, VehiclePhoto } from "@/modules/vehicle/types";
 
 /** Sample content for the /design page only. Never shown to renters. */
@@ -93,6 +94,23 @@ export const SAMPLE_VEHICLES: Vehicle[] = [
       zeroToSixtySec: 3.7,
       cylinders: 8,
     },
+  },
+];
+
+export const SAMPLE_CITIES: City[] = [
+  {
+    city: "Miami",
+    state: "FL",
+    latitude: null,
+    longitude: null,
+    vehicleCount: 12,
+  },
+  {
+    city: "Los Angeles",
+    state: "CA",
+    latitude: null,
+    longitude: null,
+    vehicleCount: 7,
   },
 ];
 

@@ -6,7 +6,7 @@ import { parseTime } from "@/shared/lib/time";
  * /search?location=miami&pickup=2026-10-10&return=2026-10-13&type=suv
  */
 export interface SearchQuery {
-  /** Market slug, e.g. "miami". */
+  /** City slug, e.g. "miami-fl". */
   location?: string;
   /** Pick-up date, YYYY-MM-DD. */
   pickup?: string;

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Vehicle } from "@/modules/vehicle/types";
-import { browseByMake, browseByType } from "./landing.utils";
+import { browseByCity, browseByMake, browseByType } from "./landing.utils";
 
 const vehicle = (make: string, vehicleType: Vehicle["vehicleType"]) =>
   ({ make, vehicleType }) as Vehicle;
@@ -11,6 +11,21 @@ const vehicles = [
   vehicle("bmw ", "suv"),
   vehicle("Land Rover", "suv"),
 ];
+
+describe("browseByCity", () => {
+  it("links each city to its search, keeping the API's order and counts", () => {
+    const place = { latitude: null, longitude: null };
+    expect(
+      browseByCity([
+        { ...place, city: "Miami", state: "FL", vehicleCount: 12 },
+        { ...place, city: "Paris", state: null, vehicleCount: 1 },
+      ]).map(({ label, count, href }) => [label, count, href]),
+    ).toEqual([
+      ["Miami, FL", 12, "/search?location=miami-fl"],
+      ["Paris", 1, "/search?location=paris"],
+    ]);
+  });
+});
 
 describe("browseByType", () => {
   it("lists only the types with vehicles, the fullest first", () => {

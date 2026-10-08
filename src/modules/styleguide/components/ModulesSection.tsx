@@ -3,7 +3,11 @@ import { SearchCapsule } from "@/modules/search/components/SearchCapsule";
 import { SearchField } from "@/modules/search/components/SearchField";
 import { VehicleCard } from "@/modules/vehicle/components/VehicleCard";
 import { VehicleCardSkeleton } from "@/modules/vehicle/components/VehicleCardSkeleton";
-import { SAMPLE_COMPANIES, SAMPLE_VEHICLES } from "../sample-data";
+import {
+  SAMPLE_CITIES,
+  SAMPLE_COMPANIES,
+  SAMPLE_VEHICLES,
+} from "../sample-data";
 import { Specimen } from "./Specimen";
 import { StyleSection } from "./StyleSection";
 
@@ -19,7 +23,7 @@ export function ModulesSection() {
         source="modules/search/components/SearchCapsule.tsx"
         tone="inverse"
       >
-        <SearchCapsule />
+        <SearchCapsule cities={SAMPLE_CITIES} />
       </Specimen>
 
       <Specimen
