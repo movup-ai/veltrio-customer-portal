@@ -6,7 +6,10 @@ import { siteHref } from "@/shared/config/site";
 import { cn } from "@/shared/lib/cn";
 import { Logo } from "@/shared/ui/atoms/Logo";
 
-const NAV_LINKS = [{ href: "/design", label: "Design System" }];
+const NAV_LINKS = [
+  { href: "/how-it-works", label: "How it works" },
+  { href: "/design", label: "Design System" },
+];
 
 interface SiteHeaderProps {
   /**

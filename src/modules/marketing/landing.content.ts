@@ -27,6 +27,24 @@ export const hero = {
   },
 };
 
+/** The landing page opens on its search, under the title alone. */
+export const intro = {
+  title: "Rent from independent car rental companies",
+  image: {
+    variants: [{ url: "/images/landing.jpg", width: 5357, height: 3164 }],
+    alt: "White Chevrolet Camaro in a dark garage, with more cars on lifts behind it",
+  },
+};
+
+export const howItWorksHero = {
+  description:
+    "Veltrio brings professional rental companies together in one place. You choose the car, the company confirms, and the keys are yours.",
+  image: {
+    variants: [{ url: "/images/how-it-works.jpg", width: 2000, height: 1335 }],
+    alt: "Grey Audi R8 parked on a mountain road at sunset",
+  },
+};
+
 export const collections: Collection[] = [
   {
     title: "Weekend sports cars",
@@ -56,6 +74,11 @@ export const collections: Collection[] = [
     },
   },
 ];
+
+export const valuePropsImage = {
+  variants: [{ url: "/images/why-veltrio.jpg", width: 2000, height: 2996 }],
+  alt: "Black Audi RS 6 seen head-on on a dirt track at dusk",
+};
 
 export const valueProps: ValueProp[] = [
   {
@@ -162,6 +185,7 @@ export const footerColumns: FooterColumn[] = [
   {
     title: "Veltrio",
     links: [
+      { href: "/how-it-works", label: "How it works" },
       { href: "/privacy", label: "Privacy" },
       { href: "/terms", label: "Terms" },
     ],

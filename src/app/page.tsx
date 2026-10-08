@@ -3,18 +3,9 @@ import { Suspense } from "react";
 import { listCompanies } from "@/modules/company/company.repository";
 import { CompanyCard } from "@/modules/company/components/CompanyCard";
 import { BrowseSection } from "@/modules/marketing/components/BrowseSection";
-import { FaqSection } from "@/modules/marketing/components/FaqSection";
-import { HeroSection } from "@/modules/marketing/components/HeroSection";
 import { HostCtaSection } from "@/modules/marketing/components/HostCtaSection";
-import { HowItWorksSection } from "@/modules/marketing/components/HowItWorksSection";
-import { ValuePropsSection } from "@/modules/marketing/components/ValuePropsSection";
-import {
-  faqs,
-  hero,
-  hostCta,
-  howItWorks,
-  valueProps,
-} from "@/modules/marketing/landing.content";
+import { SearchBanner } from "@/modules/marketing/components/SearchBanner";
+import { hostCta, intro } from "@/modules/marketing/landing.content";
 import {
   browseByCity,
   browseByMake,
@@ -136,17 +127,9 @@ export default async function HomePage() {
       />
       <SiteHeader variant="overlay" />
       <main id="main">
-        <HeroSection
-          {...hero}
-          title={
-            <>
-              Drive something{" "}
-              <em className="text-accent-on-inverse">remarkable.</em>
-            </>
-          }
-        >
+        <SearchBanner {...intro} imageClassName="object-[center_62%]">
           <SearchCapsule cities={cities} />
-        </HeroSection>
+        </SearchBanner>
 
         <div className="container-page space-y-16 pt-10 md:pt-12">
           <RecentSearchVehicles cities={cities} />
@@ -176,40 +159,9 @@ export default async function HomePage() {
             <BrowseSections />
           </Suspense>
 
-          <HowItWorksSection
-            eyebrow="How it works"
-            title={
-              <>
-                From browsing to the keys, <em>in four steps.</em>
-              </>
-            }
-            steps={howItWorks}
-          />
-
-          <ValuePropsSection
-            eyebrow="Why Veltrio"
-            title={
-              <>
-                Every price, every term,{" "}
-                <em className="text-accent-on-inverse">side by side.</em>
-              </>
-            }
-            values={valueProps}
-          />
-
           <Suspense fallback={null}>
             <CompaniesRow />
           </Suspense>
-
-          <FaqSection
-            eyebrow="Questions"
-            title={
-              <>
-                Good to know <em>before you book.</em>
-              </>
-            }
-            faqs={faqs}
-          />
 
           <HostCtaSection {...hostCta} />
         </div>
