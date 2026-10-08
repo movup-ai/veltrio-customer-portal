@@ -1,5 +1,6 @@
 import type { LucideIcon } from "lucide-react";
 import type { ReactNode } from "react";
+import { cn } from "@/shared/lib/cn";
 import { Eyebrow } from "@/shared/ui/atoms/Eyebrow";
 import {
   ResponsiveImage,
@@ -12,10 +13,18 @@ export interface ValueProp {
   description: string;
 }
 
+/** One headline figure, e.g. 312 "Rental companies". */
+export interface ValueStat {
+  value: number;
+  label: string;
+}
+
 interface ValuePropsSectionProps {
   eyebrow: string;
   title: ReactNode;
   values: ValueProp[];
+  /** Figures along the bottom of the statement panel. */
+  stats?: ValueStat[];
   /** Photo behind the statement; the panel is plain dark without one. */
   image?: { variants: ImageVariant[]; alt: string };
 }
@@ -25,6 +34,7 @@ export function ValuePropsSection({
   eyebrow,
   title,
   values,
+  stats = [],
   image,
 }: ValuePropsSectionProps) {
   return (
@@ -51,10 +61,28 @@ export function ValuePropsSection({
         <Eyebrow tone="inverse">{eyebrow}</Eyebrow>
         <h2
           id="values-heading"
-          className="max-w-[13ch] font-display text-h2 md:text-h1"
+          className={cn(
+            "max-w-[13ch] font-display text-h2 md:text-h1",
+            // With figures below, the statement moves up under its label.
+            stats.length > 0 && "mt-6 mb-auto",
+          )}
         >
           {title}
         </h2>
+        {stats.length > 0 && (
+          <dl className="mt-10 flex flex-wrap gap-x-12 gap-y-6">
+            {stats.map((stat) => (
+              <div key={stat.label} className="flex flex-col-reverse">
+                <dt className="mt-1 text-sm text-on-inverse/70">
+                  {stat.label}
+                </dt>
+                <dd className="font-display text-h2">
+                  {stat.value.toLocaleString("en-US")}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        )}
       </div>
       <ul className="grid gap-5 sm:grid-cols-2">
         {values.map(({ icon: Icon, title: valueTitle, description }) => (

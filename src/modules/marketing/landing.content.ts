@@ -38,7 +38,7 @@ export const intro = {
 
 export const howItWorksHero = {
   description:
-    "Veltrio brings professional rental companies together in one place. You choose the car, the company confirms, and the keys are yours.",
+    "Request a car from a professional rental company in minutes. Nothing is charged until the company confirms your booking.",
   image: {
     variants: [{ url: "/images/how-it-works.jpg", width: 2000, height: 1335 }],
     alt: "Grey Audi R8 parked on a mountain road at sunset",
@@ -74,6 +74,16 @@ export const collections: Collection[] = [
     },
   },
 ];
+
+/** Closes the how-it-works page by sending the reader back to the cars. */
+export const browseCta = {
+  eyebrow: "Ready when you are",
+  title: "Find the car for your next trip.",
+  description:
+    "Browse every vehicle listed by independent rental companies and request yours.",
+  cta: { label: "Browse vehicles", href: "/" },
+  image: intro.image,
+};
 
 export const valuePropsImage = {
   variants: [{ url: "/images/why-veltrio.jpg", width: 2000, height: 2996 }],

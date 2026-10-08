@@ -14,7 +14,7 @@ interface HostCtaSectionProps {
   image: { variants: ImageVariant[]; alt: string };
 }
 
-/** Banner inviting rental companies to list their fleet. */
+/** A photo banner with one call to action, e.g. inviting rental companies to list their fleet. */
 export function HostCtaSection({
   eyebrow,
   title,
