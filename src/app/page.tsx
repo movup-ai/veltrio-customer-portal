@@ -16,6 +16,7 @@ import {
   valueProps,
 } from "@/modules/marketing/landing.content";
 import { browseByMake, browseByType } from "@/modules/marketing/landing.utils";
+import { RecentSearchVehicles } from "@/modules/search/components/RecentSearchVehicles";
 import { SearchCapsule } from "@/modules/search/components/SearchCapsule";
 import { VehicleCard } from "@/modules/vehicle/components/VehicleCard";
 import { VehicleCardSkeleton } from "@/modules/vehicle/components/VehicleCardSkeleton";
@@ -61,6 +62,7 @@ async function VehiclesRow() {
           vehicle={vehicle}
           index={index}
           priority={index < 4}
+          newTab
         />
       ))}
     </ScrollRow>
@@ -140,6 +142,8 @@ export default function HomePage() {
         </HeroSection>
 
         <div className="container-page space-y-16 pt-10 md:pt-12">
+          <RecentSearchVehicles />
+
           <Suspense
             fallback={
               <ScrollRow {...ALL_VEHICLES}>

@@ -3,7 +3,7 @@
 import { format } from "date-fns";
 import { MapPin, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState, type FormEvent, type ReactNode } from "react";
+import { useEffect, useState, type FormEvent, type ReactNode } from "react";
 import type { DateRange } from "react-day-picker";
 import { track } from "@/shared/lib/analytics";
 import { cn } from "@/shared/lib/cn";
@@ -19,6 +19,7 @@ import {
   PopoverTrigger,
 } from "@/shared/ui/molecules/Popover";
 import { MARKETS, type Market } from "../markets";
+import { loadRecentSearch, saveRecentSearch } from "../recent-search";
 import { buildSearchUrl, type SearchQuery } from "../search-params";
 import { completeTrip, type Trip } from "../trip";
 import { SearchField } from "./SearchField";
@@ -68,6 +69,21 @@ export function SearchCapsule({
     returnTime: initialQuery?.returnTime,
   });
 
+  // After mount, so the first render matches the server's empty form.
+  useEffect(() => {
+    if (initialQuery) return;
+    const recent = loadRecentSearch(toIsoDate(new Date()));
+    if (!recent) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- reading browser storage once
+    setLocation(recent.location);
+    setTrip({
+      pickup: recent.pickup,
+      pickupTime: recent.pickupTime,
+      return: recent.return,
+      returnTime: recent.returnTime,
+    });
+  }, [initialQuery]);
+
   const market = markets.find((m) => m.slug === location);
   const from = fromIsoDate(trip.pickup);
   const to = fromIsoDate(trip.return);
@@ -90,6 +106,7 @@ export function SearchCapsule({
       location,
       ...(trip.pickup && trip.return && trip),
     };
+    saveRecentSearch(query);
     track("search_submitted", query);
     router.push(buildSearchUrl(query));
   };

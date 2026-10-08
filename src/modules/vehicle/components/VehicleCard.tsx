@@ -22,6 +22,8 @@ interface VehicleCardProps {
   priority?: boolean;
   /** Position in a list; staggers the entrance animation. */
   index?: number;
+  /** Opens the vehicle in a new tab, keeping the list it was found in open. */
+  newTab?: boolean;
   className?: string;
 }
 
@@ -30,6 +32,7 @@ export function VehicleCard({
   sizes = DEFAULT_SIZES,
   priority,
   index = 0,
+  newTab,
   className,
 }: VehicleCardProps) {
   const { specs, company } = vehicle;
@@ -67,9 +70,12 @@ export function VehicleCard({
           {/* The stretched link makes the whole card clickable with one tab stop. */}
           <Link
             href={vehicleHref(vehicle)}
+            target={newTab ? "_blank" : undefined}
+            rel={newTab ? "noopener" : undefined}
             className="after:absolute after:inset-0 after:z-10"
           >
             {name}
+            {newTab && <span className="sr-only"> (opens in a new tab)</span>}
           </Link>{" "}
           <span className="font-normal text-muted">{vehicle.year}</span>
         </h3>
