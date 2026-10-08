@@ -1,12 +1,13 @@
 "use client";
 
-import { ReceiptText } from "lucide-react";
+import { FileText, ReceiptText } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { Button } from "@/shared/ui/atoms/Button";
 import { StatusNotice } from "@/shared/ui/molecules/StatusNotice";
 import { checkoutCopy, outcomeCopy, paymentStep } from "../payment.utils";
 import type { PaymentLink } from "../types";
+import { ExtensionConsent } from "./ExtensionConsent";
 import { PaymentCheckout } from "./PaymentCheckout";
 
 const PROCESSING_POLL_MS = 4000;
@@ -17,6 +18,12 @@ interface PaymentActionProps {
   receiptHref: string | null;
   /** Client secret of a payment the renter has just returned from completing elsewhere. */
   returnedPaymentSecret: string | null;
+  /** What names this link to the API, which the renter's agreement to an extension is sent to. */
+  address: { subdomain: string; token: string };
+  /** The company's IANA zone: a new return time is agreed to on its clock. */
+  timeZone: string;
+  /** The addendum for an extension paid on this link, once it is in effect. */
+  addendumHref: string | null;
 }
 
 /** The part of the page that changes: the card form, a wait, or how the link ended. */
@@ -24,6 +31,9 @@ export function PaymentAction({
   link,
   receiptHref,
   returnedPaymentSecret,
+  address,
+  timeZone,
+  addendumHref,
 }: PaymentActionProps) {
   const router = useRouter();
   const step = paymentStep(link);
@@ -63,6 +73,18 @@ export function PaymentAction({
     );
   }
 
+  if (step.kind === "consent") {
+    return (
+      <ExtensionConsent
+        address={address}
+        extension={step.extension}
+        defaultName={link.renterName}
+        currency={link.currency}
+        timeZone={timeZone}
+      />
+    );
+  }
+
   if (step.kind === "processing") {
     return (
       <StatusNotice
@@ -78,14 +100,26 @@ export function PaymentAction({
     <StatusNotice
       {...copy}
       action={
-        receiptHref &&
-        step.outcome !== "closed" && (
-          <Button asChild variant="outline">
-            <a href={receiptHref}>
-              <ReceiptText aria-hidden className="size-4" />
-              View receipt
-            </a>
-          </Button>
+        step.outcome !== "closed" &&
+        (receiptHref || addendumHref) && (
+          <div className="flex flex-wrap justify-center gap-2">
+            {receiptHref && (
+              <Button asChild variant="outline">
+                <a href={receiptHref}>
+                  <ReceiptText aria-hidden className="size-4" />
+                  View receipt
+                </a>
+              </Button>
+            )}
+            {addendumHref && (
+              <Button asChild variant="outline">
+                <a href={addendumHref}>
+                  <FileText aria-hidden className="size-4" />
+                  Download addendum
+                </a>
+              </Button>
+            )}
+          </div>
         )
       }
     />

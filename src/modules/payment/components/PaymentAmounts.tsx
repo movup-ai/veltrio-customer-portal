@@ -6,7 +6,12 @@ import type { PaymentLink } from "../types";
 interface PaymentAmountsProps {
   link: Pick<
     PaymentLink,
-    "charge" | "deposit" | "currency" | "depositCents" | "companyName"
+    | "charge"
+    | "deposit"
+    | "extension"
+    | "currency"
+    | "depositCents"
+    | "companyName"
   >;
 }
 
@@ -50,10 +55,22 @@ function Row({ label, note, amount, lead, aside }: RowProps) {
  * never charged, so it is its own row and is never added to the amount due.
  */
 export function PaymentAmounts({ link }: PaymentAmountsProps) {
-  const { charge, deposit, currency, depositCents, companyName } = link;
+  const { charge, deposit, extension, currency, depositCents, companyName } =
+    link;
   const money = (cents: number) => formatMoney(cents, currency);
   const rows: ReactNode[] = [];
 
+  if (extension) {
+    rows.push(
+      <Row
+        key="extension"
+        lead
+        label="Extension"
+        note="Charged to your card once you agree to the new return time"
+        amount={money(extension.amountCents)}
+      />,
+    );
+  }
   if (charge) {
     rows.push(
       <Row

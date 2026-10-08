@@ -16,10 +16,9 @@ export async function getPaymentLink(
   token: string,
 ): Promise<PaymentLink | null> {
   try {
-    const link = await apiGet<PaymentLinkDto>(
-      `/marketplace/companies/${encodeURIComponent(subdomain)}/payments/${encodeURIComponent(token)}`,
-      { revalidate: 0 },
-    );
+    const link = await apiGet<PaymentLinkDto>(paymentPath(subdomain, token), {
+      revalidate: 0,
+    });
     return toPaymentLink(link);
   } catch (error) {
     // Only the API's own "no such link"; a missing route must not read as a bad link.
@@ -28,6 +27,16 @@ export async function getPaymentLink(
     }
     throw error;
   }
+}
+
+/** Path of a renter's payment link in the API, which knows the company by its subdomain. */
+export function paymentPath(subdomain: string, token: string) {
+  return `/marketplace/companies/${encodeURIComponent(subdomain)}/payments/${encodeURIComponent(token)}`;
+}
+
+/** Address of the addendum for an extension paid on this link, as a PDF served by the API. */
+export function extensionAddendumUrl(subdomain: string, token: string) {
+  return apiUrl(`${paymentPath(subdomain, token)}/extension/addendum`);
 }
 
 /** Path of a renter's receipt in the API, which knows the company by its subdomain. */

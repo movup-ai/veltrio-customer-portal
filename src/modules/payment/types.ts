@@ -16,6 +16,20 @@ export interface PaymentPart {
   clientSecret: string | null;
 }
 
+/** A later return the renter is asked to agree to, then pay for. */
+export interface PaymentExtension extends PaymentPart {
+  /** An instant, as an ISO string with an offset. */
+  newReturnAt: string;
+  /** Until when the new return time is kept for the renter to pay for. */
+  expiresAt: string | null;
+  /** Agreeing comes first: until then the link carries no client secret. */
+  accepted: boolean;
+  /** False on a payment that came too late to take effect; the company hands it back. */
+  applied: boolean;
+  /** The agreement it adds to; null when the booking never had one issued. */
+  agreementNumber: string | null;
+}
+
 /** What the renter's receipt link is built from, once money has been taken. */
 export interface PaymentReceipt {
   bookingId: string;
@@ -52,6 +66,8 @@ export interface PaymentLink {
   charge: PaymentPart | null;
   /** The hold this link places; null on a link that only takes the payment. */
   deposit: PaymentPart | null;
+  /** Set on a link for a later return, which asks for neither of the parts above. */
+  extension: PaymentExtension | null;
   receipt: PaymentReceipt | null;
 }
 

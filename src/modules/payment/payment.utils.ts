@@ -1,8 +1,9 @@
 import { formatMoney } from "@/shared/lib/format";
-import type { PaymentLink } from "./types";
+import type { PaymentExtension, PaymentLink } from "./types";
 
 /** What the renter is asked to confirm on the card form. */
-export type CheckoutMode = "payment" | "payment_and_deposit" | "deposit";
+export type CheckoutMode =
+  "payment" | "payment_and_deposit" | "deposit" | "extension";
 
 /** How a link that needs nothing more from the renter ended. */
 export type PaymentOutcome =
@@ -11,6 +12,8 @@ export type PaymentOutcome =
   | "paid_deposit_later"
   | "paid_deposit_failed"
   | "held"
+  | "extended"
+  | "extension_late"
   | "closed";
 
 export type PaymentStep =
@@ -22,11 +25,51 @@ export type PaymentStep =
       /** A hold to place on the same card once the payment goes through. */
       depositSecret: string | null;
     }
+  | { kind: "consent"; extension: PaymentExtension }
   | { kind: "processing" }
   | { kind: "outcome"; outcome: PaymentOutcome };
 
+/** A link for a later return: the renter agrees to it, then pays for it. */
+function extensionStep(link: PaymentLink): PaymentStep {
+  const { extension, stripeAccountId } = link;
+  if (extension?.status === "open") {
+    if (!extension.accepted) return { kind: "consent", extension };
+    if (extension.clientSecret && stripeAccountId) {
+      return {
+        kind: "checkout",
+        mode: "extension",
+        stripeAccountId,
+        clientSecret: extension.clientSecret,
+        depositSecret: null,
+      };
+    }
+  }
+  if (extension?.status === "processing") return { kind: "processing" };
+  if (extension?.status === "paid") {
+    return {
+      kind: "outcome",
+      outcome: extension.applied ? "extended" : "extension_late",
+    };
+  }
+  return { kind: "outcome", outcome: "closed" };
+}
+
+/** Mirrors ACCEPTED_NAME_LENGTH in the API. */
+export const ACCEPTED_NAME_MAX = 80;
+
+/** What still stops the renter's agreement to an extension from being sent. */
+export function extensionConsentProblems(name: string, consent: boolean) {
+  const problems: { name?: string; consent?: string } = {};
+  if (!name.trim()) problems.name = "Type your full name.";
+  if (!consent) {
+    problems.consent = "Tick the box to confirm you agree before paying.";
+  }
+  return problems;
+}
+
 /** What the page should show for a link as it stands now. */
 export function paymentStep(link: PaymentLink): PaymentStep {
+  if (link.extension) return extensionStep(link);
   const { charge, deposit, stripeAccountId } = link;
   const depositSecret =
     deposit?.status === "open" ? deposit.clientSecret : null;
@@ -69,8 +112,9 @@ export function paymentStep(link: PaymentLink): PaymentStep {
 
 /** The amounts a link names, as money in its own currency. */
 function paymentAmounts(link: PaymentLink) {
+  const asked = link.extension ?? link.charge;
   return {
-    amount: formatMoney(link.charge?.amountCents ?? 0, link.currency),
+    amount: formatMoney(asked?.amountCents ?? 0, link.currency),
     deposit: formatMoney(
       link.deposit?.amountCents ?? link.depositCents,
       link.currency,
@@ -82,7 +126,9 @@ export function checkoutCopy(mode: CheckoutMode, link: PaymentLink) {
   const { amount, deposit } = paymentAmounts(link);
   const company = link.companyName;
   const hold = `Nothing is taken unless your rental agreement calls for it, and the hold is released after the return.`;
-  if (mode === "payment") return { submit: `Pay ${amount}`, consent: null };
+  if (mode === "payment" || mode === "extension") {
+    return { submit: `Pay ${amount}`, consent: null };
+  }
   if (mode === "payment_and_deposit") {
     return {
       submit: `Pay ${amount} & hold ${deposit}`,
@@ -129,6 +175,18 @@ export function outcomeCopy(outcome: PaymentOutcome, link: PaymentLink) {
         tone: "success",
         title: "Deposit on hold",
         body: `${company} holds ${deposit} on your card for booking ${reference}. You can close this page.`,
+      } as const;
+    case "extended":
+      return {
+        tone: "success",
+        title: "Your rental is extended",
+        body: `${company} has your payment of ${amount}, and booking ${reference} now runs to the return time shown above. You can close this page.`,
+      } as const;
+    case "extension_late":
+      return {
+        tone: "warning",
+        title: "The extension didn't go through",
+        body: `Your payment of ${amount} arrived after the request had run out, and the vehicle was no longer free. ${company} will refund it and be in touch about booking ${reference}.`,
       } as const;
     case "closed":
       return {

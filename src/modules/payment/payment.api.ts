@@ -1,4 +1,5 @@
 import type {
+  PaymentExtension,
   PaymentLink,
   PaymentPart,
   PaymentPartStatus,
@@ -27,6 +28,8 @@ export interface PaymentLinkDto {
   stripeAccountId: string | null;
   charge: PaymentPartDto | null;
   deposit: PaymentPartDto | null;
+  extension?:
+    (PaymentPartDto & Omit<PaymentExtension, keyof PaymentPart>) | null;
   receipt?: PaymentLink["receipt"];
 }
 
@@ -46,6 +49,8 @@ function toPart(dto: PaymentPartDto | null): PaymentPart | null {
 export function toPaymentLink(dto: PaymentLinkDto): PaymentLink {
   const specs = dto.vehicleSpecs;
   const receipt = dto.receipt;
+  const extension = dto.extension;
+  const asked = toPart(extension ?? null);
   return {
     companyName: dto.companyName,
     reference: dto.reference,
@@ -67,6 +72,17 @@ export function toPaymentLink(dto: PaymentLinkDto): PaymentLink {
     stripeAccountId: dto.stripeAccountId,
     charge: toPart(dto.charge),
     deposit: toPart(dto.deposit),
+    extension:
+      extension && asked
+        ? {
+            ...asked,
+            newReturnAt: extension.newReturnAt,
+            expiresAt: extension.expiresAt,
+            accepted: extension.accepted,
+            applied: extension.applied,
+            agreementNumber: extension.agreementNumber,
+          }
+        : null,
     receipt: receipt
       ? {
           bookingId: receipt.bookingId,

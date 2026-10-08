@@ -9,6 +9,7 @@ import { PaymentAction } from "@/modules/payment/components/PaymentAction";
 import { PaymentAmounts } from "@/modules/payment/components/PaymentAmounts";
 import { PaymentTrip } from "@/modules/payment/components/PaymentTrip";
 import {
+  extensionAddendumUrl,
   getPaymentLink,
   receiptHref,
 } from "@/modules/payment/payment.repository";
@@ -91,7 +92,9 @@ export default async function PayPage({ params, searchParams }: PageProps) {
   const locations = (await settle(listCompanyLocations(subdomain))) ?? [];
   const branch = locations.find(({ name }) => name === link.pickupLocation);
 
-  const depositOnly = !link.charge;
+  const { extension } = link;
+  const depositOnly = !link.charge && !extension;
+  const waiting = extension?.status === "open";
   return (
     <Panel>
       <header className="grid gap-5">
@@ -102,11 +105,21 @@ export default async function PayPage({ params, searchParams }: PageProps) {
         />
         <div>
           <h1 className="font-display text-h3">
-            {depositOnly ? "Security deposit" : "Pay for your rental"}
+            {extension
+              ? "Extend your rental"
+              : depositOnly
+                ? "Security deposit"
+                : "Pay for your rental"}
           </h1>
           <p className="mt-1 text-sm text-muted">
             Hi {link.renterName.split(/\s+/)[0]}, check the details below before
-            you {depositOnly ? "authorise the hold" : "pay"}.
+            you{" "}
+            {extension
+              ? "agree and pay"
+              : depositOnly
+                ? "authorise the hold"
+                : "pay"}
+            .
           </p>
         </div>
       </header>
@@ -114,6 +127,7 @@ export default async function PayPage({ params, searchParams }: PageProps) {
         link={link}
         timeZone={company.timeZone}
         pickupAddress={branch?.address || null}
+        newReturnAt={waiting ? extension.newReturnAt : null}
       />
       <PaymentAmounts link={link} />
       <PaymentAction
@@ -124,6 +138,11 @@ export default async function PayPage({ params, searchParams }: PageProps) {
           typeof returnedSecret === "string"
             ? returnedSecret
             : null
+        }
+        address={{ subdomain, token }}
+        timeZone={company.timeZone}
+        addendumHref={
+          extension?.applied ? extensionAddendumUrl(subdomain, token) : null
         }
       />
     </Panel>
