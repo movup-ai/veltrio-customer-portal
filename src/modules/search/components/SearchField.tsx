@@ -20,7 +20,7 @@ export function SearchField({
     <button
       type="button"
       className={cn(
-        "flex min-w-0 flex-1 flex-col justify-center rounded-lg bg-background px-4 py-3 text-left transition-colors hover:bg-surface-muted data-[state=open]:bg-surface data-[state=open]:shadow-2 md:rounded-full md:bg-transparent md:px-6 md:py-3",
+        "flex min-w-0 flex-1 flex-col justify-center rounded-lg bg-background px-4 py-3 text-left transition-colors hover:bg-surface-muted data-[state=open]:bg-surface data-[state=open]:shadow-2 md:bg-transparent",
         className,
       )}
       {...props}

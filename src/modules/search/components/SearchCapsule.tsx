@@ -3,32 +3,28 @@
 import { format } from "date-fns";
 import { MapPin, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState, type FormEvent } from "react";
+import { useState, type FormEvent, type ReactNode } from "react";
 import type { DateRange } from "react-day-picker";
-import type { VehicleType } from "@/modules/vehicle/types";
-import {
-  VEHICLE_TYPE_META,
-  VEHICLE_TYPE_ORDER,
-} from "@/modules/vehicle/vehicle-types";
 import { track } from "@/shared/lib/analytics";
 import { cn } from "@/shared/lib/cn";
 import { fromIsoDate, toIsoDate } from "@/shared/lib/date";
+import { DEFAULT_TIME, formatTime, HOURLY_TIMES } from "@/shared/lib/time";
 import { Button } from "@/shared/ui/atoms/Button";
-import { DEFAULT_TIME } from "@/shared/lib/time";
-import {
-  DateRangePicker,
-  type RangeTimes,
-} from "@/shared/ui/molecules/DateRangePicker";
+import { DateRangePicker } from "@/shared/ui/molecules/DateRangePicker";
+import { ListboxContent } from "@/shared/ui/molecules/Listbox";
 import {
   Popover,
+  PopoverAnchor,
   PopoverContent,
   PopoverTrigger,
 } from "@/shared/ui/molecules/Popover";
 import { MARKETS, type Market } from "../markets";
 import { buildSearchUrl, type SearchQuery } from "../search-params";
 import { SearchField } from "./SearchField";
+import { SearchPicker } from "./SearchPicker";
 
-type Field = "location" | "dates" | "type";
+type TimeField = "pickupTime" | "returnTime";
+type Field = "location" | "dates" | TimeField;
 
 interface SearchCapsuleProps {
   /** Pre-fills the fields, e.g. from the current URL on the results page. */
@@ -37,8 +33,23 @@ interface SearchCapsuleProps {
   className?: string;
 }
 
+const TIME_OPTIONS = HOURLY_TIMES.map((time) => ({
+  value: time,
+  label: formatTime(time),
+}));
+
 function Divider() {
   return <span aria-hidden className="my-3 hidden w-px bg-border md:block" />;
+}
+
+/** A labelled segment holding a date and a time dropdown side by side. */
+function Segment({ label, children }: { label: string; children: ReactNode }) {
+  return (
+    <div className="min-w-0 flex-1 rounded-lg bg-background px-4 py-3 md:bg-transparent">
+      <span className="type-label text-muted">{label}</span>
+      <div className="mt-1 flex gap-4">{children}</div>
+    </div>
+  );
 }
 
 export function SearchCapsule({
@@ -49,7 +60,6 @@ export function SearchCapsule({
   const router = useRouter();
   const [openField, setOpenField] = useState<Field | null>(null);
   const [location, setLocation] = useState(initialQuery?.location);
-  const [type, setType] = useState(initialQuery?.type);
   const [range, setRange] = useState<DateRange | undefined>(
     initialQuery?.pickup && initialQuery.return
       ? {
@@ -58,10 +68,9 @@ export function SearchCapsule({
         }
       : undefined,
   );
-
-  const [times, setTimes] = useState<RangeTimes>({
-    pickup: initialQuery?.pickupTime ?? DEFAULT_TIME,
-    return: initialQuery?.returnTime ?? DEFAULT_TIME,
+  const [times, setTimes] = useState({
+    pickupTime: initialQuery?.pickupTime,
+    returnTime: initialQuery?.returnTime,
   });
 
   const market = markets.find((m) => m.slug === location);
@@ -77,15 +86,37 @@ export function SearchCapsule({
       ...(range?.from &&
         range.to && {
           pickup: toIsoDate(range.from),
-          pickupTime: times.pickup,
+          pickupTime: times.pickupTime ?? DEFAULT_TIME,
           return: toIsoDate(range.to),
-          returnTime: times.return,
+          returnTime: times.returnTime ?? DEFAULT_TIME,
         }),
-      type,
     };
     track("search_submitted", query);
     router.push(buildSearchUrl(query));
   };
+
+  const timePicker = (field: TimeField, label: string) => (
+    <Popover {...popoverProps(field)}>
+      <PopoverTrigger asChild>
+        <SearchPicker
+          label={label}
+          placeholder="Add time"
+          value={times[field] && formatTime(times[field])}
+          aria-haspopup="listbox"
+        />
+      </PopoverTrigger>
+      <ListboxContent
+        label={label}
+        options={TIME_OPTIONS}
+        value={times[field]}
+        onSelect={(time) => {
+          setTimes({ ...times, [field]: time });
+          setOpenField(null);
+        }}
+        className="w-44"
+      />
+    </Popover>
+  );
 
   return (
     <form
@@ -93,17 +124,16 @@ export function SearchCapsule({
       aria-label="Find a rental car"
       onSubmit={submit}
       className={cn(
-        "flex max-w-4xl flex-col gap-2 rounded-xl bg-surface p-2 text-foreground shadow-search md:flex-row md:items-stretch md:gap-0 md:rounded-full",
+        "flex max-w-5xl flex-col gap-2 rounded-xl bg-surface p-2 text-foreground shadow-search md:flex-row md:items-stretch md:gap-0",
         className,
       )}
     >
       <Popover {...popoverProps("location")}>
         <PopoverTrigger asChild>
           <SearchField
-            label="Pick-up"
+            label="Where"
             placeholder="Choose a city"
             value={market && `${market.name}, ${market.region}`}
-            className="md:flex-[1.3]"
           />
         </PopoverTrigger>
         <PopoverContent align="start" className="w-80 p-3">
@@ -134,25 +164,38 @@ export function SearchCapsule({
 
       <Divider />
 
+      {/* One calendar picks both dates, so it hangs under both segments. */}
       <Popover {...popoverProps("dates")}>
-        <PopoverTrigger asChild>
-          <SearchField
-            label="Dates"
-            placeholder="Add pick-up and return"
-            value={
-              range?.from && range.to
-                ? `${format(range.from, "MMM d")} – ${format(range.to, "MMM d")}`
-                : undefined
-            }
-            className="md:flex-[1.3]"
-          />
-        </PopoverTrigger>
+        <PopoverAnchor asChild>
+          <div className="flex flex-col gap-2 md:flex-2 md:flex-row md:gap-0">
+            <Segment label="From">
+              <PopoverTrigger asChild>
+                <SearchPicker
+                  label="Pick-up date"
+                  placeholder="Add dates"
+                  value={range?.from && format(range.from, "MMM d")}
+                />
+              </PopoverTrigger>
+              {timePicker("pickupTime", "Pick-up time")}
+            </Segment>
+            <Divider />
+            <Segment label="Until">
+              <SearchPicker
+                label="Return date"
+                placeholder="Add dates"
+                value={range?.to && format(range.to, "MMM d")}
+                aria-haspopup="dialog"
+                aria-expanded={openField === "dates"}
+                onClick={() => setOpenField("dates")}
+              />
+              {timePicker("returnTime", "Return time")}
+            </Segment>
+          </div>
+        </PopoverAnchor>
         <PopoverContent align="center">
           <DateRangePicker
             value={range}
             onChange={setRange}
-            times={times}
-            onTimesChange={setTimes}
             actions={
               <>
                 <Button
@@ -175,45 +218,13 @@ export function SearchCapsule({
         </PopoverContent>
       </Popover>
 
-      <Divider />
-
-      <Popover {...popoverProps("type")}>
-        <PopoverTrigger asChild>
-          <SearchField
-            label="Vehicle"
-            placeholder="Any type"
-            value={type && VEHICLE_TYPE_META[type].label}
-          />
-        </PopoverTrigger>
-        <PopoverContent align="end" className="w-88">
-          <ul aria-label="Vehicle types" className="grid grid-cols-2 gap-2">
-            {VEHICLE_TYPE_ORDER.map((value: VehicleType) => {
-              const { label, icon: Icon } = VEHICLE_TYPE_META[value];
-              const selected = value === type;
-              return (
-                <li key={value}>
-                  <button
-                    type="button"
-                    aria-pressed={selected}
-                    onClick={() => {
-                      setType(selected ? undefined : value);
-                      setOpenField(null);
-                    }}
-                    className="flex w-full items-center gap-3 rounded-md border border-border p-4 text-sm font-medium hover:border-foreground aria-pressed:border-foreground aria-pressed:bg-surface-muted"
-                  >
-                    <Icon aria-hidden className="size-5" strokeWidth={1.75} />
-                    {label}
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
-        </PopoverContent>
-      </Popover>
-
-      <Button type="submit" size="lg" className="md:ml-2 md:self-center">
+      <Button
+        type="submit"
+        size="lg"
+        className="rounded-lg md:ml-2 md:w-13 md:self-center md:px-0 md:has-[>svg:first-child]:pl-0"
+      >
         <Search aria-hidden className="size-5" />
-        Search
+        <span className="md:sr-only">Search</span>
       </Button>
     </form>
   );
