@@ -19,7 +19,7 @@ export function BrowseSection({
 }: BrowseSectionProps) {
   const headingId = `${id}-heading`;
   return (
-    <section aria-labelledby={headingId}>
+    <section id={id} aria-labelledby={headingId} className="scroll-mt-24">
       <SectionHeading id={headingId} title={title} description={description} />
       <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
         {items.map(({ label, count, href, icon: Icon }) => (

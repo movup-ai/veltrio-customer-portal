@@ -63,7 +63,7 @@ export function ScrollRow({
   const overflows = !(edges.start && edges.end);
 
   return (
-    <section aria-labelledby={headingId}>
+    <section id={id} aria-labelledby={headingId} className="scroll-mt-24">
       <SectionHeading
         id={headingId}
         title={title}

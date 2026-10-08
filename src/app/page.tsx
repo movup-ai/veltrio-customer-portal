@@ -163,7 +163,7 @@ export default async function HomePage() {
             <CompaniesRow />
           </Suspense>
 
-          <HostCtaSection {...hostCta} />
+          {siteConfig.portalUrl && <HostCtaSection {...hostCta} />}
         </div>
       </main>
     </>

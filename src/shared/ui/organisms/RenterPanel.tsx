@@ -18,7 +18,12 @@ const width = (wide?: boolean) => (wide ? "max-w-3xl" : "max-w-lg");
 /** The single card a renter's link opens on: a payment, a receipt, an agreement to sign. */
 export function RenterPanel({ children, wide, footnote }: RenterPanelProps) {
   return (
-    <main id="main" className="container-page py-10 md:py-16">
+    // Asks the site footer for its minimal form: nothing should lead away from this task.
+    <main
+      id="main"
+      data-minimal-footer
+      className="container-page py-10 md:py-16"
+    >
       <div className={cn("mx-auto grid gap-4", width(wide))}>
         <div className={card}>{children}</div>
         {footnote && (
@@ -47,7 +52,11 @@ export function RenterPanelSkeleton({
   children,
 }: RenterPanelSkeletonProps) {
   return (
-    <main id="main" className="container-page py-10 md:py-16">
+    <main
+      id="main"
+      data-minimal-footer
+      className="container-page py-10 md:py-16"
+    >
       <div
         role="status"
         aria-label={label}

@@ -18,8 +18,9 @@ interface FaqSectionProps {
 export function FaqSection({ eyebrow, title, faqs }: FaqSectionProps) {
   return (
     <section
+      id="faq"
       aria-labelledby="faq-heading"
-      className="grid items-start gap-x-16 lg:grid-cols-[1fr_1.6fr]"
+      className="grid scroll-mt-24 items-start gap-x-16 lg:grid-cols-[1fr_1.6fr]"
     >
       <JsonLd
         data={{

@@ -5,6 +5,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { buildSearchUrl } from "@/modules/search/search-params";
+import { siteConfig } from "@/shared/config/site";
 import { unsplash } from "@/shared/lib/unsplash";
 import type { FooterColumn } from "@/shared/ui/organisms/SiteFooter";
 import type { Collection } from "./components/CollectionsSection";
@@ -167,37 +168,50 @@ export const faqs: Faq[] = [
   },
 ];
 
+/** Shown only once the portal's address is configured; until then there is nowhere to send a company. */
 export const hostCta = {
   eyebrow: "For rental companies",
   title: "Your fleet, in front of people who care what they drive.",
   description:
     "List your vehicles on Veltrio and keep your own pricing, terms and brand.",
-  cta: { label: "List your fleet", href: "/for-companies" },
+  cta: { label: "List your fleet", href: siteConfig.portalUrl ?? "" },
   image: {
     variants: unsplash("1492144534655-ae79c964c9d7", [800, 1600], 16 / 7),
     alt: "White Chevrolet Camaro in a dimly lit garage",
   },
 };
 
+/** Sections of the landing page stand in for search until the results page exists. */
 export const footerColumns: FooterColumn[] = [
   {
-    title: "Drive",
+    title: "Explore",
     links: [
-      { href: "/search", label: "Explore vehicles" },
-      { href: buildSearchUrl({ type: "sport" }), label: "Sports cars" },
-      { href: buildSearchUrl({ type: "suv" }), label: "SUVs" },
+      { href: "/#vehicles", label: "Browse vehicles" },
+      { href: "/#cities", label: "Browse by city" },
+      { href: "/#companies", label: "Rental companies" },
     ],
   },
-  {
-    title: "Rental companies",
-    links: [{ href: "/for-companies", label: "List your fleet" }],
-  },
+  ...(siteConfig.portalUrl
+    ? [
+        {
+          title: "For rental companies",
+          links: [
+            { href: siteConfig.portalUrl, label: "List your fleet" },
+            { href: siteConfig.portalUrl, label: "Company sign in" },
+          ],
+        },
+      ]
+    : []),
   {
     title: "Veltrio",
     links: [
       { href: "/how-it-works", label: "How it works" },
-      { href: "/privacy", label: "Privacy" },
-      { href: "/terms", label: "Terms" },
+      { href: "/how-it-works#faq", label: "FAQ" },
     ],
   },
 ];
+
+/** Beside the copyright line on every page. Privacy and Terms join it once their text exists. */
+export const footerLegalLinks = siteConfig.supportEmail
+  ? [{ href: `mailto:${siteConfig.supportEmail}`, label: "Contact" }]
+  : [];
