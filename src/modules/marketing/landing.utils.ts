@@ -94,7 +94,7 @@ export function vehicleRows(vehicles: Vehicle[]): VehicleRow[] {
   const themed = [
     {
       id: "budget-vehicles",
-      title: `Under $${BUDGET} a day`,
+      title: `$${BUDGET} a day or less`,
       description: "The lowest daily rates on the marketplace.",
       href: buildSearchUrl(budget),
       vehicles: sortVehicles(filterVehicles(vehicles, budget), budget.sort),
