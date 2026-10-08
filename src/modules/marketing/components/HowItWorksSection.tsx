@@ -10,6 +10,8 @@ interface HowItWorksSectionProps {
   eyebrow: string;
   title: ReactNode;
   steps: HowItWorksStep[];
+  /** Beside the heading, e.g. a link to the full explanation. */
+  action?: ReactNode;
 }
 
 /** The booking journey as numbered steps, in the order a renter goes through them. */
@@ -17,6 +19,7 @@ export function HowItWorksSection({
   eyebrow,
   title,
   steps,
+  action,
 }: HowItWorksSectionProps) {
   return (
     <section aria-labelledby="how-it-works-heading">
@@ -25,6 +28,7 @@ export function HowItWorksSection({
         variant="editorial"
         eyebrow={eyebrow}
         title={title}
+        action={action}
       />
       <ol className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {steps.map((step, index) => (

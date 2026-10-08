@@ -1,6 +1,7 @@
 import { MapPin, type LucideIcon } from "lucide-react";
 import { cityLabel, citySlug, type City } from "@/modules/search/cities";
 import { buildSearchUrl } from "@/modules/search/search-params";
+import { filterVehicles, sortVehicles } from "@/modules/search/search.filter";
 import type { Vehicle } from "@/modules/vehicle/types";
 import { VEHICLE_TYPE_META } from "@/modules/vehicle/vehicle-types";
 import { makeSlug } from "@/modules/vehicle/vehicle.utils";
@@ -60,4 +61,54 @@ export function browseByMake(vehicles: Vehicle[]) {
       href: buildSearchUrl({ make: slug }),
     };
   });
+}
+
+/** The first row, shown even when nothing is listed yet. */
+export const NEW_VEHICLES = {
+  id: "new-vehicles",
+  title: "Newly listed",
+  description: "The latest vehicles added by rental companies.",
+  href: buildSearchUrl(),
+};
+
+/** One row of vehicle cards on the landing page, with the search that lists the rest. */
+export interface VehicleRow {
+  id: string;
+  title: string;
+  description: string;
+  href: string;
+  vehicles: Vehicle[];
+}
+
+/** Cards a row shows at most; its "See all" link lists the rest. */
+const ROW_SIZE = 8;
+/** A themed row with fewer vehicles than this is left out. */
+const ROW_MIN = 4;
+/** Highest daily rate of the budget row, in whole dollars. */
+const BUDGET = 75;
+
+/** The landing page's rows: the newest vehicles, then each theme with enough to show. */
+export function vehicleRows(vehicles: Vehicle[]): VehicleRow[] {
+  const budget = { maxPrice: BUDGET, sort: "price-asc" } as const;
+  const electric = { fuel: "electric" } as const;
+  const themed = [
+    {
+      id: "budget-vehicles",
+      title: `Under $${BUDGET} a day`,
+      description: "The lowest daily rates on the marketplace.",
+      href: buildSearchUrl(budget),
+      vehicles: sortVehicles(filterVehicles(vehicles, budget), budget.sort),
+    },
+    {
+      id: "electric-vehicles",
+      title: "Electric vehicles",
+      description: "Skip the pump and plug in instead.",
+      href: buildSearchUrl(electric),
+      vehicles: filterVehicles(vehicles, electric),
+    },
+  ].filter((row) => row.vehicles.length >= ROW_MIN);
+  return [{ ...NEW_VEHICLES, vehicles }, ...themed].map((row) => ({
+    ...row,
+    vehicles: row.vehicles.slice(0, ROW_SIZE),
+  }));
 }

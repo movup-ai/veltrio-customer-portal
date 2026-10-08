@@ -1,5 +1,6 @@
 import {
-  CircleDollarSign,
+  BadgePercent,
+  CalendarCheck,
   Handshake,
   ListChecks,
   ShieldCheck,
@@ -11,7 +12,8 @@ import type { FooterColumn } from "@/shared/ui/organisms/SiteFooter";
 import type { Collection } from "./components/CollectionsSection";
 import type { Faq } from "./components/FaqSection";
 import type { HowItWorksStep } from "./components/HowItWorksSection";
-import type { ValueProp } from "./components/ValuePropsSection";
+import type { TrustPoint } from "./components/TrustStrip";
+import type { Feature } from "./components/FeatureCard";
 
 /**
  * All landing-page copy and imagery in one place, so marketing edits never
@@ -36,6 +38,25 @@ export const intro = {
     alt: "White Chevrolet Camaro in a dark garage, with more cars on lifts behind it",
   },
 };
+
+/** The three promises under the landing page's search. */
+export const trustPoints: TrustPoint[] = [
+  {
+    icon: BadgePercent,
+    title: "No booking fees",
+    description: "Pay the rental company directly.",
+  },
+  {
+    icon: CalendarCheck,
+    title: "No charge to request",
+    description: "You pay once the company confirms.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "Professional companies only",
+    description: "Never a private owner.",
+  },
+];
 
 export const howItWorksHero = {
   description:
@@ -91,12 +112,12 @@ export const valuePropsImage = {
   alt: "Black Audi RS 6 seen head-on on a dirt track at dusk",
 };
 
-export const valueProps: ValueProp[] = [
+export const valueProps: Feature[] = [
   {
-    icon: ShieldCheck,
-    title: "Professional rental companies",
+    icon: BadgePercent,
+    title: "No Veltrio fees",
     description:
-      "Every car is listed by an established rental business, not a private owner.",
+      "We add no booking or service fee. You pay the rental company directly, at the rate they set.",
   },
   {
     icon: ListChecks,
@@ -105,9 +126,10 @@ export const valueProps: ValueProp[] = [
       "See mileage, deposit and rate options next to the price before you choose.",
   },
   {
-    icon: CircleDollarSign,
-    title: "Upfront pricing",
-    description: "Daily rate, fees and deposit are shown before you book.",
+    icon: ShieldCheck,
+    title: "Professional rental companies",
+    description:
+      "Every car is listed by an established rental business, not a private owner.",
   },
   {
     icon: Handshake,
@@ -147,6 +169,16 @@ export const faqs: Faq[] = [
       "A professional rental company, never a private owner. Veltrio lists their vehicles, and your booking and rental agreement are with the company that hands you the keys.",
   },
   {
+    question: "Does Veltrio charge a fee?",
+    answer:
+      "No. Veltrio adds no booking or service fee. The price you see is set by the rental company, and you pay it to them directly.",
+  },
+  {
+    question: "How does Veltrio make money?",
+    answer:
+      "Rental companies pay us a flat subscription for the software that runs their business. We never take a cut of your booking, so we have no reason to raise your price.",
+  },
+  {
     question: "When do I pay?",
     answer:
       "Not when you send a request. Once the company accepts it, they send you a secure link to pay online. You can also choose to pay cash at pick-up.",
@@ -168,13 +200,18 @@ export const faqs: Faq[] = [
   },
 ];
 
-/** Shown only once the portal's address is configured; until then there is nowhere to send a company. */
+/** The questions repeated on the landing page; the rest are on the how-it-works page. */
+export const topFaqs = faqs.slice(0, 5);
+
+/** The page that explains Veltrio to rental companies. */
+export const COMPANIES_PATH = "/for-rental-companies";
+
 export const hostCta = {
   eyebrow: "For rental companies",
   title: "Your fleet, in front of people who care what they drive.",
   description:
-    "List your vehicles on Veltrio and keep your own pricing, terms and brand.",
-  cta: { label: "List your fleet", href: siteConfig.portalUrl ?? "" },
+    "List your vehicles on Veltrio with 0% commission, and keep your own pricing, terms and brand.",
+  cta: { label: "List your fleet", href: COMPANIES_PATH },
   image: {
     variants: unsplash("1492144534655-ae79c964c9d7", [800, 1600], 16 / 7),
     alt: "White Chevrolet Camaro in a dimly lit garage",
@@ -191,17 +228,16 @@ export const footerColumns: FooterColumn[] = [
       { href: "/#companies", label: "Rental companies" },
     ],
   },
-  ...(siteConfig.portalUrl
-    ? [
-        {
-          title: "For rental companies",
-          links: [
-            { href: siteConfig.portalUrl, label: "List your fleet" },
-            { href: siteConfig.portalUrl, label: "Company sign in" },
-          ],
-        },
-      ]
-    : []),
+  {
+    title: "For rental companies",
+    links: [
+      { href: COMPANIES_PATH, label: "List your fleet" },
+      { href: `${COMPANIES_PATH}#pricing`, label: "Pricing" },
+      ...(siteConfig.portalUrl
+        ? [{ href: siteConfig.portalUrl, label: "Company sign in" }]
+        : []),
+    ],
+  },
   {
     title: "Veltrio",
     links: [

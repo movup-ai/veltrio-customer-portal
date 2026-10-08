@@ -83,8 +83,8 @@ export default async function HowItWorksPage() {
             eyebrow="Why Veltrio"
             title={
               <>
-                Every price, every term,{" "}
-                <em className="text-accent-on-inverse">side by side.</em>
+                The company&apos;s price is{" "}
+                <em className="text-accent-on-inverse">the price you pay.</em>
               </>
             }
             values={valueProps}

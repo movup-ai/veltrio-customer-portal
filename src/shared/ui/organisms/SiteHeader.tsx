@@ -2,14 +2,12 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { siteConfig, siteHref } from "@/shared/config/site";
+import { siteHref } from "@/shared/config/site";
 import { cn } from "@/shared/lib/cn";
 import { Logo } from "@/shared/ui/atoms/Logo";
 
-const NAV_LINKS = [
-  { href: "/how-it-works", label: "How it works" },
-  { href: "/design", label: "Design System" },
-];
+const NAV_LINK =
+  "h-10 items-center rounded-full px-4 text-sm font-semibold hover:bg-current/10";
 
 interface SiteHeaderProps {
   /**
@@ -44,25 +42,20 @@ export function SiteHeader({ variant = "solid" }: SiteHeaderProps) {
     >
       <div className="container-page flex h-full items-center gap-6">
         <Logo inverse={transparent} />
-        <nav aria-label="Primary" className="ml-4 hidden gap-1 md:flex">
-          {NAV_LINKS.map((link) => (
-            <Link
-              key={link.href}
-              href={siteHref(link.href)}
-              className="flex h-10 items-center rounded-full px-4 text-sm font-medium hover:bg-current/10"
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
-        {siteConfig.portalUrl && (
-          <a
-            href={siteConfig.portalUrl}
-            className="ml-auto flex h-10 items-center rounded-full px-4 text-sm font-semibold hover:bg-current/10"
+        <nav aria-label="Primary" className="ml-auto flex gap-1">
+          <Link
+            href={siteHref("/how-it-works")}
+            className={cn("hidden md:flex", NAV_LINK)}
+          >
+            How it works
+          </Link>
+          <Link
+            href={siteHref("/for-rental-companies")}
+            className={cn("flex", NAV_LINK)}
           >
             List your fleet
-          </a>
-        )}
+          </Link>
+        </nav>
       </div>
     </header>
   );
