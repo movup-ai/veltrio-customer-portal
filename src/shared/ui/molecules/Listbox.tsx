@@ -8,6 +8,8 @@ import { PopoverContent } from "@/shared/ui/molecules/Popover";
 export interface ListboxOption<T extends string> {
   value: T;
   label: string;
+  /** Quieter text after the label, e.g. a branch's address. */
+  detail?: string;
 }
 
 interface ListboxContentProps<T extends string> extends Pick<
@@ -89,8 +91,18 @@ export function ListboxContent<T extends string>({
             onClick={() => onSelect(option.value)}
             className="flex h-10 w-full items-center justify-between gap-3 rounded-sm px-3 text-left text-sm text-carbon hover:bg-sand aria-selected:bg-sand aria-selected:font-semibold"
           >
-            {option.label}
-            {option.value === value && <Check aria-hidden className="size-4" />}
+            <span className="min-w-0 truncate">
+              {option.label}
+              {option.detail && (
+                <span className="font-normal text-muted">
+                  {" · "}
+                  {option.detail}
+                </span>
+              )}
+            </span>
+            {option.value === value && (
+              <Check aria-hidden className="size-4 shrink-0" />
+            )}
           </button>
         ))}
       </div>

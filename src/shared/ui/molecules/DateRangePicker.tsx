@@ -59,6 +59,8 @@ export function DateRangePicker({
           ...(lastDate ? [{ after: lastDate }] : []),
           ...unavailable,
         ]}
+        modifiers={{ booked: unavailable }}
+        modifiersClassNames={{ booked: "rdp-booked" }}
         endMonth={lastDate}
         defaultMonth={value?.from}
       />

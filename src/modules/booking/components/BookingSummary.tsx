@@ -13,6 +13,9 @@ interface BookingSummaryProps {
   dates: BookingDates;
   /** Null when the company lists no daily rate. */
   quote: BookingQuote | null;
+  /** The branches the car is picked up at and comes back to. */
+  pickupLocation: ReactNode;
+  returnLocation: ReactNode;
   /** Shown under the dates, e.g. a link back to change them. */
   action?: ReactNode;
 }
@@ -27,6 +30,8 @@ export function BookingSummary({
   vehicle,
   dates,
   quote,
+  pickupLocation,
+  returnLocation,
   action,
 }: BookingSummaryProps) {
   const photo = vehicle.photos[0];
@@ -66,8 +71,12 @@ export function BookingSummary({
           </dd>
         </div>
         <div>
-          <dt className="type-label text-muted">Location</dt>
-          <dd className="mt-1 font-medium">{vehicle.location}</dd>
+          <dt className="type-label text-muted">Pick-up location</dt>
+          <dd className="mt-1 font-medium">{pickupLocation}</dd>
+        </div>
+        <div>
+          <dt className="type-label text-muted">Return location</dt>
+          <dd className="mt-1 font-medium">{returnLocation}</dd>
         </div>
       </dl>
       {action && <div className="mt-4">{action}</div>}

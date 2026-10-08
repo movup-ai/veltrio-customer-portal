@@ -246,3 +246,8 @@
   --rdp-day_button-width: 2.75rem;
   font-size: var(--text-sm);
 }
+
+/* Days someone else has the car are struck through, not just dimmed. */
+.rdp-booked .rdp-day_button {
+  text-decoration: line-through;
+}
