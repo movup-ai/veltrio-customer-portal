@@ -1,16 +1,5 @@
-import type { FuelType, Transmission, VehicleSpecs as Specs } from "../types";
-
-const TRANSMISSION_LABEL: Record<Transmission, string> = {
-  automatic: "Automatic",
-  manual: "Manual",
-};
-
-const FUEL_LABEL: Record<FuelType, string> = {
-  petrol: "Petrol",
-  diesel: "Diesel",
-  hybrid: "Hybrid",
-  electric: "Electric",
-};
+import type { VehicleSpecs as Specs } from "../types";
+import { FUEL_LABEL, TRANSMISSION_LABEL } from "../vehicle-types";
 
 interface VehicleSpecsProps {
   specs: Specs;

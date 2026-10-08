@@ -3,6 +3,7 @@ import { cityLabel, citySlug, type City } from "@/modules/search/cities";
 import { buildSearchUrl } from "@/modules/search/search-params";
 import type { Vehicle } from "@/modules/vehicle/types";
 import { VEHICLE_TYPE_META } from "@/modules/vehicle/vehicle-types";
+import { makeSlug } from "@/modules/vehicle/vehicle.utils";
 
 /** One tile of a "browse by" grid: a group of listed vehicles and where to see them. */
 export interface BrowseItem {
@@ -52,7 +53,7 @@ export function browseByType(vehicles: Vehicle[]) {
 /** The makes that have at least one vehicle listed. */
 export function browseByMake(vehicles: Vehicle[]) {
   return tally(vehicles, ({ make }) => {
-    const slug = make.trim().toLowerCase().replace(/\s+/g, "-");
+    const slug = makeSlug(make);
     return {
       key: slug,
       label: make.trim(),

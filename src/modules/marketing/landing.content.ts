@@ -181,12 +181,12 @@ export const hostCta = {
   },
 };
 
-/** Sections of the landing page stand in for search until the results page exists. */
+/** City and company links land on sections of the landing page. */
 export const footerColumns: FooterColumn[] = [
   {
     title: "Explore",
     links: [
-      { href: "/#vehicles", label: "Browse vehicles" },
+      { href: "/search", label: "Browse vehicles" },
       { href: "/#cities", label: "Browse by city" },
       { href: "/#companies", label: "Rental companies" },
     ],

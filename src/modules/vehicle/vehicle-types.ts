@@ -10,7 +10,7 @@ import {
   Van,
   type LucideIcon,
 } from "lucide-react";
-import type { VehicleType } from "./types";
+import type { FuelType, Transmission, VehicleType } from "./types";
 
 interface VehicleTypeMeta {
   label: string;
@@ -30,6 +30,18 @@ export const VEHICLE_TYPE_META: Record<VehicleType, VehicleTypeMeta> = {
   pickup_truck: { label: "Pickup", icon: Truck },
   minivan: { label: "Minivan", icon: Bus },
   van: { label: "Van", icon: Van },
+};
+
+export const TRANSMISSION_LABEL: Record<Transmission, string> = {
+  automatic: "Automatic",
+  manual: "Manual",
+};
+
+export const FUEL_LABEL: Record<FuelType, string> = {
+  petrol: "Petrol",
+  diesel: "Diesel",
+  hybrid: "Hybrid",
+  electric: "Electric",
 };
 
 export const VEHICLE_TYPE_ORDER = Object.keys(

@@ -104,7 +104,13 @@ export function SearchCapsule({
   const submit = (event: FormEvent) => {
     event.preventDefault();
     const query: SearchQuery = {
+      // On the results page, the filters already chosen stay.
+      ...initialQuery,
       location,
+      pickup: undefined,
+      pickupTime: undefined,
+      return: undefined,
+      returnTime: undefined,
       ...(trip.pickup && trip.return && trip),
     };
     saveRecentSearch(query);

@@ -22,6 +22,8 @@ interface VehicleCardProps {
   priority?: boolean;
   /** Position in a list; staggers the entrance animation. */
   index?: number;
+  /** Where the card leads when not the plain vehicle page, e.g. with searched dates attached. */
+  href?: string;
   /** Opens the vehicle in a new tab, keeping the list it was found in open. */
   newTab?: boolean;
   className?: string;
@@ -32,6 +34,7 @@ export function VehicleCard({
   sizes = DEFAULT_SIZES,
   priority,
   index = 0,
+  href,
   newTab,
   className,
 }: VehicleCardProps) {
@@ -69,7 +72,7 @@ export function VehicleCard({
         <h3 className="truncate font-semibold tracking-tight">
           {/* The stretched link makes the whole card clickable with one tab stop. */}
           <Link
-            href={vehicleHref(vehicle)}
+            href={href ?? vehicleHref(vehicle)}
             target={newTab ? "_blank" : undefined}
             rel={newTab ? "noopener" : undefined}
             className="after:absolute after:inset-0 after:z-10"
