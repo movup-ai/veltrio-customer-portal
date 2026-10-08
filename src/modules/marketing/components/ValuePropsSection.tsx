@@ -1,4 +1,3 @@
-import type { LucideIcon } from "lucide-react";
 import type { ReactNode } from "react";
 import { cn } from "@/shared/lib/cn";
 import { Eyebrow } from "@/shared/ui/atoms/Eyebrow";
@@ -6,12 +5,7 @@ import {
   ResponsiveImage,
   type ImageVariant,
 } from "@/shared/ui/atoms/ResponsiveImage";
-
-export interface ValueProp {
-  icon: LucideIcon;
-  title: string;
-  description: string;
-}
+import { FeatureCard, type Feature } from "./FeatureCard";
 
 /** One headline figure, e.g. 312 "Rental companies". */
 export interface ValueStat {
@@ -22,7 +16,7 @@ export interface ValueStat {
 interface ValuePropsSectionProps {
   eyebrow: string;
   title: ReactNode;
-  values: ValueProp[];
+  values: Feature[];
   /** Figures along the bottom of the statement panel. */
   stats?: ValueStat[];
   /** Photo behind the statement; the panel is plain dark without one. */
@@ -85,19 +79,8 @@ export function ValuePropsSection({
         )}
       </div>
       <ul className="grid gap-5 sm:grid-cols-2">
-        {values.map(({ icon: Icon, title: valueTitle, description }) => (
-          <li
-            key={valueTitle}
-            className="rounded-xl border border-border bg-surface p-6"
-          >
-            <span className="mb-6 grid size-11 place-items-center rounded-md bg-surface-muted">
-              <Icon aria-hidden className="size-5" strokeWidth={1.75} />
-            </span>
-            <h3 className="text-lead font-semibold tracking-tight">
-              {valueTitle}
-            </h3>
-            <p className="mt-2 text-sm text-muted">{description}</p>
-          </li>
+        {values.map((value) => (
+          <FeatureCard key={value.title} {...value} />
         ))}
       </ul>
     </section>

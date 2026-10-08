@@ -1,6 +1,7 @@
 "use client";
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import Link from "next/link";
 import { useCallback, useRef, useState, type ReactNode } from "react";
 import { cn } from "@/shared/lib/cn";
 import { preferredScrollBehavior } from "@/shared/lib/motion";
@@ -12,6 +13,8 @@ interface ScrollRowProps {
   id: string;
   title: string;
   description?: string;
+  /** Where the full list is, behind a "See all" link beside the arrows. */
+  seeAllHref?: string;
   /** One element per item. Each is wrapped in a snap-aligned list item. */
   children: ReactNode[];
   /** Override the per-item width, e.g. to show fewer, wider cards. */
@@ -25,6 +28,7 @@ export function ScrollRow({
   id,
   title,
   description,
+  seeAllHref,
   children,
   itemClassName,
 }: ScrollRowProps) {
@@ -69,28 +73,40 @@ export function ScrollRow({
         title={title}
         description={description}
         action={
-          overflows && (
-            <div className="flex gap-2">
-              <Button
-                variant="light"
-                size="icon-sm"
-                className={ARROW}
-                aria-label="Scroll back"
-                disabled={edges.start}
-                onClick={() => scrollBy(-1)}
-              >
-                <ChevronLeft aria-hidden className="size-4" />
-              </Button>
-              <Button
-                variant="light"
-                size="icon-sm"
-                className={ARROW}
-                aria-label="Scroll forward"
-                disabled={edges.end}
-                onClick={() => scrollBy(1)}
-              >
-                <ChevronRight aria-hidden className="size-4" />
-              </Button>
+          (overflows || seeAllHref) && (
+            <div className="flex items-center gap-2">
+              {seeAllHref && (
+                <Link
+                  href={seeAllHref}
+                  className="mr-2 text-sm font-semibold underline underline-offset-4"
+                >
+                  See all<span className="sr-only">: {title}</span>
+                </Link>
+              )}
+              {overflows && (
+                <>
+                  <Button
+                    variant="light"
+                    size="icon-sm"
+                    className={ARROW}
+                    aria-label="Scroll back"
+                    disabled={edges.start}
+                    onClick={() => scrollBy(-1)}
+                  >
+                    <ChevronLeft aria-hidden className="size-4" />
+                  </Button>
+                  <Button
+                    variant="light"
+                    size="icon-sm"
+                    className={ARROW}
+                    aria-label="Scroll forward"
+                    disabled={edges.end}
+                    onClick={() => scrollBy(1)}
+                  >
+                    <ChevronRight aria-hidden className="size-4" />
+                  </Button>
+                </>
+              )}
             </div>
           )
         }

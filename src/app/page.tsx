@@ -1,15 +1,27 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Suspense } from "react";
 import { listCompanies } from "@/modules/company/company.repository";
 import { CompanyCard } from "@/modules/company/components/CompanyCard";
 import { BrowseSection } from "@/modules/marketing/components/BrowseSection";
+import { FaqSection } from "@/modules/marketing/components/FaqSection";
 import { HostCtaSection } from "@/modules/marketing/components/HostCtaSection";
+import { HowItWorksSection } from "@/modules/marketing/components/HowItWorksSection";
 import { SearchBanner } from "@/modules/marketing/components/SearchBanner";
-import { hostCta, intro } from "@/modules/marketing/landing.content";
+import { TrustStrip } from "@/modules/marketing/components/TrustStrip";
+import {
+  hostCta,
+  howItWorks,
+  intro,
+  topFaqs,
+  trustPoints,
+} from "@/modules/marketing/landing.content";
 import {
   browseByCity,
   browseByMake,
   browseByType,
+  NEW_VEHICLES,
+  vehicleRows,
 } from "@/modules/marketing/landing.utils";
 import { RecentSearchVehicles } from "@/modules/search/components/RecentSearchVehicles";
 import { SearchCapsule } from "@/modules/search/components/SearchCapsule";
@@ -30,18 +42,12 @@ export const metadata: Metadata = buildMetadata({
   path: "/",
 });
 
-const ALL_VEHICLES = {
-  id: "vehicles",
-  title: "All vehicles",
-  description: "Every vehicle listed by rental companies on Veltrio.",
-};
-
-async function VehiclesRow() {
+async function VehicleRows() {
   const vehicles = await settle(listVehicles());
   if (!vehicles || vehicles.length === 0) {
     return (
-      <section aria-labelledby="vehicles-heading">
-        <SectionHeading {...ALL_VEHICLES} id="vehicles-heading" />
+      <section aria-labelledby="new-vehicles-heading">
+        <SectionHeading {...NEW_VEHICLES} id="new-vehicles-heading" />
         <p role={vehicles ? undefined : "status"} className="text-muted">
           {vehicles
             ? "No vehicles are listed yet."
@@ -50,19 +56,25 @@ async function VehiclesRow() {
       </section>
     );
   }
-  return (
-    <ScrollRow {...ALL_VEHICLES}>
-      {vehicles.map((vehicle, index) => (
+  return vehicleRows(vehicles).map((row, rowIndex) => (
+    <ScrollRow
+      key={row.id}
+      id={row.id}
+      title={row.title}
+      description={row.description}
+      seeAllHref={row.href}
+    >
+      {row.vehicles.map((vehicle, index) => (
         <VehicleCard
           key={vehicle.id}
           vehicle={vehicle}
           index={index}
-          priority={index < 4}
+          priority={rowIndex === 0 && index < 4}
           newTab
         />
       ))}
     </ScrollRow>
-  );
+  ));
 }
 
 /** Ways into the listed vehicles, built from what is actually listed. */
@@ -132,19 +144,9 @@ export default async function HomePage() {
         </SearchBanner>
 
         <div className="container-page space-y-16 pt-10 md:pt-12">
-          <RecentSearchVehicles cities={cities} />
+          <TrustStrip points={trustPoints} />
 
-          <Suspense
-            fallback={
-              <ScrollRow {...ALL_VEHICLES}>
-                {Array.from({ length: 4 }, (_, index) => (
-                  <VehicleCardSkeleton key={index} />
-                ))}
-              </ScrollRow>
-            }
-          >
-            <VehiclesRow />
-          </Suspense>
+          <RecentSearchVehicles cities={cities} />
 
           {cities.length > 0 && (
             <BrowseSection
@@ -155,6 +157,18 @@ export default async function HomePage() {
             />
           )}
 
+          <Suspense
+            fallback={
+              <ScrollRow {...NEW_VEHICLES}>
+                {Array.from({ length: 4 }, (_, index) => (
+                  <VehicleCardSkeleton key={index} />
+                ))}
+              </ScrollRow>
+            }
+          >
+            <VehicleRows />
+          </Suspense>
+
           <Suspense fallback={null}>
             <BrowseSections />
           </Suspense>
@@ -163,7 +177,36 @@ export default async function HomePage() {
             <CompaniesRow />
           </Suspense>
 
-          {siteConfig.portalUrl && <HostCtaSection {...hostCta} />}
+          <HowItWorksSection
+            eyebrow="How it works"
+            title={
+              <>
+                From browsing to the keys, <em>in four steps.</em>
+              </>
+            }
+            steps={howItWorks}
+            action={
+              <Link
+                href="/how-it-works"
+                className="text-sm font-semibold underline underline-offset-4"
+              >
+                Learn more
+                <span className="sr-only"> about how Veltrio works</span>
+              </Link>
+            }
+          />
+
+          <FaqSection
+            eyebrow="Questions"
+            title={
+              <>
+                Good to know <em>before you book.</em>
+              </>
+            }
+            faqs={topFaqs}
+          />
+
+          <HostCtaSection {...hostCta} />
         </div>
       </main>
     </>

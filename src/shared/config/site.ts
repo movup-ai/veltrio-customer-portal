@@ -23,6 +23,8 @@ export const siteConfig = {
   locale: "en_US",
   /** Where rental companies sign up and sign in; links to it are hidden while unset. */
   portalUrl: process.env.NEXT_PUBLIC_PORTAL_URL || undefined,
+  /** Where a company books a session with the team; sales links fall back to email while unset. */
+  demoUrl: process.env.NEXT_PUBLIC_DEMO_URL || undefined,
   /** Where renters write for help; the Contact link is hidden while unset. */
   supportEmail: process.env.NEXT_PUBLIC_SUPPORT_EMAIL || undefined,
 } as const;

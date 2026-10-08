@@ -17,6 +17,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "monthly",
       priority: 0.5,
     },
+    {
+      url: `${siteConfig.url}/for-rental-companies`,
+      changeFrequency: "monthly",
+      priority: 0.5,
+    },
     ...companies.map((company) => ({
       url: companyHref(company),
       changeFrequency: "daily" as const,
