@@ -2,7 +2,13 @@
 
 import { List, Map as MapIcon } from "lucide-react";
 import dynamic from "next/dynamic";
-import { useState, useSyncExternalStore } from "react";
+import {
+  Suspense,
+  use,
+  useState,
+  useSyncExternalStore,
+  type ComponentProps,
+} from "react";
 import { VehicleCard } from "@/modules/vehicle/components/VehicleCard";
 import type { Vehicle } from "@/modules/vehicle/types";
 import { vehicleHref } from "@/modules/vehicle/vehicle.utils";
@@ -32,10 +38,26 @@ interface SearchResultsProps {
   vehicles: Vehicle[];
   /** Appended to each vehicle link, so it opens on the searched dates. */
   trip: string;
-  /** The branches to pin; none when the vehicles could not be placed. */
-  branches: Branch[];
+  /** The branches to pin, still loading; none when the vehicles could not be placed. */
+  branches: Promise<Branch[]>;
   /** The point searched around, marked on the map. */
   origin?: Point;
+}
+
+type MapPaneProps = Omit<ComponentProps<typeof SearchMap>, "branches"> &
+  Pick<SearchResultsProps, "branches">;
+
+/** The map once its branches have arrived. */
+function MapPane({ branches: pending, ...props }: MapPaneProps) {
+  const branches = use(pending);
+  if (branches.length === 0) {
+    return (
+      <p className="grid size-full place-items-center p-6 text-center text-sm text-muted">
+        These cars cannot be shown on a map right now.
+      </p>
+    );
+  }
+  return <SearchMap branches={branches} {...props} />;
 }
 
 /** The found vehicles as a grid of cards, with a map of their branches when one can be drawn. */
@@ -55,7 +77,7 @@ export function SearchResults({
   );
 
   const apiKey = siteConfig.mapsKey;
-  const withMap = Boolean(apiKey) && branches.length > 0;
+  const withMap = Boolean(apiKey);
   const showList = !withMap || wide || view === "list";
   const showMap = withMap && (wide || view === "map");
 
@@ -98,16 +120,18 @@ export function SearchResults({
           aria-label="Map of pick-up locations"
           className="h-[70dvh] overflow-hidden rounded-xl border border-border bg-surface-muted lg:sticky lg:top-24 lg:col-span-2 lg:h-[calc(100dvh-8rem)]"
         >
-          <SearchMap
-            apiKey={apiKey}
-            mapId={siteConfig.mapId}
-            branches={branches}
-            origin={origin}
-            vehicles={vehicles}
-            trip={trip}
-            pointedVehicle={pointedVehicle}
-            onPointBranch={setPointedBranch}
-          />
+          <Suspense fallback={<Skeleton className="size-full" />}>
+            <MapPane
+              apiKey={apiKey}
+              mapId={siteConfig.mapId}
+              branches={branches}
+              origin={origin}
+              vehicles={vehicles}
+              trip={trip}
+              pointedVehicle={pointedVehicle}
+              onPointBranch={setPointedBranch}
+            />
+          </Suspense>
         </section>
       )}
       {withMap && (

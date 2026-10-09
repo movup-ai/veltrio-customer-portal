@@ -3,7 +3,7 @@ import { SearchX } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { listCompanyLocations } from "@/modules/company/company.repository";
-import { groupByBranch } from "@/modules/search/branches";
+import { groupByBranch, type Branch } from "@/modules/search/branches";
 import { cityLabel, findCity } from "@/modules/search/cities";
 import { SearchCapsule } from "@/modules/search/components/SearchCapsule";
 import { SearchFilters } from "@/modules/search/components/SearchFilters";
@@ -20,6 +20,7 @@ import {
   sortVehicles,
 } from "@/modules/search/search.filter";
 import { listCities } from "@/modules/search/search.repository";
+import type { Vehicle } from "@/modules/vehicle/types";
 import { findListedVehicles } from "@/modules/vehicle/vehicle.repository";
 import { siteConfig } from "@/shared/config/site";
 import { fromIsoDate } from "@/shared/lib/date";
@@ -43,6 +44,35 @@ export const metadata: Metadata = {
 };
 
 const day = (iso: string) => format(fromIsoDate(iso)!, "MMM d");
+
+const NO_BRANCHES = Promise.resolve([]);
+/** Longest the map waits for one company's branches, in milliseconds. */
+const BRANCHES_TIMEOUT = 5000;
+
+/**
+ * Where the vehicles are kept, for the map. A vehicle only names its branch, so each company's
+ * branches are fetched to place it; a company that fails or is slow gets no pins.
+ */
+async function findBranches(vehicles: Vehicle[]): Promise<Branch[]> {
+  const subdomains = [
+    ...new Set(vehicles.map((vehicle) => vehicle.company.subdomain)),
+  ];
+  const locations = await Promise.all(
+    subdomains.map(async (subdomain) => {
+      const late = new Promise<never>((_, reject) =>
+        setTimeout(
+          () => reject(new Error(`Branches of ${subdomain} timed out`)),
+          BRANCHES_TIMEOUT,
+        ),
+      );
+      const found = await settle(
+        Promise.race([listCompanyLocations(subdomain), late]),
+      );
+      return [subdomain, found ?? []] as const;
+    }),
+  );
+  return groupByBranch(vehicles, Object.fromEntries(locations));
+}
 
 export default async function SearchPage({ searchParams }: PageProps) {
   const query = parseSearchParams(await searchParams);
@@ -70,17 +100,8 @@ export default async function SearchPage({ searchParams }: PageProps) {
   // Carried to the vehicle page, so its booking panel opens on the searched dates.
   const trip = tripQuery(query);
 
-  // A vehicle only names its branch; the map needs each company's branches to place it.
-  const subdomains = siteConfig.mapsKey
-    ? [...new Set(vehicles.map((vehicle) => vehicle.company.subdomain))]
-    : [];
-  const locations = await Promise.all(
-    subdomains.map(async (subdomain) => [
-      subdomain,
-      (await settle(listCompanyLocations(subdomain))) ?? [],
-    ]),
-  );
-  const branches = groupByBranch(vehicles, Object.fromEntries(locations));
+  // Not awaited: the list is sent at once and the map fills in when its branches arrive.
+  const branches = siteConfig.mapsKey ? findBranches(vehicles) : NO_BRANCHES;
 
   return (
     <>

@@ -54,6 +54,16 @@ function Suggestions({ input, onPick }: Omit<PlaceSuggestionsProps, "apiKey">) {
     };
   }, [places, input]);
 
+  const [pickFailed, setPickFailed] = useState(false);
+
+  const pick = (prediction: Prediction) => {
+    setPickFailed(false);
+    // A dropped connection or a refusal from Google counts as a place with no point.
+    const place = locate(prediction).catch(() => null);
+    place.then((found) => setPickFailed(!found));
+    onPick(place);
+  };
+
   const locate = async (prediction: Prediction) => {
     const place = prediction.toPlace();
     await place.fetchFields({ fields: ["location"] });
@@ -90,13 +100,18 @@ function Suggestions({ input, onPick }: Omit<PlaceSuggestionsProps, "apiKey">) {
   }
   return (
     <ul aria-label="Places">
+      {pickFailed && (
+        <li role="alert" className="p-2 text-sm font-medium text-primary-hover">
+          That place could not be loaded. Try again, or pick another.
+        </li>
+      )}
       {result.found.map((prediction) => (
         <li key={prediction.placeId}>
           <SearchOption
             icon={MapPin}
             title={prediction.mainText?.text ?? prediction.text.text}
             detail={prediction.secondaryText?.text}
-            onClick={() => onPick(locate(prediction))}
+            onClick={() => pick(prediction)}
           />
         </li>
       ))}
