@@ -1,9 +1,9 @@
 "use client";
 
 import { format } from "date-fns";
-import { MapPin, Search } from "lucide-react";
+import { Globe, MapPin, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState, type FormEvent, type ReactNode } from "react";
+import { useState, type FormEvent, type ReactNode } from "react";
 import type { DateRange } from "react-day-picker";
 import { track } from "@/shared/lib/analytics";
 import { cn } from "@/shared/lib/cn";
@@ -19,7 +19,7 @@ import {
   PopoverTrigger,
 } from "@/shared/ui/molecules/Popover";
 import { cityLabel, citySlug, findCity, type City } from "../cities";
-import { loadRecentSearch, saveRecentSearch } from "../recent-search";
+import { saveRecentSearch } from "../recent-search";
 import { buildSearchUrl, type SearchQuery } from "../search-params";
 import { completeTrip, type Trip } from "../trip";
 import { SearchField } from "./SearchField";
@@ -40,6 +40,9 @@ const TIME_OPTIONS = HOURLY_TIMES.map((time) => ({
   value: time,
   label: formatTime(time),
 }));
+
+/** The location choice that searches every city. */
+const ANYWHERE = "Anywhere";
 
 function Divider() {
   return <span aria-hidden className="my-2 hidden w-px bg-border md:block" />;
@@ -70,22 +73,23 @@ export function SearchCapsule({
     returnTime: initialQuery?.returnTime,
   });
 
-  // After mount, so the first render matches the server's empty form.
-  useEffect(() => {
-    if (initialQuery) return;
-    const recent = loadRecentSearch(toIsoDate(new Date()));
-    if (!recent) return;
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- reading browser storage once
-    setLocation(recent.location);
-    setTrip({
-      pickup: recent.pickup,
-      pickupTime: recent.pickupTime,
-      return: recent.return,
-      returnTime: recent.returnTime,
-    });
-  }, [initialQuery]);
-
-  const city = findCity(cities, location);
+  const found = findCity(cities, location);
+  const city = found && { ...found, slug: citySlug(found) };
+  // Every city, after the choice of none of them.
+  const places = [
+    {
+      slug: undefined,
+      label: ANYWHERE,
+      count: cities.reduce((total, each) => total + each.vehicleCount, 0),
+      icon: Globe,
+    },
+    ...cities.map((each) => ({
+      slug: citySlug(each),
+      label: cityLabel(each),
+      count: each.vehicleCount,
+      icon: MapPin,
+    })),
+  ];
   const from = fromIsoDate(trip.pickup);
   const to = fromIsoDate(trip.return);
   const popoverProps = (field: Field) => ({
@@ -158,51 +162,35 @@ export function SearchCapsule({
         <PopoverTrigger asChild>
           <SearchField
             label="Where"
-            placeholder="Choose a city"
-            value={city && cityLabel(city)}
+            placeholder={ANYWHERE}
+            value={city ? cityLabel(city) : ANYWHERE}
           />
         </PopoverTrigger>
         <PopoverContent align="start" className="w-80 p-3">
-          {cities.length === 0 && (
-            <p className="p-2 text-sm text-muted">
-              No cities are available right now.
-            </p>
-          )}
           <ul aria-label="Cities" className="max-h-80 overflow-y-auto">
-            {cities.map((option) => {
-              const slug = citySlug(option);
-              return (
-                <li key={slug}>
-                  <button
-                    type="button"
-                    aria-pressed={slug === location}
-                    onClick={() => {
-                      setLocation(slug);
-                      setOpenField(null);
-                    }}
-                    className="flex w-full items-center gap-4 rounded-md p-2 text-left hover:bg-surface-muted aria-pressed:bg-surface-muted"
-                  >
-                    <span className="grid size-11 place-items-center rounded-md bg-surface-muted">
-                      <MapPin
-                        aria-hidden
-                        className="size-5"
-                        strokeWidth={1.75}
-                      />
+            {places.map(({ slug, label, count, icon: Icon }) => (
+              <li key={slug ?? "anywhere"}>
+                <button
+                  type="button"
+                  aria-pressed={slug === city?.slug}
+                  onClick={() => {
+                    setLocation(slug);
+                    setOpenField(null);
+                  }}
+                  className="flex w-full items-center gap-4 rounded-md p-2 text-left hover:bg-surface-muted aria-pressed:bg-surface-muted"
+                >
+                  <span className="grid size-11 place-items-center rounded-md bg-surface-muted">
+                    <Icon aria-hidden className="size-5" strokeWidth={1.75} />
+                  </span>
+                  <span>
+                    <span className="block font-semibold">{label}</span>
+                    <span className="block text-sm text-muted">
+                      {count === 1 ? "1 car" : `${count} cars`}
                     </span>
-                    <span>
-                      <span className="block font-semibold">
-                        {cityLabel(option)}
-                      </span>
-                      <span className="block text-sm text-muted">
-                        {option.vehicleCount === 1
-                          ? "1 car"
-                          : `${option.vehicleCount} cars`}
-                      </span>
-                    </span>
-                  </button>
-                </li>
-              );
-            })}
+                  </span>
+                </button>
+              </li>
+            ))}
           </ul>
         </PopoverContent>
       </Popover>

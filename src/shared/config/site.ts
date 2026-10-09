@@ -25,6 +25,10 @@ export const siteConfig = {
   portalUrl: process.env.NEXT_PUBLIC_PORTAL_URL || undefined,
   /** Where a company books a session with the team; sales links fall back to email while unset. */
   demoUrl: process.env.NEXT_PUBLIC_DEMO_URL || undefined,
+  /** Google Maps key with the Maps JavaScript API enabled; the search map is hidden while unset. */
+  mapsKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY || undefined,
+  /** Google Maps Map ID, which price pins need; Google's demo ID stands in while unset. */
+  mapId: process.env.NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID || "DEMO_MAP_ID",
   /** Where renters write for help; the Contact link is hidden while unset. */
   supportEmail: process.env.NEXT_PUBLIC_SUPPORT_EMAIL || undefined,
 } as const;

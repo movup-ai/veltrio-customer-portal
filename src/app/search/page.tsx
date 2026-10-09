@@ -1,9 +1,12 @@
 import { format } from "date-fns";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { listCompanyLocations } from "@/modules/company/company.repository";
+import { groupByBranch } from "@/modules/search/branches";
 import { cityLabel, findCity } from "@/modules/search/cities";
 import { SearchCapsule } from "@/modules/search/components/SearchCapsule";
 import { SearchFilters } from "@/modules/search/components/SearchFilters";
+import { SearchResults } from "@/modules/search/components/SearchResults";
 import {
   buildSearchUrl,
   parseSearchParams,
@@ -15,9 +18,8 @@ import {
   sortVehicles,
 } from "@/modules/search/search.filter";
 import { listCities } from "@/modules/search/search.repository";
-import { VehicleCard } from "@/modules/vehicle/components/VehicleCard";
 import { findListedVehicles } from "@/modules/vehicle/vehicle.repository";
-import { vehicleHref } from "@/modules/vehicle/vehicle.utils";
+import { siteConfig } from "@/shared/config/site";
 import { fromIsoDate } from "@/shared/lib/date";
 import { buildMetadata } from "@/shared/lib/seo";
 import { settle } from "@/shared/lib/settle";
@@ -61,6 +63,18 @@ export default async function SearchPage({ searchParams }: PageProps) {
   // Carried to the vehicle page, so its booking panel opens on the searched dates.
   const trip = tripQuery(query);
 
+  // A vehicle only names its branch; the map needs each company's branches to place it.
+  const subdomains = siteConfig.mapsKey
+    ? [...new Set(vehicles.map((vehicle) => vehicle.company.subdomain))]
+    : [];
+  const locations = await Promise.all(
+    subdomains.map(async (subdomain) => [
+      subdomain,
+      (await settle(listCompanyLocations(subdomain))) ?? [],
+    ]),
+  );
+  const branches = groupByBranch(vehicles, Object.fromEntries(locations));
+
   return (
     <>
       <SiteHeader />
@@ -88,19 +102,7 @@ export default async function SearchPage({ searchParams }: PageProps) {
         )}
 
         {count > 0 ? (
-          <ul className="mt-6 grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {vehicles.map((vehicle, index) => (
-              <li key={vehicle.id}>
-                <VehicleCard
-                  vehicle={vehicle}
-                  href={vehicleHref(vehicle) + trip}
-                  index={index}
-                  priority={index < 4}
-                  newTab
-                />
-              </li>
-            ))}
-          </ul>
+          <SearchResults vehicles={vehicles} trip={trip} branches={branches} />
         ) : (
           <div className="mt-6 rounded-xl border border-border bg-surface p-8 text-center">
             {found ? (
