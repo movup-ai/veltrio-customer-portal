@@ -27,6 +27,7 @@ const props = {
   depositSecret: null,
   submitLabel: "Pay $100",
   consent: null,
+  cancellation: null,
   paidSecret: null,
   initialError: null,
   onSettled,
@@ -41,6 +42,36 @@ beforeEach(() => vi.clearAllMocks());
 afterEach(cleanup);
 
 describe("PaymentCheckout", () => {
+  it("states the cancellation terms and the deposit hold as two labelled lines", () => {
+    render(
+      <PaymentCheckout
+        {...props}
+        cancellation="Cancel by Oct 8 at 9:30 AM for a full refund."
+        consent="By paying, you also authorise Sky Rental to hold $500."
+      />,
+    );
+
+    const lines = screen
+      .getAllByRole("listitem")
+      .map((line) => line.textContent);
+    expect(lines).toEqual([
+      "Cancellation policy: Cancel by Oct 8 at 9:30 AM for a full refund.",
+      "Security deposit: By paying, you also authorise Sky Rental to hold $500.",
+    ]);
+  });
+
+  it("labels a line that stands alone too, so it always reads as what it is", () => {
+    const lines = () =>
+      screen.getAllByRole("listitem").map((line) => line.textContent);
+
+    render(<PaymentCheckout {...props} cancellation="Cancel any time." />);
+    expect(lines()).toEqual(["Cancellation policy: Cancel any time."]);
+    cleanup();
+
+    render(<PaymentCheckout {...props} consent="Sky Rental holds $500." />);
+    expect(lines()).toEqual(["Security deposit: Sky Rental holds $500."]);
+  });
+
   it("places the hold on the card that just paid", async () => {
     confirmPayment
       .mockResolvedValueOnce({ paymentIntent: { payment_method: "pm_1" } })

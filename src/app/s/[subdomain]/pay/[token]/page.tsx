@@ -13,6 +13,7 @@ import {
   getPaymentLink,
   receiptHref,
 } from "@/modules/payment/payment.repository";
+import { cancellationTerms } from "@/shared/lib/cancellation-policy";
 import { settle } from "@/shared/lib/settle";
 import { Button } from "@/shared/ui/atoms/Button";
 import { StatusNotice } from "@/shared/ui/molecules/StatusNotice";
@@ -143,6 +144,16 @@ export default async function PayPage({ params, searchParams }: PageProps) {
         timeZone={company.timeZone}
         addendumHref={
           extension?.applied ? extensionAddendumUrl(subdomain, token) : null
+        }
+        // Only while there is still a rental to pay for.
+        cancellationTerms={
+          link.cancellationPolicy && link.charge?.status === "open"
+            ? cancellationTerms({
+                policy: link.cancellationPolicy,
+                pickupAt: link.pickupAt,
+                timeZone: company.timeZone,
+              })
+            : null
         }
       />
     </Panel>

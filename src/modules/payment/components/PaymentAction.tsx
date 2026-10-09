@@ -24,6 +24,8 @@ interface PaymentActionProps {
   timeZone: string;
   /** The addendum for an extension paid on this link, once it is in effect. */
   addendumHref: string | null;
+  /** What cancelling would refund, while there is a rental payment to say it beside. */
+  cancellationTerms: string | null;
 }
 
 /** The part of the page that changes: the card form, a wait, or how the link ended. */
@@ -34,6 +36,7 @@ export function PaymentAction({
   address,
   timeZone,
   addendumHref,
+  cancellationTerms,
 }: PaymentActionProps) {
   const router = useRouter();
   const step = paymentStep(link);
@@ -66,6 +69,12 @@ export function PaymentAction({
         depositSecret={step.depositSecret}
         submitLabel={copy.submit}
         consent={copy.consent}
+        // Not on a hold or an extension: the policy is about the rental payment.
+        cancellation={
+          step.mode === "payment" || step.mode === "payment_and_deposit"
+            ? cancellationTerms
+            : null
+        }
         paidSecret={step.mode === "deposit" ? returnedPaymentSecret : null}
         initialError={step.mode === "deposit" ? depositError : null}
         onSettled={onSettled}

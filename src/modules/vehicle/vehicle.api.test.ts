@@ -93,6 +93,24 @@ describe("toVehicleDetail", () => {
       discountTiers: [],
       billableHoursPerDay: 8,
       fees: { taxRatePct: 0, depositCents: null },
+      cancellationPolicy: null,
     });
+  });
+
+  it("keeps a non-refundable policy, an empty list, apart from no policy at all", () => {
+    const tiers = [{ daysBefore: 7, refundPercent: 50, internal: "x" }];
+
+    expect(
+      toVehicleDetail({ ...detail, cancellationPolicy: [] }).cancellationPolicy,
+    ).toEqual([]);
+    expect(
+      toVehicleDetail({ ...detail, cancellationPolicy: null })
+        .cancellationPolicy,
+    ).toBeNull();
+    // Copied field by field, so nothing else the API sends reaches the page.
+    expect(
+      toVehicleDetail({ ...detail, cancellationPolicy: tiers })
+        .cancellationPolicy,
+    ).toEqual([{ daysBefore: 7, refundPercent: 50 }]);
   });
 });

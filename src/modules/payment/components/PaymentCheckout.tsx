@@ -53,6 +53,8 @@ interface PaymentCheckoutProps {
   depositSecret: string | null;
   submitLabel: string;
   consent: string | null;
+  /** What cancelling this booking would refund, said before the renter pays for it. */
+  cancellation: string | null;
   /**
    * On a deposit form: the client secret of a payment the renter has just come back from
    * paying elsewhere, so the hold can go on that same method without asking again.
@@ -148,6 +150,7 @@ function CheckoutForm({
   depositSecret,
   submitLabel,
   consent,
+  cancellation,
   resume,
   initialError,
   onSettled,
@@ -234,7 +237,28 @@ function CheckoutForm({
           {error}
         </p>
       )}
-      {consent && <p className="text-meta text-pretty text-muted">{consent}</p>}
+      {(cancellation || consent) && (
+        // Two commitments, so two lines: merged, the hold reads as part of the refund terms.
+        // Each is labelled even alone, so the sentence after it need not say what it is about.
+        <ul className="grid gap-2 text-meta text-pretty text-muted">
+          {cancellation && (
+            <li>
+              <span className="font-semibold text-carbon">
+                Cancellation policy:
+              </span>{" "}
+              {cancellation}
+            </li>
+          )}
+          {consent && (
+            <li>
+              <span className="font-semibold text-carbon">
+                Security deposit:
+              </span>{" "}
+              {consent}
+            </li>
+          )}
+        </ul>
+      )}
       <Button
         type="submit"
         size="lg"
