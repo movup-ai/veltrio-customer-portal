@@ -124,8 +124,14 @@ describe("copy", () => {
     expect(checkoutCopy("payment_and_deposit", both).submit).toBe(
       "Pay $220 & hold $2,000",
     );
-    expect(checkoutCopy("deposit", both).consent).toContain(
-      "Thewheeldeal holds $2,000",
+    // Under a "Security deposit" label, so neither repeats what it is a hold for.
+    const hold =
+      "It is only charged if your rental agreement calls for it, and is released after the return.";
+    expect(checkoutCopy("payment_and_deposit", both).consent).toBe(
+      `By paying, you authorise Thewheeldeal to hold $2,000 on this card. ${hold}`,
+    );
+    expect(checkoutCopy("deposit", both).consent).toBe(
+      `Thewheeldeal holds $2,000 on this card. ${hold}`,
     );
   });
 

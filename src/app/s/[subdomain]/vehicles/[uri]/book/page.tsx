@@ -20,6 +20,7 @@ import {
 } from "@/modules/vehicle/vehicle.utils";
 import { settle } from "@/shared/lib/settle";
 import { todayIn } from "@/shared/lib/time-zone";
+import { CancellationPolicy } from "@/shared/ui/molecules/CancellationPolicy";
 import { SiteHeader } from "@/shared/ui/organisms/SiteHeader";
 
 interface PageProps {
@@ -108,6 +109,13 @@ export default async function BookVehiclePage({
                     </Link>
                   }
                 />
+                {vehicle.cancellationPolicy && (
+                  <CancellationPolicy
+                    policy={vehicle.cancellationPolicy}
+                    companyName={vehicle.company.name}
+                    className="mt-4"
+                  />
+                )}
               </div>
             </aside>
           </BookingReturnProvider>

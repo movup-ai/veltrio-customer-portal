@@ -125,19 +125,20 @@ function paymentAmounts(link: PaymentLink) {
 export function checkoutCopy(mode: CheckoutMode, link: PaymentLink) {
   const { amount, deposit } = paymentAmounts(link);
   const company = link.companyName;
-  const hold = `Nothing is taken unless your rental agreement calls for it, and the hold is released after the return.`;
+  // Shown under a "Security deposit" label, so neither sentence repeats what the hold is for.
+  const hold = `It is only charged if your rental agreement calls for it, and is released after the return.`;
   if (mode === "payment" || mode === "extension") {
     return { submit: `Pay ${amount}`, consent: null };
   }
   if (mode === "payment_and_deposit") {
     return {
       submit: `Pay ${amount} & hold ${deposit}`,
-      consent: `By paying, you also authorise ${company} to hold ${deposit} on this card as your security deposit. ${hold}`,
+      consent: `By paying, you authorise ${company} to hold ${deposit} on this card. ${hold}`,
     };
   }
   return {
     submit: `Authorise ${deposit} hold`,
-    consent: `${company} holds ${deposit} on this card as your security deposit. ${hold}`,
+    consent: `${company} holds ${deposit} on this card. ${hold}`,
   };
 }
 

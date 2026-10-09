@@ -1,3 +1,7 @@
+import {
+  toPolicy,
+  type CancellationPolicy,
+} from "@/shared/lib/cancellation-policy";
 import { isTimeZone } from "@/shared/lib/time-zone";
 import type {
   DiscountTier,
@@ -92,6 +96,7 @@ export interface VehicleDetailDto extends VehicleDto {
   billableHoursPerDay?: number;
   fees?: { taxRatePct: number | null; depositCents: number | null };
   occupancy: VehicleOccupancy;
+  cancellationPolicy?: CancellationPolicy | null;
 }
 
 /** The API's own default for a vehicle that has not set its hours per day. */
@@ -125,5 +130,6 @@ export function toVehicleDetail(dto: VehicleDetailDto): VehicleDetail {
       ranges: dto.occupancy.ranges.map(({ start, end }) => ({ start, end })),
       through: dto.occupancy.through,
     },
+    cancellationPolicy: toPolicy(dto.cancellationPolicy),
   };
 }

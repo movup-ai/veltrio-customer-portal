@@ -3,6 +3,7 @@ import type {
   Transmission,
   VehicleType,
 } from "@/modules/vehicle/types";
+import type { CancellationPolicy } from "@/shared/lib/cancellation-policy";
 
 /** Where one part of a payment link stands. A deposit is "held", never "paid". */
 export type PaymentPartStatus =
@@ -68,6 +69,8 @@ export interface PaymentLink {
   deposit: PaymentPart | null;
   /** Set on a link for a later return, which asks for neither of the parts above. */
   extension: PaymentExtension | null;
+  /** What cancelling would refund, as the booking was made; null when the company stated none. */
+  cancellationPolicy: CancellationPolicy | null;
   receipt: PaymentReceipt | null;
 }
 
