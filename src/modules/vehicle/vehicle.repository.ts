@@ -44,9 +44,11 @@ export interface VehicleFilter {
   /** Based at a branch in this city, as `GET /marketplace/cities` names it. */
   city?: string;
   state?: string | null;
+  /** Based within reach of this point, nearest first; else at the nearest branch to it. */
+  near?: { lat: number; lng: number };
 }
 
-/** Listed vehicles matching a filter, newest first; empty when the filter is unusable. */
+/** Listed vehicles matching a filter, newest first or nearest first; empty when the filter is unusable. */
 export async function findListedVehicles(
   filter: VehicleFilter,
 ): Promise<Vehicle[]> {
@@ -64,6 +66,12 @@ export async function findListedVehicles(
     if (typeof value !== "string" || !value.trim()) continue;
     if (value.length > PLACE_MAX) return [];
     params.set(key, value);
+  }
+  if (filter.near) {
+    const { lat, lng } = filter.near;
+    if (!(Math.abs(lat) <= 90) || !(Math.abs(lng) <= 180)) return [];
+    params.set("lat", String(lat));
+    params.set("lng", String(lng));
   }
   const vehicles = await apiGetAll<VehicleDto>(
     `/marketplace/vehicles?${params}`,

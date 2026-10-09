@@ -36,6 +36,7 @@ export interface VehicleDto {
     variants: PhotoVariant[];
   }[];
   dailyRateCents: number | null;
+  distanceMiles?: number | null;
   specs: Pick<VehicleSpecs, "transmission" | "fuelType" | "seats" | "doors"> &
     Partial<VehicleSpecs>;
   // `timezone` is missing from older API builds.
@@ -66,6 +67,7 @@ export function toVehicle(dto: VehicleDto): Vehicle {
         variants,
       })),
     dailyRateCents: dto.dailyRateCents,
+    distanceMiles: dto.distanceMiles ?? undefined,
     specs: {
       transmission: dto.specs.transmission,
       fuelType: dto.specs.fuelType,
