@@ -5,6 +5,8 @@
  * (GET /marketplace/vehicles in https://api.veltrio.autos/docs).
  */
 
+import type { CancellationPolicy } from "@/shared/lib/cancellation-policy";
+
 export const VEHICLE_TYPES = [
   "convertible",
   "coupe",
@@ -131,4 +133,6 @@ export interface VehicleDetail extends Vehicle {
   billableHoursPerDay: number;
   fees: VehicleFees;
   occupancy: VehicleOccupancy;
+  /** What the company refunds a renter who cancels; null when it states no policy. */
+  cancellationPolicy: CancellationPolicy | null;
 }

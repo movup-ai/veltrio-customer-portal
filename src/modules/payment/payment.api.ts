@@ -1,3 +1,7 @@
+import {
+  toPolicy,
+  type CancellationPolicy,
+} from "@/shared/lib/cancellation-policy";
 import type {
   PaymentExtension,
   PaymentLink,
@@ -30,6 +34,7 @@ export interface PaymentLinkDto {
   deposit: PaymentPartDto | null;
   extension?:
     (PaymentPartDto & Omit<PaymentExtension, keyof PaymentPart>) | null;
+  cancellationPolicy?: CancellationPolicy | null;
   receipt?: PaymentLink["receipt"];
 }
 
@@ -83,6 +88,7 @@ export function toPaymentLink(dto: PaymentLinkDto): PaymentLink {
             agreementNumber: extension.agreementNumber,
           }
         : null,
+    cancellationPolicy: toPolicy(dto.cancellationPolicy),
     receipt: receipt
       ? {
           bookingId: receipt.bookingId,
