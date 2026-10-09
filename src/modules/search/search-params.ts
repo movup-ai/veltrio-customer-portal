@@ -12,6 +12,20 @@ export type SearchSort = (typeof SEARCH_SORTS)[number];
 const FUEL_TYPES: FuelType[] = ["petrol", "diesel", "hybrid", "electric"];
 const TRANSMISSIONS: Transmission[] = ["automatic", "manual"];
 
+/** How far a search near a point reaches, as the API does by default. */
+export const SEARCH_RADIUS_MILES = 25;
+
+/** A point on the map. */
+export interface Point {
+  lat: number;
+  lng: number;
+}
+
+/** A place a renter picked to search near: its point and what to call it. */
+export interface SearchPlace extends Point {
+  label: string;
+}
+
 /**
  * Search state lives in the URL so results can be refreshed, bookmarked and shared:
  * /search?location=miami-fl&pickup=2026-10-10&return=2026-10-13&type=suv
@@ -19,6 +33,10 @@ const TRANSMISSIONS: Transmission[] = ["automatic", "manual"];
 export interface SearchQuery {
   /** City slug, e.g. "miami-fl". */
   location?: string;
+  /** A point to search around instead of a city; "25.762,-80.192" in the URL. */
+  near?: Point;
+  /** What the renter picked for `near`, e.g. "Brickell Ave". Only kept alongside it. */
+  place?: string;
   /** Pick-up date, YYYY-MM-DD. */
   pickup?: string;
   /** Return date, YYYY-MM-DD. */
@@ -40,8 +58,14 @@ export interface SearchQuery {
 }
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
+/** A latitude and a longitude, comma-separated. */
+const POINT = /^(-?\d{1,2}(?:\.\d+)?),(-?\d{1,3}(?:\.\d+)?)$/;
+/** Longest place name kept from a URL. */
+const PLACE_MAX = 80;
 const KEYS = [
   "location",
+  "near",
+  "place",
   "pickup",
   "pickupTime",
   "return",
@@ -59,7 +83,11 @@ export function buildSearchUrl(query: SearchQuery = {}) {
   const params = new URLSearchParams();
   for (const key of KEYS) {
     const value = query[key];
-    if (value) params.set(key, String(value));
+    if (!value) continue;
+    // Three decimals is about a city block: enough to search by, short of a doorstep.
+    if (typeof value === "object") {
+      params.set(key, `${value.lat.toFixed(3)},${value.lng.toFixed(3)}`);
+    } else params.set(key, String(value));
   }
   const qs = params.toString();
   return qs ? `/search?${qs}` : "/search";
@@ -108,13 +136,22 @@ export function parseSearchParams(raw: RawParams): SearchQuery {
     return value && /^[1-9]\d{0,5}$/.test(value) ? Number(value) : undefined;
   };
 
+  const point = POINT.exec(first("near") ?? "");
+  const near = point && { lat: Number(point[1]), lng: Number(point[2]) };
+  const onEarth = near && Math.abs(near.lat) <= 90 && Math.abs(near.lng) <= 180;
+
   const pickup = date("pickup");
   const returnDate = date("return");
   // The same day is a rental of a few hours.
   const validRange = pickup && returnDate && returnDate >= pickup;
 
   return {
-    location: first("location") || undefined,
+    // A point is searched instead of a city, never with one.
+    location: onEarth ? undefined : first("location") || undefined,
+    near: onEarth ? near : undefined,
+    place: onEarth
+      ? first("place")?.trim().slice(0, PLACE_MAX) || undefined
+      : undefined,
     pickup: validRange ? pickup : undefined,
     return: validRange ? returnDate : undefined,
     pickupTime: validRange ? parseTime(first("pickupTime")) : undefined,

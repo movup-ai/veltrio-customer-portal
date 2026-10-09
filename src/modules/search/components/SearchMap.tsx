@@ -8,7 +8,7 @@ import {
   useMap,
   useMapsLibrary,
 } from "@vis.gl/react-google-maps";
-import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, MapPin, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { VehicleCard } from "@/modules/vehicle/components/VehicleCard";
 import type { Vehicle } from "@/modules/vehicle/types";
@@ -16,11 +16,14 @@ import { vehicleHref } from "@/modules/vehicle/vehicle.utils";
 import { cn } from "@/shared/lib/cn";
 import { Button } from "@/shared/ui/atoms/Button";
 import { branchLabel, type Branch } from "../branches";
+import type { Point } from "../search-params";
 
 interface SearchMapProps {
   apiKey: string;
   mapId: string;
   branches: Branch[];
+  /** The point searched around; marked, and kept in view. */
+  origin?: Point;
   vehicles: Vehicle[];
   /** Appended to each vehicle link, so it opens on the searched dates. */
   trip: string;
@@ -43,21 +46,28 @@ const BRANCH_ZOOM = 13;
 const BOUNDS_PADDING = 64;
 
 /** Moves the map to show every branch, again whenever the results change. */
-function FitBranches({ branches }: { branches: Branch[] }) {
+function FitBranches({
+  branches,
+  origin,
+}: {
+  branches: Branch[];
+  origin?: Point;
+}) {
   const map = useMap();
   const core = useMapsLibrary("core");
   useEffect(() => {
     const [first, ...rest] = branches;
     if (!map || !core || !first) return;
-    if (rest.length === 0) {
+    if (rest.length === 0 && !origin) {
       map.setCenter(position(first));
       map.setZoom(BRANCH_ZOOM);
       return;
     }
     const bounds = new core.LatLngBounds();
     for (const branch of branches) bounds.extend(position(branch));
+    if (origin) bounds.extend(origin);
     map.fitBounds(bounds, BOUNDS_PADDING);
-  }, [map, core, branches]);
+  }, [map, core, branches, origin]);
   return null;
 }
 
@@ -66,6 +76,7 @@ export function SearchMap({
   apiKey,
   mapId,
   branches,
+  origin,
   vehicles,
   trip,
   pointedVehicle,
@@ -108,7 +119,16 @@ export function SearchMap({
         clickableIcons={false}
         onClick={() => setOpened(undefined)}
       >
-        <FitBranches branches={branches} />
+        <FitBranches branches={branches} origin={origin} />
+        {origin && (
+          <AdvancedMarker position={origin} title="Where you searched">
+            <MapPin
+              aria-hidden
+              className="size-10 fill-primary text-surface drop-shadow-md"
+              strokeWidth={1.5}
+            />
+          </AdvancedMarker>
+        )}
         {branches.map((branch) => {
           const count = branch.vehicleIds.length;
           const active =

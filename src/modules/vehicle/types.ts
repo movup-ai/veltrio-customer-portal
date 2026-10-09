@@ -84,6 +84,8 @@ export interface Vehicle {
   photos: VehiclePhoto[];
   /** Lowest per-day rate in cents; null when the company has no daily rate. */
   dailyRateCents: number | null;
+  /** Straight-line miles from the searched point to its branch; only on a search near one. */
+  distanceMiles?: number;
   specs: VehicleSpecs;
   company: VehicleCompany;
 }

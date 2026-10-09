@@ -1,4 +1,5 @@
 import { format } from "date-fns";
+import { SearchX } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { listCompanyLocations } from "@/modules/company/company.repository";
@@ -10,6 +11,7 @@ import { SearchResults } from "@/modules/search/components/SearchResults";
 import {
   buildSearchUrl,
   parseSearchParams,
+  SEARCH_RADIUS_MILES,
   tripQuery,
 } from "@/modules/search/search-params";
 import {
@@ -55,8 +57,13 @@ export default async function SearchPage({ searchParams }: PageProps) {
       return: end,
       city: city?.city,
       state: city?.state,
+      near: query.near,
     }),
   );
+  // Nothing within reach: the API answers with the nearest branch's vehicles instead.
+  const nearest = found?.[0]?.distanceMiles;
+  const outOfReach =
+    nearest !== undefined && nearest > SEARCH_RADIUS_MILES ? nearest : null;
   const vehicles = sortVehicles(filterVehicles(found ?? [], query), query.sort);
   const count = vehicles.length;
 
@@ -81,7 +88,7 @@ export default async function SearchPage({ searchParams }: PageProps) {
       <main id="main" className="container-page pt-6 pb-16">
         <SearchCapsule
           // Back and Forward change the search without leaving the page: start the bar afresh.
-          key={[query.location, trip].join()}
+          key={[query.location, query.near?.lat, query.near?.lng, trip].join()}
           initialQuery={query}
           cities={cities}
         />
@@ -92,7 +99,14 @@ export default async function SearchPage({ searchParams }: PageProps) {
         <h1 className="mt-8 text-h4 font-semibold" aria-live="polite">
           {count === 1 ? "1 car" : `${count} cars`} available
           {city && ` in ${cityLabel(city)}`}
+          {query.near && ` near ${query.place ?? "you"}`}
         </h1>
+        {outOfReach !== null && (
+          <p className="mt-1 text-muted">
+            Nothing within {SEARCH_RADIUS_MILES} miles. These are at the nearest
+            branch, {outOfReach} miles away.
+          </p>
+        )}
         {pickup && end && (
           <p className="mt-1 text-muted">
             {pickup === end
@@ -102,16 +116,26 @@ export default async function SearchPage({ searchParams }: PageProps) {
         )}
 
         {count > 0 ? (
-          <SearchResults vehicles={vehicles} trip={trip} branches={branches} />
+          <SearchResults
+            vehicles={vehicles}
+            trip={trip}
+            branches={branches}
+            origin={query.near}
+          />
         ) : (
-          <div className="mt-6 rounded-xl border border-border bg-surface p-8 text-center">
+          <div className="mx-auto mt-16 max-w-md text-center">
             {found ? (
               <>
+                <SearchX
+                  aria-hidden
+                  className="mx-auto mb-4 size-10 text-border-strong"
+                  strokeWidth={1.5}
+                />
                 <p className="text-lead font-semibold">
                   No cars match this search.
                 </p>
                 <p className="mt-2 text-muted">
-                  Try other dates, another city or fewer filters.
+                  Try other dates, another place or fewer filters.
                 </p>
                 <Link
                   href={buildSearchUrl()}

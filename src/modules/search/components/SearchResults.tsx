@@ -11,6 +11,7 @@ import { cn } from "@/shared/lib/cn";
 import { Button } from "@/shared/ui/atoms/Button";
 import { Skeleton } from "@/shared/ui/atoms/Skeleton";
 import { branchKey, type Branch } from "../branches";
+import type { Point } from "../search-params";
 
 // The map library is only downloaded once a map is about to be shown.
 const SearchMap = dynamic(
@@ -33,6 +34,8 @@ interface SearchResultsProps {
   trip: string;
   /** The branches to pin; none when the vehicles could not be placed. */
   branches: Branch[];
+  /** The point searched around, marked on the map. */
+  origin?: Point;
 }
 
 /** The found vehicles as a grid of cards, with a map of their branches when one can be drawn. */
@@ -40,6 +43,7 @@ export function SearchResults({
   vehicles,
   trip,
   branches,
+  origin,
 }: SearchResultsProps) {
   const [pointedVehicle, setPointedVehicle] = useState<Vehicle>();
   const [pointedBranch, setPointedBranch] = useState<string>();
@@ -98,6 +102,7 @@ export function SearchResults({
             apiKey={apiKey}
             mapId={siteConfig.mapId}
             branches={branches}
+            origin={origin}
             vehicles={vehicles}
             trip={trip}
             pointedVehicle={pointedVehicle}

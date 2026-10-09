@@ -92,3 +92,39 @@ describe("parseSearchParams", () => {
     expect(parsed.return).toBe("2026-10-09");
   });
 });
+
+describe("searching near a point", () => {
+  it("puts a rounded point and its name in the URL, and reads them back", () => {
+    const url = buildSearchUrl({
+      near: { lat: 25.76168, lng: -80.19179 },
+      place: "Brickell Ave",
+    });
+    expect(url).toBe("/search?near=25.762%2C-80.192&place=Brickell+Ave");
+    expect(
+      parseSearchParams({ near: "25.762,-80.192", place: " Brickell Ave " }),
+    ).toMatchObject({
+      near: { lat: 25.762, lng: -80.192 },
+      place: "Brickell Ave",
+    });
+  });
+
+  it("searches the point instead of a city", () => {
+    expect(
+      parseSearchParams({ near: "25.762,-80.192", location: "miami-fl" })
+        .location,
+    ).toBeUndefined();
+  });
+
+  it("drops a point that is malformed or off the map, and its name with it", () => {
+    for (const near of ["25.762", "abc,def", "91,0", "0,181"]) {
+      const query = parseSearchParams({
+        near,
+        place: "Nowhere",
+        location: "miami-fl",
+      });
+      expect(query.near).toBeUndefined();
+      expect(query.place).toBeUndefined();
+      expect(query.location).toBe("miami-fl");
+    }
+  });
+});

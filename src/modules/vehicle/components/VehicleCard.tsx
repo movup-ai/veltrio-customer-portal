@@ -97,6 +97,8 @@ export function VehicleCard({
         <p className="mt-1.5 truncate text-meta text-muted">
           <span className="font-medium text-foreground">{company.name}</span> ·{" "}
           {vehicle.location}
+          {vehicle.distanceMiles !== undefined &&
+            ` · ${vehicle.distanceMiles} mi`}
         </p>
         {rate !== null && (
           <p className="mt-2 flex items-baseline gap-1.5">

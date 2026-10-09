@@ -1,15 +1,18 @@
 "use client";
 
 import { format } from "date-fns";
-import { Globe, MapPin, Search } from "lucide-react";
+import { Building2, Globe, LocateFixed, Search, X } from "lucide-react";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import { useState, type FormEvent, type ReactNode } from "react";
+import { useId, useRef, useState, type FormEvent, type ReactNode } from "react";
 import type { DateRange } from "react-day-picker";
+import { siteConfig } from "@/shared/config/site";
 import { track } from "@/shared/lib/analytics";
 import { cn } from "@/shared/lib/cn";
 import { fromIsoDate, toIsoDate } from "@/shared/lib/date";
 import { formatTime, HOURLY_TIMES } from "@/shared/lib/time";
 import { Button } from "@/shared/ui/atoms/Button";
+import { Skeleton } from "@/shared/ui/atoms/Skeleton";
 import { DateRangePicker } from "@/shared/ui/molecules/DateRangePicker";
 import { ListboxContent } from "@/shared/ui/molecules/Listbox";
 import {
@@ -22,7 +25,7 @@ import { cityLabel, citySlug, findCity, type City } from "../cities";
 import { saveRecentSearch } from "../recent-search";
 import { buildSearchUrl, type SearchQuery } from "../search-params";
 import { completeTrip, type Trip } from "../trip";
-import { SearchField } from "./SearchField";
+import { SearchOption } from "./SearchOption";
 import { SearchPicker } from "./SearchPicker";
 
 type End = "pickup" | "return";
@@ -41,8 +44,19 @@ const TIME_OPTIONS = HOURLY_TIMES.map((time) => ({
   label: formatTime(time),
 }));
 
+// Google's library is only downloaded once someone types a place.
+const PlaceSuggestions = dynamic(
+  () => import("./PlaceSuggestions").then((module) => module.PlaceSuggestions),
+  { ssr: false, loading: () => <Skeleton className="m-2 h-11" /> },
+);
+
 /** The location choice that searches every city. */
 const ANYWHERE = "Anywhere";
+/** Letters typed before places are looked up. */
+const MIN_TYPED = 3;
+
+/** Where to search: a city, a point with its name, or neither for everywhere. */
+type Where = Pick<SearchQuery, "location" | "near" | "place">;
 
 function Divider() {
   return <span aria-hidden className="my-2 hidden w-px bg-border md:block" />;
@@ -65,7 +79,17 @@ export function SearchCapsule({
 }: SearchCapsuleProps) {
   const router = useRouter();
   const [openField, setOpenField] = useState<Field | null>(null);
-  const [location, setLocation] = useState(initialQuery?.location);
+  const [where, setWhere] = useState<Where>({
+    location: initialQuery?.location,
+    near: initialQuery?.near,
+    place: initialQuery?.place,
+  });
+  // What is being typed into "Where"; null while the box shows the chosen place.
+  const [typed, setTyped] = useState<string | null>(null);
+  const whereField = useRef<HTMLDivElement>(null);
+  const whereListId = useId();
+  const [locateFailed, setLocateFailed] = useState(false);
+  const apiKey = siteConfig.mapsKey;
   const [trip, setTrip] = useState<Trip>({
     pickup: initialQuery?.pickup,
     pickupTime: initialQuery?.pickupTime,
@@ -73,29 +97,57 @@ export function SearchCapsule({
     returnTime: initialQuery?.returnTime,
   });
 
-  const found = findCity(cities, location);
+  const found = findCity(cities, where.location);
   const city = found && { ...found, slug: citySlug(found) };
   // Every city, after the choice of none of them.
   const places = [
     {
       slug: undefined,
       label: ANYWHERE,
-      count: cities.reduce((total, each) => total + each.vehicleCount, 0),
+      detail: "Browse all cars",
       icon: Globe,
     },
     ...cities.map((each) => ({
       slug: citySlug(each),
       label: cityLabel(each),
-      count: each.vehicleCount,
-      icon: MapPin,
+      detail: each.vehicleCount === 1 ? "1 car" : `${each.vehicleCount} cars`,
+      icon: Building2,
     })),
   ];
+  // Empty until a place is chosen: nothing chosen searches everywhere.
+  const chosen = where.near
+    ? (where.place ?? "Chosen place")
+    : city
+      ? cityLabel(city)
+      : "";
+  const text = typed?.trim() ?? "";
+  const matching = places.filter(({ label }) =>
+    label.toLowerCase().includes(text.toLowerCase()),
+  );
+  // Long enough to ask Google for addresses as well.
+  const lookUp = text.length >= MIN_TYPED;
   const from = fromIsoDate(trip.pickup);
   const to = fromIsoDate(trip.return);
   const popoverProps = (field: Field) => ({
     open: openField === field,
     onOpenChange: (open: boolean) => setOpenField(open ? field : null),
   });
+
+  const choose = (next: Where) => {
+    setWhere(next);
+    setTyped(null);
+    setOpenField(null);
+  };
+
+  const locate = () =>
+    navigator.geolocation.getCurrentPosition(
+      ({ coords }) =>
+        choose({
+          near: { lat: coords.latitude, lng: coords.longitude },
+          place: "your location",
+        }),
+      () => setLocateFailed(true),
+    );
 
   /** Takes the calendar's days; each end's time is filled in when it has none. */
   const changeDates = (range: DateRange | undefined) => {
@@ -110,7 +162,10 @@ export function SearchCapsule({
     const query: SearchQuery = {
       // On the results page, the filters already chosen stay.
       ...initialQuery,
-      location,
+      location: undefined,
+      near: undefined,
+      place: undefined,
+      ...where,
       pickup: undefined,
       pickupTime: undefined,
       return: undefined,
@@ -118,7 +173,9 @@ export function SearchCapsule({
       ...(trip.pickup && trip.return && trip),
     };
     saveRecentSearch(query);
-    track("search_submitted", query);
+    // Where exactly someone searched from is not analytics' business.
+    const tracked = { ...query, near: undefined, place: undefined };
+    track("search_submitted", tracked);
     router.push(buildSearchUrl(query));
   };
 
@@ -158,40 +215,145 @@ export function SearchCapsule({
         className,
       )}
     >
-      <Popover {...popoverProps("location")}>
-        <PopoverTrigger asChild>
-          <SearchField
-            label="Where"
-            placeholder={ANYWHERE}
-            value={city ? cityLabel(city) : ANYWHERE}
-          />
-        </PopoverTrigger>
-        <PopoverContent align="start" className="w-80 p-3">
-          <ul aria-label="Cities" className="max-h-80 overflow-y-auto">
-            {places.map(({ slug, label, count, icon: Icon }) => (
-              <li key={slug ?? "anywhere"}>
-                <button
-                  type="button"
-                  aria-pressed={slug === city?.slug}
-                  onClick={() => {
-                    setLocation(slug);
-                    setOpenField(null);
-                  }}
-                  className="flex w-full items-center gap-4 rounded-md p-2 text-left hover:bg-surface-muted aria-pressed:bg-surface-muted"
-                >
-                  <span className="grid size-11 place-items-center rounded-md bg-surface-muted">
-                    <Icon aria-hidden className="size-5" strokeWidth={1.75} />
-                  </span>
-                  <span>
-                    <span className="block font-semibold">{label}</span>
-                    <span className="block text-sm text-muted">
-                      {count === 1 ? "1 car" : `${count} cars`}
-                    </span>
-                  </span>
-                </button>
-              </li>
-            ))}
-          </ul>
+      <Popover
+        open={openField === "location"}
+        onOpenChange={(open) => {
+          setOpenField(open ? "location" : null);
+          // Closing without a choice puts the chosen place back in the box.
+          if (!open) setTyped(null);
+        }}
+      >
+        <PopoverAnchor asChild>
+          <div
+            ref={whereField}
+            className="relative flex min-w-0 flex-1 rounded-lg bg-background transition-colors hover:bg-surface-muted has-[input:focus]:bg-surface has-[input:focus]:shadow-2 md:bg-transparent"
+          >
+            <label className="flex min-w-0 flex-1 cursor-text flex-col justify-center py-1.5 pr-10 pl-4">
+              <span className="type-label text-muted">Where</span>
+              <input
+                type="text"
+                role="combobox"
+                aria-expanded={openField === "location"}
+                aria-controls={whereListId}
+                aria-autocomplete="list"
+                autoComplete="off"
+                placeholder="City, address or ZIP code"
+                value={typed ?? chosen}
+                onFocus={(event) => {
+                  event.target.select();
+                  setOpenField("location");
+                }}
+                onClick={() => setOpenField("location")}
+                onChange={(event) => {
+                  setTyped(event.target.value);
+                  setOpenField("location");
+                }}
+                onKeyDown={(event) => {
+                  // Enter on a half-typed place goes to the suggestions, not to a search.
+                  const toList =
+                    event.key === "ArrowDown" ||
+                    (event.key === "Enter" && typed !== null);
+                  if (!toList) return;
+                  event.preventDefault();
+                  document
+                    .getElementById(whereListId)
+                    ?.querySelector("button")
+                    ?.focus();
+                }}
+                className="mt-0.5 w-full truncate bg-transparent font-semibold outline-none placeholder:font-normal placeholder:text-muted"
+              />
+            </label>
+            {(typed ?? chosen) && (
+              <Button
+                variant="ghost"
+                size="icon-sm"
+                aria-label="Clear location"
+                className="absolute top-1/2 right-1 -translate-y-1/2 text-muted"
+                onClick={() => {
+                  setWhere({});
+                  setTyped("");
+                  setOpenField("location");
+                  whereField.current?.querySelector("input")?.focus();
+                }}
+              >
+                <X aria-hidden className="size-4" />
+              </Button>
+            )}
+          </div>
+        </PopoverAnchor>
+        <PopoverContent
+          id={whereListId}
+          align="start"
+          className="w-96 p-3"
+          // Focus stays in the box, so typing carries on while the list is open.
+          onOpenAutoFocus={(event) => event.preventDefault()}
+          onCloseAutoFocus={(event) => event.preventDefault()}
+          onInteractOutside={(event) => {
+            if (whereField.current?.contains(event.target as Node)) {
+              event.preventDefault();
+            }
+          }}
+          onKeyDown={(event) => {
+            if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
+            event.preventDefault();
+            const options = [...event.currentTarget.querySelectorAll("button")];
+            const index = options.indexOf(
+              document.activeElement as HTMLButtonElement,
+            );
+            const next = options[index + (event.key === "ArrowDown" ? 1 : -1)];
+            // Up from the first option goes back to the box.
+            (next ?? whereField.current?.querySelector("input"))?.focus();
+          }}
+        >
+          <div className="max-h-80 overflow-y-auto">
+            <ul aria-label="Cities">
+              {!text && (
+                <li>
+                  <SearchOption
+                    icon={LocateFixed}
+                    title="Use my current location"
+                    detail={
+                      locateFailed
+                        ? "Your location could not be read."
+                        : undefined
+                    }
+                    onClick={locate}
+                  />
+                </li>
+              )}
+              {matching.map(({ slug, label, detail, icon }) => (
+                <li key={slug ?? "anywhere"}>
+                  <SearchOption
+                    icon={icon}
+                    title={label}
+                    detail={detail}
+                    aria-pressed={Boolean(city) && slug === city?.slug}
+                    onClick={() => choose({ location: slug })}
+                  />
+                </li>
+              ))}
+            </ul>
+            {lookUp && apiKey && (
+              <>
+                <PlaceSuggestions
+                  apiKey={apiKey}
+                  input={text}
+                  onPick={(place) =>
+                    choose({ near: place, place: place.label })
+                  }
+                />
+                <p className="px-2 pt-2 text-right text-caption text-muted">
+                  Powered by Google
+                </p>
+              </>
+            )}
+            {!lookUp && matching.length === 0 && (
+              <p role="status" className="p-2 text-sm text-muted">
+                No city matches.
+                {apiKey && " Keep typing to search addresses."}
+              </p>
+            )}
+          </div>
         </PopoverContent>
       </Popover>
 
