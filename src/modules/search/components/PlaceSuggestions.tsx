@@ -12,7 +12,8 @@ interface PlaceSuggestionsProps {
   apiKey: string;
   /** What the renter has typed so far. */
   input: string;
-  onPick: (place: SearchPlace) => void;
+  /** Given the picked place while its point is still being fetched; null when it has none. */
+  onPick: (place: Promise<SearchPlace | null>) => void;
 }
 
 type Prediction = google.maps.places.PlacePrediction;
@@ -53,16 +54,16 @@ function Suggestions({ input, onPick }: Omit<PlaceSuggestionsProps, "apiKey">) {
     };
   }, [places, input]);
 
-  const pick = async (prediction: Prediction) => {
+  const locate = async (prediction: Prediction) => {
     const place = prediction.toPlace();
     await place.fetchFields({ fields: ["location"] });
     session.current = undefined;
-    if (!place.location) return;
-    onPick({
+    if (!place.location) return null;
+    return {
       lat: place.location.lat(),
       lng: place.location.lng(),
       label: prediction.mainText?.text ?? prediction.text.text,
-    });
+    };
   };
 
   // Suggestions for an earlier spelling are not shown against the current one.
@@ -95,7 +96,7 @@ function Suggestions({ input, onPick }: Omit<PlaceSuggestionsProps, "apiKey">) {
             icon={MapPin}
             title={prediction.mainText?.text ?? prediction.text.text}
             detail={prediction.secondaryText?.text}
-            onClick={() => pick(prediction)}
+            onClick={() => onPick(locate(prediction))}
           />
         </li>
       ))}

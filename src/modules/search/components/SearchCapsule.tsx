@@ -23,7 +23,11 @@ import {
 } from "@/shared/ui/molecules/Popover";
 import { cityLabel, citySlug, findCity, type City } from "../cities";
 import { saveRecentSearch } from "../recent-search";
-import { buildSearchUrl, type SearchQuery } from "../search-params";
+import {
+  buildSearchUrl,
+  type SearchPlace,
+  type SearchQuery,
+} from "../search-params";
 import { completeTrip, type Trip } from "../trip";
 import { SearchOption } from "./SearchOption";
 import { SearchPicker } from "./SearchPicker";
@@ -88,6 +92,8 @@ export function SearchCapsule({
   const [typed, setTyped] = useState<string | null>(null);
   const whereField = useRef<HTMLDivElement>(null);
   const whereListId = useId();
+  // Counts every choice and edit of "Where", so a slow lookup can tell it was overtaken.
+  const lookups = useRef(0);
   const [locateFailed, setLocateFailed] = useState(false);
   const apiKey = siteConfig.mapsKey;
   const [trip, setTrip] = useState<Trip>({
@@ -134,18 +140,43 @@ export function SearchCapsule({
   });
 
   const choose = (next: Where) => {
+    lookups.current += 1;
     setWhere(next);
     setTyped(null);
     setOpenField(null);
   };
 
+  /** Chooses a place that is still being looked up, unless the renter has moved on by then. */
+  const chooseWhenFound = (
+    place: Promise<SearchPlace | null>,
+    onNone?: () => void,
+  ) => {
+    const mine = ++lookups.current;
+    place.then(
+      (found) => {
+        if (mine !== lookups.current) return;
+        if (found) choose({ near: found, place: found.label });
+        else onNone?.();
+      },
+      () => undefined,
+    );
+  };
+
   const locate = () =>
-    navigator.geolocation.getCurrentPosition(
-      ({ coords }) =>
-        choose({
-          near: { lat: coords.latitude, lng: coords.longitude },
-          place: "your location",
-        }),
+    chooseWhenFound(
+      new Promise((resolve) => {
+        // Some browsers, and pages not served securely, have no location to ask for.
+        if (!navigator.geolocation) return resolve(null);
+        navigator.geolocation.getCurrentPosition(
+          ({ coords }) =>
+            resolve({
+              lat: coords.latitude,
+              lng: coords.longitude,
+              label: "your location",
+            }),
+          () => resolve(null),
+        );
+      }),
       () => setLocateFailed(true),
     );
 
@@ -220,7 +251,10 @@ export function SearchCapsule({
         onOpenChange={(open) => {
           setOpenField(open ? "location" : null);
           // Closing without a choice puts the chosen place back in the box.
-          if (!open) setTyped(null);
+          if (!open) {
+            lookups.current += 1;
+            setTyped(null);
+          }
         }}
       >
         <PopoverAnchor asChild>
@@ -245,6 +279,7 @@ export function SearchCapsule({
                 }}
                 onClick={() => setOpenField("location")}
                 onChange={(event) => {
+                  lookups.current += 1;
                   setTyped(event.target.value);
                   setOpenField("location");
                 }}
@@ -271,6 +306,7 @@ export function SearchCapsule({
                 className="absolute top-1/2 right-1 -translate-y-1/2 text-muted"
                 onClick={() => {
                   setWhere({});
+                  lookups.current += 1;
                   setTyped("");
                   setOpenField("location");
                   whereField.current?.querySelector("input")?.focus();
@@ -338,9 +374,7 @@ export function SearchCapsule({
                 <PlaceSuggestions
                   apiKey={apiKey}
                   input={text}
-                  onPick={(place) =>
-                    choose({ near: place, place: place.label })
-                  }
+                  onPick={(place) => chooseWhenFound(place)}
                 />
                 <p className="px-2 pt-2 text-right text-caption text-muted">
                   Powered by Google
