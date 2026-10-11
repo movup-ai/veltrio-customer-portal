@@ -71,10 +71,9 @@ export default async function BookingStatusPage({ params }: PageProps) {
   const company = await getCompanyProfile(link.subdomain);
   if (!company) notFound();
 
-  // Null when the API cannot be reached.
-  const result = await getBookingPage(link).then(
-    (booking) => ({ booking }),
-    () => null,
+  // Null, and reported, when the API cannot be reached.
+  const result = await settle(
+    getBookingPage(link).then((booking) => ({ booking })),
   );
   if (!result) {
     return (
