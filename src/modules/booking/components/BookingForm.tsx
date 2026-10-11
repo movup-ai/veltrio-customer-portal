@@ -7,6 +7,7 @@ import { Select } from "@/shared/ui/molecules/Select";
 import { TextAreaField } from "@/shared/ui/molecules/TextAreaField";
 import { uploadBookingDocuments } from "../booking.documents";
 import { clearBookingDraft } from "../booking.draft";
+import { bookingPagePath } from "../booking.status";
 import { useBookingForm } from "../booking.form";
 import { createBooking } from "../booking.repository";
 import { returnBranch } from "../booking.utils";
@@ -62,6 +63,9 @@ interface BookingFormProps {
 interface SentStatus {
   step: "sent";
   target: BookingUploadTarget;
+  /** This form's own address, and the booking's page; null when the booking has no page. */
+  formPath: string;
+  pagePath: string | null;
   /** Scans that have not reached the company yet. */
   missing: DocumentKind[];
   uploading: boolean;
@@ -164,6 +168,13 @@ export function BookingForm({
         reference: result.reference,
         uploadToken: result.uploadToken,
       },
+      formPath: window.location.pathname + window.location.search,
+      pagePath: result.statusToken
+        ? bookingPagePath({
+            reference: result.reference,
+            token: result.statusToken,
+          })
+        : null,
       missing: ["licence", "insurance"],
       uploading: true,
       email: parts.customer.email,
@@ -174,6 +185,9 @@ export function BookingForm({
   /** Uploads the scans a sent booking still lacks, showing its confirmation meanwhile. */
   const sendDocuments = async (sent: SentStatus) => {
     setStatus({ ...sent, uploading: true });
+    // The upload's steps are server actions, which are posted to the address in the bar, and
+    // only this form's page carries them. A retry finds the booking's address there instead.
+    window.history.replaceState(null, "", sent.formPath);
     const photos = {
       licence: form.values.licencePhoto,
       insurance: form.values.insurancePhoto,
@@ -182,6 +196,10 @@ export function BookingForm({
       sent.target,
       Object.fromEntries(sent.missing.map((kind) => [kind, photos[kind]])),
     );
+    // The address becomes the booking's own page, so a refresh shows it again, not an empty form.
+    if (sent.pagePath) {
+      window.history.replaceState(null, "", sent.pagePath);
+    }
     setStatus({ ...sent, missing, uploading: false });
   };
 

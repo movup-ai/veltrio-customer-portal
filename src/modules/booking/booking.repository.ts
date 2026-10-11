@@ -22,11 +22,12 @@ export async function createBooking(
   request: BookingRequest,
 ): Promise<BookingResult> {
   try {
-    const { reference, uploadToken } = await apiPost<BookingReadDto>(
-      `/marketplace/companies/${encodeURIComponent(subdomain)}/vehicles/${encodeURIComponent(uri)}/bookings`,
-      toBookingCreateDto(request),
-    );
-    return { ok: true, reference, uploadToken };
+    const { reference, uploadToken, statusToken } =
+      await apiPost<BookingReadDto>(
+        `/marketplace/companies/${encodeURIComponent(subdomain)}/vehicles/${encodeURIComponent(uri)}/bookings`,
+        toBookingCreateDto(request),
+      );
+    return { ok: true, reference, uploadToken, statusToken };
   } catch (error) {
     return { ok: false, reason: toBookingFailure(error) };
   }

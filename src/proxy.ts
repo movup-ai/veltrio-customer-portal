@@ -6,7 +6,7 @@ import { subdomainFromHost } from "@/shared/lib/tenant";
 const TENANT_ROOT = "/s";
 
 /**
- * Multi-tenant routing: abc-rental.<root>, its /vehicles/x, /pay/x, /sign/x and /receipt/x are
+ * Multi-tenant routing: abc-rental.<root>, its /vehicles/x, /bookings/x, /pay/x, /sign/x and /receipt/x are
  * served by app/s/[subdomain]/..., while the address bar keeps the subdomain URL.
  */
 export function proxy(request: NextRequest) {
@@ -25,6 +25,7 @@ export function proxy(request: NextRequest) {
   if (
     pathname === "/" ||
     pathname.startsWith("/vehicles/") ||
+    pathname.startsWith("/bookings/") ||
     pathname.startsWith("/pay/") ||
     pathname.startsWith("/sign/") ||
     pathname.startsWith("/receipt/")

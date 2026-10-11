@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { ApiError } from "@/shared/api/client";
-import { toBookingCreateDto, toBookingFailure } from "./booking.api";
+import { toBookingCreateDto, toBookingFailure, toPayment } from "./booking.api";
 import type { BookingRequest } from "./types";
 
 const request = (payment: BookingRequest["payment"]): BookingRequest => ({
@@ -76,5 +76,25 @@ describe("toBookingFailure", () => {
       "failed",
     );
     expect(toBookingFailure(new TypeError("fetch failed"))).toBe("failed");
+  });
+});
+
+describe("toPayment", () => {
+  it("reads back every preference the form can send", () => {
+    for (const payment of [
+      { method: "cash", timing: null },
+      { method: "online", timing: "all_at_once" },
+      { method: "online", timing: "rental_first" },
+    ] as const) {
+      const { paymentPreference } = toBookingCreateDto(request(payment));
+      expect(toPayment(paymentPreference)).toEqual(payment);
+    }
+  });
+
+  it("reads a booking without a preference as paid online, rental first", () => {
+    expect(toPayment(null)).toEqual({
+      method: "online",
+      timing: "rental_first",
+    });
   });
 });

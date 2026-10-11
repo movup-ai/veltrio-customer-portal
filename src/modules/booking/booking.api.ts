@@ -1,6 +1,10 @@
 import { ApiError } from "@/shared/api/client";
 import type { BookingCustomer, BookingFailure, BookingRequest } from "./types";
 
+/** How a renter asked to pay, as the API names it. */
+export type PaymentPreferenceDto =
+  "online_rental_and_deposit" | "online_rental_only" | "cash";
+
 /** MarketplaceBookingCreate in the API. */
 export interface BookingCreateDto {
   customer: BookingCustomer;
@@ -8,8 +12,7 @@ export interface BookingCreateDto {
   returnLocation: string;
   pickupAt: string;
   returnAt: string;
-  paymentPreference:
-    "online_rental_and_deposit" | "online_rental_only" | "cash";
+  paymentPreference: PaymentPreferenceDto;
   notes: string | null;
 }
 
@@ -17,6 +20,8 @@ export interface BookingCreateDto {
 export interface BookingReadDto {
   reference: string;
   uploadToken: string;
+  // Missing from older API builds.
+  statusToken?: string;
 }
 
 /** DocumentUploadSlot in the API. */
@@ -37,6 +42,20 @@ export function toBookingCreateDto({
         : payment.timing === "all_at_once"
           ? "online_rental_and_deposit"
           : "online_rental_only",
+  };
+}
+
+/** The API's payment preference as the form's two choices; a booking without one reads as online. */
+export function toPayment(
+  preference: PaymentPreferenceDto | null,
+): BookingRequest["payment"] {
+  if (preference === "cash") return { method: "cash", timing: null };
+  return {
+    method: "online",
+    timing:
+      preference === "online_rental_and_deposit"
+        ? "all_at_once"
+        : "rental_first",
   };
 }
 
