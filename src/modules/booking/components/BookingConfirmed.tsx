@@ -19,7 +19,8 @@ interface BookingConfirmedProps {
   missingDocuments: DocumentKind[];
   /** True while those scans are being sent. */
   uploading: boolean;
-  onRetryDocuments: () => void;
+  /** Sends them again; left out once the files are no longer at hand. */
+  onRetryDocuments?: () => void;
 }
 
 function nextSteps({
@@ -93,22 +94,28 @@ export function BookingConfirmed({
               {missingDocuments
                 .map((kind) => DOCUMENT_NAMES[kind])
                 .join(" and ")}{" "}
-              did not upload.
+              {onRetryDocuments
+                ? "did not upload."
+                : missingDocuments.length === 1
+                  ? "has not arrived."
+                  : "have not arrived."}
             </p>
             <p className="mt-1 text-sm text-foreground-secondary">
-              Your request is with {companyName} either way. Try again now, or
-              bring the{" "}
+              Your request is with {companyName} either way.{" "}
+              {onRetryDocuments ? "Try again now, or bring" : "Bring"} the{" "}
               {missingDocuments.length === 1 ? "document" : "documents"} to
               pick-up.
             </p>
-            <Button
-              size="sm"
-              variant="dark"
-              className="mt-3"
-              onClick={onRetryDocuments}
-            >
-              Try again
-            </Button>
+            {onRetryDocuments && (
+              <Button
+                size="sm"
+                variant="dark"
+                className="mt-3"
+                onClick={onRetryDocuments}
+              >
+                Try again
+              </Button>
+            )}
           </div>
         )
       )}

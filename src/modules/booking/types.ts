@@ -62,6 +62,8 @@ export type BookingResult =
       reference: string;
       /** Proof that documents sent next belong to this booking; good for an hour. */
       uploadToken: string;
+      /** The secret half of the booking's own page; absent on older API builds. */
+      statusToken?: string;
     }
   | { ok: false; reason: BookingFailure };
 
