@@ -59,6 +59,12 @@ export function zonedInstant(date: string, time: string, zone: string) {
   return real.length > 0 ? Math.min(...real) : candidates[0]!;
 }
 
+/** False for a time the zone's clock skips the night it goes forward, which the API refuses. */
+export function existsInZone(date: string, time: string, zone: string) {
+  const wall = Date.parse(`${date}T${time}:00Z`);
+  return wallClock(zone, zonedInstant(date, time, zone)) === wall;
+}
+
 /** The zone's short name at a moment, e.g. "EDT" in summer and "EST" in winter. */
 export function zoneName(zone: string, instant: string | number | Date) {
   // English in every language: Spanish names US zones "GMT-4", which no renter uses.

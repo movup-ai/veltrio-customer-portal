@@ -7,7 +7,7 @@ import type { DateRange } from "react-day-picker";
 import { formatDay, fromIsoDate, toIsoDate } from "@/shared/lib/date";
 import { formatMoney } from "@/shared/lib/format";
 import { DEFAULT_TIME, formatTime, parseTime } from "@/shared/lib/time";
-import { todayIn, zoneNameAt } from "@/shared/lib/time-zone";
+import { existsInZone, todayIn, zoneNameAt } from "@/shared/lib/time-zone";
 import { Button } from "@/shared/ui/atoms/Button";
 import {
   DateRangePicker,
@@ -99,6 +99,15 @@ export function BookingPanel({
     from && zoneNameAt(toIsoDate(from), times.pickup, timeZone);
   const returnZone = to && zoneNameAt(toIsoDate(to), times.return, timeZone);
 
+  // The API refuses an hour the clocks skip, so it is caught before the form is filled in.
+  const skipped =
+    from &&
+    to &&
+    !(
+      existsInZone(toIsoDate(from), times.pickup, timeZone) &&
+      existsInZone(toIsoDate(to), times.return, timeZone)
+    );
+
   return (
     <div className="rounded-xl border border-border bg-surface p-6 shadow-2">
       <p className="flex items-baseline gap-1.5">
@@ -130,7 +139,11 @@ export function BookingPanel({
       </div>
 
       <p aria-live="polite" className="mt-4 min-h-6 text-sm">
-        {from && to ? (
+        {skipped ? (
+          <span className="font-medium text-primary-hover">
+            {t("booking.skippedTime")}
+          </span>
+        ) : from && to ? (
           <>
             <span className="font-semibold">
               {formatDay(toIsoDate(from), locale)}, {formatTime(times.pickup)}
@@ -163,7 +176,7 @@ export function BookingPanel({
         )}
       </p>
 
-      {from && to ? (
+      {from && to && !skipped ? (
         <Button asChild size="lg" className="mt-4 w-full">
           <Link
             href={bookingHref(uri, {

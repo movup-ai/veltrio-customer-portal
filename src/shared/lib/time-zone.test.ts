@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  existsInZone,
   formatInZone,
   isTimeZone,
   todayIn,
@@ -57,6 +58,19 @@ describe("todayIn", () => {
     expect(todayIn("UTC", now)).toBe("2026-10-11");
     expect(todayIn(NEW_YORK, now)).toBe("2026-10-10");
     expect(todayIn("Pacific/Auckland", now)).toBe("2026-10-11");
+  });
+});
+
+describe("existsInZone", () => {
+  it("knows the hour the clocks skip from the ones around it", () => {
+    // New York clocks go from 02:00 straight to 03:00 on 2026-03-08.
+    expect(existsInZone("2026-03-08", "02:00", NEW_YORK)).toBe(false);
+    expect(existsInZone("2026-03-08", "02:30", NEW_YORK)).toBe(false);
+    expect(existsInZone("2026-03-08", "01:00", NEW_YORK)).toBe(true);
+    expect(existsInZone("2026-03-08", "03:00", NEW_YORK)).toBe(true);
+    // The repeated hour in autumn exists, twice; Arizona never skips one.
+    expect(existsInZone("2026-11-01", "01:30", NEW_YORK)).toBe(true);
+    expect(existsInZone("2026-03-08", "02:00", "America/Phoenix")).toBe(true);
   });
 });
 

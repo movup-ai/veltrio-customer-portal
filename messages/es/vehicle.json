@@ -88,6 +88,7 @@
     "onRequest": "Precio a consultar",
     "choosePickup": "Elige una fecha de recogida.",
     "chooseReturn": "Ahora elige una fecha de devolución.",
+    "skippedTime": "Ese día se adelanta el reloj y esa hora no existe. Elige otra hora.",
     "includingTaxes": "impuestos incluidos",
     "total": "en total",
     "continue": "Continuar con la reserva",
