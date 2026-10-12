@@ -1,3 +1,4 @@
+import { useFormatter } from "next-intl";
 import type { ReactNode } from "react";
 import { cn } from "@/shared/lib/cn";
 import { Eyebrow } from "@/shared/ui/atoms/Eyebrow";
@@ -31,6 +32,7 @@ export function ValuePropsSection({
   stats = [],
   image,
 }: ValuePropsSectionProps) {
+  const format = useFormatter();
   return (
     <section
       aria-labelledby="values-heading"
@@ -71,7 +73,7 @@ export function ValuePropsSection({
                   {stat.label}
                 </dt>
                 <dd className="font-display text-h2">
-                  {stat.value.toLocaleString("en-US")}
+                  {format.number(stat.value)}
                 </dd>
               </div>
             ))}

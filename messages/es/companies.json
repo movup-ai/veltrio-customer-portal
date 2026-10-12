@@ -1,0 +1,172 @@
+{
+  "imageAlt": "Chevrolet Camaro blanco en un garaje con poca luz",
+  "metaTitle": "Para empresas de alquiler",
+  "metaDescription": "Publica tu flota de alquiler en Veltrio con 0% de comisión. Una suscripción fija incluye el software para tu flota, reservas en línea y pagos directos a tu cuenta de Stripe.",
+  "hero": {
+    "title": "Gestiona tu negocio de alquiler. <em>Quédate con cada dólar.</em>",
+    "description": "Una sola suscripción incluye el software para gestionar tu flota y tu presencia en el mercado. Nos quedamos con el 0% de cada reserva.",
+    "startTrial": "Empezar prueba gratis",
+    "seePricing": "Ver precios"
+  },
+  "marketplace": {
+    "eyebrow": "El mercado",
+    "title": "0% de comisión. <em>En cada reserva.</em>",
+    "benefits": {
+      "find": {
+        "title": "Los clientes te encuentran",
+        "description": "Tus vehículos aparecen cuando los clientes buscan por ciudad y fechas, sin que tengas que cargar datos de nuevo."
+      },
+      "page": {
+        "title": "Tu propia página con tu marca",
+        "description": "Una página para tu flota en tuempresa.{domain}, con tu nombre y tus condiciones."
+      },
+      "approve": {
+        "title": "Tú apruebas cada reserva",
+        "description": "Cada solicitud espera tu respuesta. No se cobra nada hasta que la confirmes."
+      },
+      "paid": {
+        "title": "El pago llega directo a ti",
+        "description": "Conecta tu cuenta de Stripe y cada pago se deposita en ella. Nunca retenemos tu dinero."
+      }
+    }
+  },
+  "comparison": {
+    "eyebrow": "La diferencia",
+    "title": "Un mercado que <em>no se queda con una parte.</em>",
+    "others": {
+      "title": "Mercados habituales",
+      "commission": "Cobran una comisión por cada reserva",
+      "fee": "Añaden un cargo por servicio sobre tu precio",
+      "payout": "Cobran el pago y te lo transfieren después",
+      "software": "Te dejan comprar aparte el software para tu flota"
+    },
+    "ours": {
+      "title": "Veltrio",
+      "commission": "0% de comisión, con una sola suscripción fija",
+      "fee": "Sin cargos al cliente: paga el precio que tú fijas",
+      "payout": "Los pagos van directo a tu cuenta de Stripe",
+      "software": "Software para tu flota incluido en todos los planes"
+    }
+  },
+  "software": {
+    "eyebrow": "El software",
+    "title": "Todo para gestionar tu flota, <em>en un solo lugar.</em>",
+    "features": {
+      "fleet": {
+        "title": "Flota",
+        "description": "Cada vehículo con sus fotos, especificaciones y equipamiento en un solo lugar."
+      },
+      "bookings": {
+        "title": "Reservas y calendario",
+        "description": "Acepta solicitudes y mira de un vistazo qué auto está fuera y cuándo."
+      },
+      "pricing": {
+        "title": "Precios",
+        "description": "Tarifas por hora, día, semana y mes, depósitos y descuentos por alquileres largos."
+      },
+      "customers": {
+        "title": "Clientes",
+        "description": "Datos del cliente, licencia de conducir y documentos del seguro, revisados antes de confirmar."
+      },
+      "agreements": {
+        "title": "Contratos de alquiler",
+        "description": "Envía el contrato y recíbelo firmado en línea antes de la recogida."
+      },
+      "payments": {
+        "title": "Pagos",
+        "description": "Envía un enlace de pago seguro, cobra en efectivo en la recogida y emite recibos."
+      },
+      "branches": {
+        "title": "Sucursales",
+        "description": "Gestiona varias sucursales, cada una con su dirección y su horario."
+      },
+      "dashboard": {
+        "title": "Panel",
+        "description": "Tus reservas y tu flota de un vistazo."
+      }
+    }
+  },
+  "start": {
+    "eyebrow": "Primeros pasos",
+    "title": "Del registro a tu primera reserva, <em>en cuatro pasos.</em>",
+    "steps": {
+      "account": {
+        "title": "Crea tu cuenta",
+        "description": "Regístrate como empresa de alquiler y empieza tu prueba gratis de 7 días."
+      },
+      "vehicles": {
+        "title": "Añade tus vehículos",
+        "description": "Sube fotos y define tus tarifas, el depósito y las condiciones de alquiler."
+      },
+      "stripe": {
+        "title": "Conecta Stripe",
+        "description": "Vincula tu cuenta de Stripe para recibir los pagos de tus clientes."
+      },
+      "live": {
+        "title": "Publica",
+        "description": "Tu flota aparece en el mercado y empiezan a llegar las solicitudes de reserva."
+      }
+    }
+  },
+  "pricing": {
+    "eyebrow": "Precios",
+    "title": "Un precio fijo. <em>Sin comisión.</em>",
+    "mostPopular": "El más elegido",
+    "onPlan": " en el plan {name}",
+    "perMonth": "al mes",
+    "custom": "A medida",
+    "startTrial": "Empezar prueba gratis",
+    "talkToSales": "Hablar con ventas",
+    "note": "Todos los planes empiezan con una prueba gratis de 7 días e incluyen el software completo, pagos en línea con Stripe y 0% de comisión en las reservas.",
+    "features": {
+      "vehiclesUpTo": "Hasta {count} vehículos",
+      "vehiclesMoreThan": "Más de {count} vehículos",
+      "branches": "{count, plural, =1 {1 sucursal} other {Hasta # sucursales}}",
+      "unlimitedBranches": "Sucursales ilimitadas",
+      "listing": "Presencia en el mercado",
+      "onboarding": "Puesta en marcha guiada por nuestro equipo"
+    },
+    "plans": {
+      "starter": "Para flotas nuevas y pequeñas.",
+      "growth": "Para empresas de alquiler en crecimiento.",
+      "pro": "Para flotas consolidadas con varias sucursales.",
+      "enterprise": "Para flotas grandes con necesidades propias."
+    }
+  },
+  "faq": {
+    "eyebrow": "Preguntas",
+    "title": "Conviene saberlo <em>antes de publicar.</em>",
+    "items": {
+      "cost": {
+        "question": "¿Cuánto cuesta Veltrio?",
+        "answer": "Una suscripción mensual fija según el tamaño de tu flota. No hay comisión ni cargos por reserva."
+      },
+      "share": {
+        "question": "¿Veltrio se queda con una parte de mis reservas?",
+        "answer": "No. Los clientes pagan el precio que tú fijas, y todo es tuyo. Nuestro único ingreso es tu suscripción."
+      },
+      "paid": {
+        "question": "¿Cómo recibo los pagos?",
+        "answer": "Conectas tu propia cuenta de Stripe y los pagos en línea de tus clientes se depositan en ella. Stripe cobra su comisión de procesamiento habitual. También puedes cobrar en efectivo en la recogida."
+      },
+      "who": {
+        "question": "¿Quién puede publicar en Veltrio?",
+        "answer": "Solo empresas de alquiler. Veltrio es para negocios que alquilan vehículos; los particulares no pueden publicar su auto personal."
+      },
+      "decline": {
+        "question": "¿Puedo rechazar una solicitud de reserva?",
+        "answer": "Sí. Cada solicitud espera tu confirmación, y al cliente no se le cobra hasta que la aceptes."
+      },
+      "trial": {
+        "question": "¿Hay una prueba gratis?",
+        "answer": "Sí. Todos los planes empiezan con una prueba gratis de 7 días, para que añadas tu flota y recibas reservas antes de pagar."
+      }
+    }
+  },
+  "signUp": {
+    "eyebrow": "¿Listo para publicar?",
+    "title": "Pon tu flota frente a los clientes hoy mismo.",
+    "description": "Empieza tu prueba gratis de 7 días, añade tus vehículos y quédate con el 100% de cada reserva.",
+    "cta": "Empezar prueba gratis"
+  }
+}

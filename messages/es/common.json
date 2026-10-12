@@ -1,5 +1,9 @@
 {
   "skipToContent": "Ir al contenido",
+  "site": {
+    "title": "Veltrio — Alquila con empresas de alquiler de autos independientes",
+    "description": "Descubre, compara y reserva autos de alquiler de empresas independientes. Precios claros desde el inicio, condiciones a la vista y una reserva sencilla."
+  },
   "language": {
     "label": "Idioma",
     "en": "English",
@@ -14,5 +18,32 @@
     "title": "Este camino no lleva a ninguna parte.",
     "body": "La página que buscas todavía no existe.",
     "home": "Volver al inicio"
+  },
+  "carCount": "{count, plural, =1 {1 auto} other {# autos}}",
+  "scrollRow": {
+    "seeAll": "Ver todos",
+    "back": "Desplazar hacia atrás",
+    "forward": "Desplazar hacia adelante"
+  },
+  "footer": {
+    "tagline": "El mercado de las empresas de alquiler independientes y de quienes disfrutan conducir.",
+    "explore": {
+      "title": "Explorar",
+      "vehicles": "Ver vehículos",
+      "cities": "Buscar por ciudad",
+      "companies": "Empresas de alquiler"
+    },
+    "forCompanies": {
+      "title": "Para empresas de alquiler",
+      "list": "Publica tu flota",
+      "pricing": "Precios",
+      "signIn": "Acceso para empresas"
+    },
+    "veltrio": {
+      "title": "Veltrio",
+      "howItWorks": "Cómo funciona",
+      "faq": "Preguntas frecuentes"
+    },
+    "contact": "Contacto"
   }
 }

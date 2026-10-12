@@ -9,11 +9,9 @@ import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { ReactNode } from "react";
 import { routing } from "@/i18n/routing";
-import {
-  footerColumns,
-  footerLegalLinks,
-} from "@/modules/marketing/landing.content";
+import { footerContent } from "@/modules/marketing/landing.content";
 import { siteConfig } from "@/shared/config/site";
+import { OG_LOCALE } from "@/shared/lib/seo";
 import { SiteFooter } from "@/shared/ui/organisms/SiteFooter";
 import "@/styles/globals.css";
 
@@ -33,18 +31,30 @@ const mono = JetBrains_Mono({
   variable: "--font-jetbrains-mono",
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL(siteConfig.url),
-  title: { default: siteConfig.title, template: `%s | ${siteConfig.name}` },
-  description: siteConfig.description,
-  applicationName: siteConfig.name,
-  openGraph: {
-    siteName: siteConfig.name,
-    locale: siteConfig.locale,
-    type: "website",
-  },
-  twitter: { card: "summary_large_image" },
-};
+interface RootLayoutProps {
+  children: ReactNode;
+  params: Promise<{ locale: string }>;
+}
+
+export async function generateMetadata({
+  params,
+}: Pick<RootLayoutProps, "params">): Promise<Metadata> {
+  const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) return {};
+  const t = await getTranslations({ locale, namespace: "common.site" });
+  return {
+    metadataBase: new URL(siteConfig.url),
+    title: { default: t("title"), template: `%s | ${siteConfig.name}` },
+    description: t("description"),
+    applicationName: siteConfig.name,
+    openGraph: {
+      siteName: siteConfig.name,
+      locale: OG_LOCALE[locale],
+      type: "website",
+    },
+    twitter: { card: "summary_large_image" },
+  };
+}
 
 export const viewport: Viewport = {
   themeColor: "#f6f4ef",
@@ -55,11 +65,6 @@ export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
 
-interface RootLayoutProps {
-  children: ReactNode;
-  params: Promise<{ locale: string }>;
-}
-
 export default async function RootLayout({
   children,
   params,
@@ -68,6 +73,7 @@ export default async function RootLayout({
   if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
   const t = await getTranslations("common");
+  const footer = footerContent(t);
 
   return (
     <html
@@ -83,7 +89,7 @@ export default async function RootLayout({
         </a>
         <NextIntlClientProvider>
           {children}
-          <SiteFooter columns={footerColumns} legalLinks={footerLegalLinks} />
+          <SiteFooter {...footer} />
         </NextIntlClientProvider>
       </body>
     </html>

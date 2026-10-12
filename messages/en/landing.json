@@ -1,0 +1,156 @@
+{
+  "intro": {
+    "title": "Rent from independent car rental companies",
+    "imageAlt": "White Chevrolet Camaro in a dark garage, with more cars on lifts behind it"
+  },
+  "trust": {
+    "label": "Why book on Veltrio",
+    "noFees": {
+      "title": "No booking fees",
+      "description": "Pay the rental company directly."
+    },
+    "noCharge": {
+      "title": "No charge to request",
+      "description": "You pay once the company confirms."
+    },
+    "professional": {
+      "title": "Professional companies only",
+      "description": "Never a private owner."
+    }
+  },
+  "cities": {
+    "title": "Browse by city",
+    "description": "Pick up where the rental companies are."
+  },
+  "types": {
+    "title": "Browse by vehicle type",
+    "description": "From city cars to seven-seaters, whatever the trip needs."
+  },
+  "makes": {
+    "title": "Browse by make",
+    "description": "Know what you want to drive? Start with the badge."
+  },
+  "companies": {
+    "title": "Meet the rental companies",
+    "description": "Independent businesses, each with their own fleet and terms."
+  },
+  "rows": {
+    "new": {
+      "title": "Newly listed",
+      "description": "The latest vehicles added by rental companies."
+    },
+    "budget": {
+      "title": "${price} a day or less",
+      "description": "The lowest daily rates on the marketplace."
+    },
+    "electric": {
+      "title": "Electric vehicles",
+      "description": "Skip the pump and plug in instead."
+    },
+    "none": "No vehicles are listed yet.",
+    "unavailable": "Vehicles are unavailable right now. Please try again shortly."
+  },
+  "steps": {
+    "eyebrow": "How it works",
+    "title": "From browsing to the keys, <em>in four steps.</em>",
+    "learnMore": "Learn more",
+    "learnMoreAbout": " about how Veltrio works",
+    "find": {
+      "title": "Find your car",
+      "description": "Browse cars from independent rental companies and compare the price, deposit and terms of each."
+    },
+    "request": {
+      "title": "Request to book",
+      "description": "Send your details with a photo of your licence and insurance card. Nothing is charged yet."
+    },
+    "confirm": {
+      "title": "The company confirms",
+      "description": "The rental company reviews your request, then sends a secure link to pay online, unless you chose to pay cash at pick-up."
+    },
+    "pickUp": {
+      "title": "Pick up and drive",
+      "description": "Sign the rental agreement online and collect the car at the company's branch."
+    }
+  },
+  "faq": {
+    "eyebrow": "Questions",
+    "title": "Good to know <em>before you book.</em>",
+    "items": {
+      "who": {
+        "question": "Who am I renting from?",
+        "answer": "A professional rental company, never a private owner. Veltrio lists their vehicles, and your booking and rental agreement are with the company that hands you the keys."
+      },
+      "fee": {
+        "question": "Does Veltrio charge a fee?",
+        "answer": "No. Veltrio adds no booking or service fee. The price you see is set by the rental company, and you pay it to them directly."
+      },
+      "money": {
+        "question": "How does Veltrio make money?",
+        "answer": "Rental companies pay us a flat subscription for the software that runs their business. We never take a cut of your booking, so we have no reason to raise your price."
+      },
+      "pay": {
+        "question": "When do I pay?",
+        "answer": "Not when you send a request. Once the company accepts it, they send you a secure link to pay online. You can also choose to pay cash at pick-up."
+      },
+      "need": {
+        "question": "What do I need to book?",
+        "answer": "You must be at least 18 and hold a valid driving licence. The booking form asks for your contact details and a photo of your licence and insurance card."
+      },
+      "deposit": {
+        "question": "Is there a security deposit?",
+        "answer": "Each company sets its own. When a vehicle has one, the amount is shown before you book, and it is released when the car comes back."
+      },
+      "return": {
+        "question": "Can I return the car to a different location?",
+        "answer": "Yes, when the company has more than one branch. You choose the return branch while booking; pick-up is always at the branch where the car is kept."
+      }
+    }
+  },
+  "hostCta": {
+    "eyebrow": "For rental companies",
+    "title": "Your fleet, in front of people who care what they drive.",
+    "description": "List your vehicles on Veltrio with 0% commission, and keep your own pricing, terms and brand.",
+    "cta": "List your fleet",
+    "imageAlt": "White Chevrolet Camaro in a dimly lit garage"
+  },
+  "howItWorksPage": {
+    "metaTitle": "How it works",
+    "metaDescription": "How renting through Veltrio works: request a car from an independent rental company, pay once they confirm, and get answers to common questions.",
+    "heroTitle": "Renting from independent companies, <em>made simple.</em>",
+    "heroDescription": "Request a car from a professional rental company in minutes. Nothing is charged until the company confirms your booking.",
+    "heroImageAlt": "Grey Audi R8 parked on a mountain road at sunset",
+    "stepsEyebrow": "The steps",
+    "whyEyebrow": "Why Veltrio",
+    "whyTitle": "The company's price is <em>the price you pay.</em>",
+    "whyImageAlt": "Black Audi RS 6 seen head-on on a dirt track at dusk",
+    "values": {
+      "fees": {
+        "title": "No Veltrio fees",
+        "description": "We add no booking or service fee. You pay the rental company directly, at the rate they set."
+      },
+      "terms": {
+        "title": "Compare the terms",
+        "description": "See mileage, deposit and rate options next to the price before you choose."
+      },
+      "professional": {
+        "title": "Professional rental companies",
+        "description": "Every car is listed by an established rental business, not a private owner."
+      },
+      "direct": {
+        "title": "Book with the company",
+        "description": "Your booking goes straight to the team that hands you the keys."
+      }
+    },
+    "stats": {
+      "companies": "{count, plural, =1 {Rental company} other {Rental companies}}",
+      "vehicles": "{count, plural, =1 {Vehicle to rent} other {Vehicles to rent}}",
+      "cities": "{count, plural, =1 {City} other {Cities}}"
+    },
+    "browseCta": {
+      "eyebrow": "Ready when you are",
+      "title": "Find the car for your next trip.",
+      "description": "Browse every vehicle listed by independent rental companies and request yours.",
+      "cta": "Browse vehicles"
+    }
+  }
+}

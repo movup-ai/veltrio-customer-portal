@@ -24,12 +24,16 @@ export function LanguageSwitch({ className }: { className?: string }) {
         router.replace(pathname + window.location.search, { locale: other })
       }
       className={cn(
-        "flex h-10 items-center gap-2 rounded-full px-4 text-sm font-semibold hover:bg-current/10",
+        "flex h-10 items-center gap-2 rounded-full px-2.5 text-sm font-semibold whitespace-nowrap hover:bg-current/10 sm:px-4",
         className,
       )}
     >
       <Globe aria-hidden className="size-4" strokeWidth={1.75} />
-      {t(other)}
+      {/* A phone has room for the code only. */}
+      <span aria-hidden className="uppercase sm:hidden">
+        {other}
+      </span>
+      <span className="max-sm:hidden">{t(other)}</span>
     </button>
   );
 }

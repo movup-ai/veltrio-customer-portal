@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { CollectionsSection } from "@/modules/marketing/components/CollectionsSection";
 import { HeroSection } from "@/modules/marketing/components/HeroSection";
 import { HostCtaSection } from "@/modules/marketing/components/HostCtaSection";
@@ -5,8 +6,7 @@ import { ValuePropsSection } from "@/modules/marketing/components/ValuePropsSect
 import {
   collections,
   hero,
-  hostCta,
-  valueProps,
+  landingContent,
 } from "@/modules/marketing/landing.content";
 import { Specimen } from "./Specimen";
 import { StyleSection } from "./StyleSection";
@@ -14,6 +14,7 @@ import { StyleSection } from "./StyleSection";
 const FRAME = "overflow-hidden p-0 md:p-0";
 
 export function SectionsSection() {
+  const { hostCta, valueProps } = landingContent(useTranslations("landing"));
   return (
     <StyleSection
       id="sections"

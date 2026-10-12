@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
-import { Link } from "@/i18n/Link";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Suspense } from "react";
+import { Link } from "@/i18n/Link";
+import type { Locale } from "@/i18n/routing";
+import { em } from "@/i18n/rich";
 import { listCompanies } from "@/modules/company/company.repository";
 import { CompanyCard } from "@/modules/company/components/CompanyCard";
 import { BrowseSection } from "@/modules/marketing/components/BrowseSection";
@@ -9,17 +12,12 @@ import { HostCtaSection } from "@/modules/marketing/components/HostCtaSection";
 import { HowItWorksSection } from "@/modules/marketing/components/HowItWorksSection";
 import { SearchBanner } from "@/modules/marketing/components/SearchBanner";
 import { TrustStrip } from "@/modules/marketing/components/TrustStrip";
-import {
-  hostCta,
-  howItWorks,
-  intro,
-  topFaqs,
-  trustPoints,
-} from "@/modules/marketing/landing.content";
+import { landingContent } from "@/modules/marketing/landing.content";
 import {
   browseByCity,
   browseByMake,
   browseByType,
+  BUDGET,
   NEW_VEHICLES,
   vehicleRows,
 } from "@/modules/marketing/landing.utils";
@@ -36,22 +34,36 @@ import { ScrollRow } from "@/shared/ui/molecules/ScrollRow";
 import { SectionHeading } from "@/shared/ui/molecules/SectionHeading";
 import { SiteHeader } from "@/shared/ui/organisms/SiteHeader";
 
-export const metadata: Metadata = buildMetadata({
-  title: siteConfig.title,
-  description: siteConfig.description,
-  path: "/",
-});
+interface PageProps {
+  params: Promise<{ locale: Locale }>;
+}
+
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "common" });
+  return buildMetadata({
+    title: t("site.title"),
+    description: t("site.description"),
+    path: "/",
+    locale,
+  });
+}
 
 async function VehicleRows() {
+  const t = await getTranslations("landing.rows");
   const vehicles = await settle(listVehicles());
   if (!vehicles || vehicles.length === 0) {
     return (
       <section aria-labelledby="new-vehicles-heading">
-        <SectionHeading {...NEW_VEHICLES} id="new-vehicles-heading" />
+        <SectionHeading
+          id="new-vehicles-heading"
+          title={t("new.title")}
+          description={t("new.description")}
+        />
         <p role={vehicles ? undefined : "status"} className="text-muted">
-          {vehicles
-            ? "No vehicles are listed yet."
-            : "Vehicles are unavailable right now. Please try again shortly."}
+          {vehicles ? t("none") : t("unavailable")}
         </p>
       </section>
     );
@@ -60,8 +72,8 @@ async function VehicleRows() {
     <ScrollRow
       key={row.id}
       id={row.id}
-      title={row.title}
-      description={row.description}
+      title={t(`${row.theme}.title`, { price: BUDGET })}
+      description={t(`${row.theme}.description`)}
       seeAllHref={row.href}
     >
       {row.vehicles.map((vehicle, index) => (
@@ -79,20 +91,21 @@ async function VehicleRows() {
 
 /** Ways into the listed vehicles, built from what is actually listed. */
 async function BrowseSections() {
+  const t = await getTranslations("landing");
   const vehicles = await settle(listVehicles());
   if (!vehicles || vehicles.length === 0) return null;
   return (
     <>
       <BrowseSection
         id="types"
-        title="Browse by vehicle type"
-        description="From city cars to seven-seaters, whatever the trip needs."
+        title={t("types.title")}
+        description={t("types.description")}
         items={browseByType(vehicles)}
       />
       <BrowseSection
         id="makes"
-        title="Browse by make"
-        description="Know what you want to drive? Start with the badge."
+        title={t("makes.title")}
+        description={t("makes.description")}
         items={browseByMake(vehicles)}
       />
     </>
@@ -100,14 +113,11 @@ async function BrowseSections() {
 }
 
 async function CompaniesRow() {
+  const t = await getTranslations("landing.companies");
   const companies = await settle(listCompanies());
   if (!companies || companies.length === 0) return null;
   return (
-    <ScrollRow
-      id="companies"
-      title="Meet the rental companies"
-      description="Independent businesses, each with their own fleet and terms."
-    >
+    <ScrollRow id="companies" title={t("title")} description={t("description")}>
       {companies.map((company) => (
         <CompanyCard key={company.id} company={company} />
       ))}
@@ -115,7 +125,13 @@ async function CompaniesRow() {
   );
 }
 
-export default async function HomePage() {
+export default async function HomePage({ params }: PageProps) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations("landing");
+  const site = await getTranslations("common.site");
+  const { hostCta, howItWorks, intro, topFaqs, trustPoints } =
+    landingContent(t);
   // Without the list the search simply has no city to offer.
   const cities = (await settle(listCities())) ?? [];
   return (
@@ -126,7 +142,7 @@ export default async function HomePage() {
           "@type": "Organization",
           name: siteConfig.name,
           url: siteConfig.url,
-          description: siteConfig.description,
+          description: site("description"),
         }}
       />
       <JsonLd
@@ -144,22 +160,26 @@ export default async function HomePage() {
         </SearchBanner>
 
         <div className="container-page space-y-16 pt-10 md:pt-12">
-          <TrustStrip points={trustPoints} />
+          <TrustStrip label={t("trust.label")} points={trustPoints} />
 
           <RecentSearchVehicles cities={cities} />
 
           {cities.length > 0 && (
             <BrowseSection
               id="cities"
-              title="Browse by city"
-              description="Pick up where the rental companies are."
+              title={t("cities.title")}
+              description={t("cities.description")}
               items={browseByCity(cities)}
             />
           )}
 
           <Suspense
             fallback={
-              <ScrollRow {...NEW_VEHICLES}>
+              <ScrollRow
+                id={NEW_VEHICLES.id}
+                title={t("rows.new.title")}
+                description={t("rows.new.description")}
+              >
                 {Array.from({ length: 4 }, (_, index) => (
                   <VehicleCardSkeleton key={index} />
                 ))}
@@ -178,31 +198,23 @@ export default async function HomePage() {
           </Suspense>
 
           <HowItWorksSection
-            eyebrow="How it works"
-            title={
-              <>
-                From browsing to the keys, <em>in four steps.</em>
-              </>
-            }
+            eyebrow={t("steps.eyebrow")}
+            title={t.rich("steps.title", { em })}
             steps={howItWorks}
             action={
               <Link
                 href="/how-it-works"
                 className="text-sm font-semibold underline underline-offset-4"
               >
-                Learn more
-                <span className="sr-only"> about how Veltrio works</span>
+                {t("steps.learnMore")}
+                <span className="sr-only">{t("steps.learnMoreAbout")}</span>
               </Link>
             }
           />
 
           <FaqSection
-            eyebrow="Questions"
-            title={
-              <>
-                Good to know <em>before you book.</em>
-              </>
-            }
+            eyebrow={t("faq.eyebrow")}
+            title={t.rich("faq.title", { em })}
             faqs={topFaqs}
           />
 

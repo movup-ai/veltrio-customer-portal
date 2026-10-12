@@ -1,0 +1,156 @@
+{
+  "intro": {
+    "title": "Alquila con empresas de alquiler de autos independientes",
+    "imageAlt": "Chevrolet Camaro blanco en un taller oscuro, con más autos en elevadores al fondo"
+  },
+  "trust": {
+    "label": "Por qué reservar en Veltrio",
+    "noFees": {
+      "title": "Sin cargos por reserva",
+      "description": "Pagas directamente a la empresa de alquiler."
+    },
+    "noCharge": {
+      "title": "Solicitar no cuesta nada",
+      "description": "Pagas cuando la empresa confirma."
+    },
+    "professional": {
+      "title": "Solo empresas profesionales",
+      "description": "Nunca un particular."
+    }
+  },
+  "cities": {
+    "title": "Buscar por ciudad",
+    "description": "Recoge tu auto donde están las empresas de alquiler."
+  },
+  "types": {
+    "title": "Buscar por tipo de vehículo",
+    "description": "Desde autos urbanos hasta siete plazas: lo que tu viaje necesite."
+  },
+  "makes": {
+    "title": "Buscar por marca",
+    "description": "¿Ya sabes qué quieres conducir? Empieza por la marca."
+  },
+  "companies": {
+    "title": "Conoce a las empresas de alquiler",
+    "description": "Negocios independientes, cada uno con su propia flota y sus condiciones."
+  },
+  "rows": {
+    "new": {
+      "title": "Recién publicados",
+      "description": "Los últimos vehículos que han añadido las empresas de alquiler."
+    },
+    "budget": {
+      "title": "${price} al día o menos",
+      "description": "Las tarifas diarias más bajas del mercado."
+    },
+    "electric": {
+      "title": "Vehículos eléctricos",
+      "description": "Olvídate de la gasolinera y enchúfalo."
+    },
+    "none": "Todavía no hay vehículos publicados.",
+    "unavailable": "Los vehículos no están disponibles en este momento. Vuelve a intentarlo en unos minutos."
+  },
+  "steps": {
+    "eyebrow": "Cómo funciona",
+    "title": "De la búsqueda a las llaves, <em>en cuatro pasos.</em>",
+    "learnMore": "Más información",
+    "learnMoreAbout": " sobre cómo funciona Veltrio",
+    "find": {
+      "title": "Encuentra tu auto",
+      "description": "Explora autos de empresas de alquiler independientes y compara el precio, el depósito y las condiciones de cada uno."
+    },
+    "request": {
+      "title": "Solicita la reserva",
+      "description": "Envía tus datos con una foto de tu licencia y de tu tarjeta de seguro. Todavía no se cobra nada."
+    },
+    "confirm": {
+      "title": "La empresa confirma",
+      "description": "La empresa de alquiler revisa tu solicitud y te envía un enlace seguro para pagar en línea, salvo que hayas elegido pagar en efectivo al recoger el auto."
+    },
+    "pickUp": {
+      "title": "Recoge el auto y conduce",
+      "description": "Firma el contrato de alquiler en línea y recoge el auto en la sucursal de la empresa."
+    }
+  },
+  "faq": {
+    "eyebrow": "Preguntas",
+    "title": "Conviene saberlo <em>antes de reservar.</em>",
+    "items": {
+      "who": {
+        "question": "¿A quién le alquilo?",
+        "answer": "A una empresa de alquiler profesional, nunca a un particular. Veltrio publica sus vehículos; tu reserva y tu contrato de alquiler son con la empresa que te entrega las llaves."
+      },
+      "fee": {
+        "question": "¿Veltrio cobra algún cargo?",
+        "answer": "No. Veltrio no añade cargos por reserva ni por servicio. El precio que ves lo fija la empresa de alquiler, y se lo pagas directamente a ella."
+      },
+      "money": {
+        "question": "¿Cómo gana dinero Veltrio?",
+        "answer": "Las empresas de alquiler nos pagan una suscripción fija por el software con el que gestionan su negocio. Nunca nos quedamos con una parte de tu reserva, así que no tenemos motivo para subirte el precio."
+      },
+      "pay": {
+        "question": "¿Cuándo pago?",
+        "answer": "No al enviar la solicitud. Cuando la empresa la acepta, te envía un enlace seguro para pagar en línea. También puedes elegir pagar en efectivo al recoger el auto."
+      },
+      "need": {
+        "question": "¿Qué necesito para reservar?",
+        "answer": "Debes tener al menos 18 años y una licencia de conducir vigente. El formulario de reserva te pide tus datos de contacto y una foto de tu licencia y de tu tarjeta de seguro."
+      },
+      "deposit": {
+        "question": "¿Hay un depósito de garantía?",
+        "answer": "Cada empresa fija el suyo. Cuando un vehículo lo tiene, el importe se muestra antes de reservar y se libera al devolver el auto."
+      },
+      "return": {
+        "question": "¿Puedo devolver el auto en otro lugar?",
+        "answer": "Sí, cuando la empresa tiene más de una sucursal. Eliges la sucursal de devolución al reservar; la recogida siempre es en la sucursal donde está el auto."
+      }
+    }
+  },
+  "hostCta": {
+    "eyebrow": "Para empresas de alquiler",
+    "title": "Tu flota, frente a quienes les importa lo que conducen.",
+    "description": "Publica tus vehículos en Veltrio con 0% de comisión y conserva tus precios, tus condiciones y tu marca.",
+    "cta": "Publica tu flota",
+    "imageAlt": "Chevrolet Camaro blanco en un garaje con poca luz"
+  },
+  "howItWorksPage": {
+    "metaTitle": "Cómo funciona",
+    "metaDescription": "Cómo funciona alquilar con Veltrio: solicita un auto a una empresa de alquiler independiente, paga cuando confirme y resuelve las dudas más comunes.",
+    "heroTitle": "Alquilar con empresas independientes, <em>así de simple.</em>",
+    "heroDescription": "Solicita un auto a una empresa de alquiler profesional en minutos. No se cobra nada hasta que la empresa confirme tu reserva.",
+    "heroImageAlt": "Audi R8 gris estacionado en una carretera de montaña al atardecer",
+    "stepsEyebrow": "Los pasos",
+    "whyEyebrow": "Por qué Veltrio",
+    "whyTitle": "El precio de la empresa es <em>el precio que pagas.</em>",
+    "whyImageAlt": "Audi RS 6 negro visto de frente en un camino de tierra al anochecer",
+    "values": {
+      "fees": {
+        "title": "Sin cargos de Veltrio",
+        "description": "No añadimos cargos por reserva ni por servicio. Pagas directamente a la empresa de alquiler, a la tarifa que ella fija."
+      },
+      "terms": {
+        "title": "Compara las condiciones",
+        "description": "Consulta el kilometraje, el depósito y las tarifas junto al precio antes de elegir."
+      },
+      "professional": {
+        "title": "Empresas de alquiler profesionales",
+        "description": "Cada auto lo publica un negocio de alquiler establecido, no un particular."
+      },
+      "direct": {
+        "title": "Reserva con la empresa",
+        "description": "Tu reserva llega directamente al equipo que te entrega las llaves."
+      }
+    },
+    "stats": {
+      "companies": "{count, plural, =1 {Empresa de alquiler} other {Empresas de alquiler}}",
+      "vehicles": "{count, plural, =1 {Vehículo para alquilar} other {Vehículos para alquilar}}",
+      "cities": "{count, plural, =1 {Ciudad} other {Ciudades}}"
+    },
+    "browseCta": {
+      "eyebrow": "Cuando tú quieras",
+      "title": "Encuentra el auto para tu próximo viaje.",
+      "description": "Explora todos los vehículos publicados por empresas de alquiler independientes y solicita el tuyo.",
+      "cta": "Ver vehículos"
+    }
+  }
+}

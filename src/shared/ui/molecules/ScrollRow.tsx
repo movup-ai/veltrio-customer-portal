@@ -2,6 +2,7 @@
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Link } from "@/i18n/Link";
+import { useTranslations } from "next-intl";
 import { useCallback, useRef, useState, type ReactNode } from "react";
 import { cn } from "@/shared/lib/cn";
 import { preferredScrollBehavior } from "@/shared/lib/motion";
@@ -32,6 +33,7 @@ export function ScrollRow({
   children,
   itemClassName,
 }: ScrollRowProps) {
+  const t = useTranslations("common.scrollRow");
   const listRef = useRef<HTMLUListElement | null>(null);
   const [edges, setEdges] = useState({ start: true, end: true });
   const headingId = `${id}-heading`;
@@ -80,7 +82,8 @@ export function ScrollRow({
                   href={seeAllHref}
                   className="mr-2 text-sm font-semibold underline underline-offset-4"
                 >
-                  See all<span className="sr-only">: {title}</span>
+                  {t("seeAll")}
+                  <span className="sr-only">: {title}</span>
                 </Link>
               )}
               {overflows && (
@@ -89,7 +92,7 @@ export function ScrollRow({
                     variant="light"
                     size="icon-sm"
                     className={ARROW}
-                    aria-label="Scroll back"
+                    aria-label={t("back")}
                     disabled={edges.start}
                     onClick={() => scrollBy(-1)}
                   >
@@ -99,7 +102,7 @@ export function ScrollRow({
                     variant="light"
                     size="icon-sm"
                     className={ARROW}
-                    aria-label="Scroll forward"
+                    aria-label={t("forward")}
                     disabled={edges.end}
                     onClick={() => scrollBy(1)}
                   >

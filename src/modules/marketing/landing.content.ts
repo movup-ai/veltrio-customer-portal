@@ -5,6 +5,7 @@ import {
   ListChecks,
   ShieldCheck,
 } from "lucide-react";
+import type { useTranslations } from "next-intl";
 import { buildSearchUrl } from "@/modules/search/search-params";
 import { siteConfig } from "@/shared/config/site";
 import { unsplash } from "@/shared/lib/unsplash";
@@ -16,9 +17,16 @@ import type { TrustPoint } from "./components/TrustStrip";
 import type { Feature } from "./components/FeatureCard";
 
 /**
- * All landing-page copy and imagery in one place, so marketing edits never
- * touch component code. Photography is placeholder (Unsplash).
+ * The landing and how-it-works pages' content in one place: its structure, links and imagery
+ * here, its words in messages/<locale>/landing.json. Photography is placeholder (Unsplash).
  */
+
+/** The translator a page hands over, bound to one file of messages. */
+type Translator<Namespace extends "common" | "landing"> = ReturnType<
+  typeof useTranslations<Namespace>
+>;
+
+/** Styleguide samples; no page shows them. */
 
 export const hero = {
   eyebrow: "The car rental marketplace",
@@ -26,43 +34,6 @@ export const hero = {
     "Compare cars from independent rental companies. Every price upfront, every term in plain sight, one simple booking.",
   image: {
     variants: unsplash("1603584173870-7f23fdae1b7a", [800, 1600, 2400], 3 / 2),
-    alt: "Grey Audi R8 parked on a mountain road at sunset",
-  },
-};
-
-/** The landing page opens on its search, under the title alone. */
-export const intro = {
-  title: "Rent from independent car rental companies",
-  image: {
-    variants: [{ url: "/images/landing.jpg", width: 5357, height: 3164 }],
-    alt: "White Chevrolet Camaro in a dark garage, with more cars on lifts behind it",
-  },
-};
-
-/** The three promises under the landing page's search. */
-export const trustPoints: TrustPoint[] = [
-  {
-    icon: BadgePercent,
-    title: "No booking fees",
-    description: "Pay the rental company directly.",
-  },
-  {
-    icon: CalendarCheck,
-    title: "No charge to request",
-    description: "You pay once the company confirms.",
-  },
-  {
-    icon: ShieldCheck,
-    title: "Professional companies only",
-    description: "Never a private owner.",
-  },
-];
-
-export const howItWorksHero = {
-  description:
-    "Request a car from a professional rental company in minutes. Nothing is charged until the company confirms your booking.",
-  image: {
-    variants: [{ url: "/images/how-it-works.jpg", width: 2000, height: 1335 }],
     alt: "Grey Audi R8 parked on a mountain road at sunset",
   },
 };
@@ -97,157 +68,151 @@ export const collections: Collection[] = [
   },
 ];
 
-/** Closes the how-it-works page by sending the reader back to the cars. */
-export const browseCta = {
-  eyebrow: "Ready when you are",
-  title: "Find the car for your next trip.",
-  description:
-    "Browse every vehicle listed by independent rental companies and request yours.",
-  cta: { label: "Browse vehicles", href: "/" },
-  image: intro.image,
-};
-
-export const valuePropsImage = {
-  variants: [{ url: "/images/why-veltrio.jpg", width: 2000, height: 2996 }],
-  alt: "Black Audi RS 6 seen head-on on a dirt track at dusk",
-};
-
-export const valueProps: Feature[] = [
-  {
-    icon: BadgePercent,
-    title: "No Veltrio fees",
-    description:
-      "We add no booking or service fee. You pay the rental company directly, at the rate they set.",
-  },
-  {
-    icon: ListChecks,
-    title: "Compare the terms",
-    description:
-      "See mileage, deposit and rate options next to the price before you choose.",
-  },
-  {
-    icon: ShieldCheck,
-    title: "Professional rental companies",
-    description:
-      "Every car is listed by an established rental business, not a private owner.",
-  },
-  {
-    icon: Handshake,
-    title: "Book with the company",
-    description:
-      "Your booking goes straight to the team that hands you the keys.",
-  },
-];
-
-export const howItWorks: HowItWorksStep[] = [
-  {
-    title: "Find your car",
-    description:
-      "Browse cars from independent rental companies and compare the price, deposit and terms of each.",
-  },
-  {
-    title: "Request to book",
-    description:
-      "Send your details with a photo of your licence and insurance card. Nothing is charged yet.",
-  },
-  {
-    title: "The company confirms",
-    description:
-      "The rental company reviews your request, then sends a secure link to pay online, unless you chose to pay cash at pick-up.",
-  },
-  {
-    title: "Pick up and drive",
-    description:
-      "Sign the rental agreement online and collect the car at the company's branch.",
-  },
-];
-
-export const faqs: Faq[] = [
-  {
-    question: "Who am I renting from?",
-    answer:
-      "A professional rental company, never a private owner. Veltrio lists their vehicles, and your booking and rental agreement are with the company that hands you the keys.",
-  },
-  {
-    question: "Does Veltrio charge a fee?",
-    answer:
-      "No. Veltrio adds no booking or service fee. The price you see is set by the rental company, and you pay it to them directly.",
-  },
-  {
-    question: "How does Veltrio make money?",
-    answer:
-      "Rental companies pay us a flat subscription for the software that runs their business. We never take a cut of your booking, so we have no reason to raise your price.",
-  },
-  {
-    question: "When do I pay?",
-    answer:
-      "Not when you send a request. Once the company accepts it, they send you a secure link to pay online. You can also choose to pay cash at pick-up.",
-  },
-  {
-    question: "What do I need to book?",
-    answer:
-      "You must be at least 18 and hold a valid driving licence. The booking form asks for your contact details and a photo of your licence and insurance card.",
-  },
-  {
-    question: "Is there a security deposit?",
-    answer:
-      "Each company sets its own. When a vehicle has one, the amount is shown before you book, and it is released when the car comes back.",
-  },
-  {
-    question: "Can I return the car to a different location?",
-    answer:
-      "Yes, when the company has more than one branch. You choose the return branch while booking; pick-up is always at the branch where the car is kept.",
-  },
-];
-
-/** The questions repeated on the landing page; the rest are on the how-it-works page. */
-export const topFaqs = faqs.slice(0, 5);
-
 /** The page that explains Veltrio to rental companies. */
 export const COMPANIES_PATH = "/for-rental-companies";
 
-export const hostCta = {
-  eyebrow: "For rental companies",
-  title: "Your fleet, in front of people who care what they drive.",
-  description:
-    "List your vehicles on Veltrio with 0% commission, and keep your own pricing, terms and brand.",
-  cta: { label: "List your fleet", href: COMPANIES_PATH },
-  image: {
-    variants: unsplash("1492144534655-ae79c964c9d7", [800, 1600], 16 / 7),
-    alt: "White Chevrolet Camaro in a dimly lit garage",
-  },
-};
+const STEPS = ["find", "request", "confirm", "pickUp"] as const;
+const FAQS = [
+  "who",
+  "fee",
+  "money",
+  "pay",
+  "need",
+  "deposit",
+  "return",
+] as const;
+/** How many questions the landing page repeats; the rest are on the how-it-works page. */
+const TOP_FAQS = 5;
 
-/** City and company links land on sections of the landing page. */
-export const footerColumns: FooterColumn[] = [
-  {
-    title: "Explore",
-    links: [
-      { href: "/search", label: "Browse vehicles" },
-      { href: "/#cities", label: "Browse by city" },
-      { href: "/#companies", label: "Rental companies" },
-    ],
-  },
-  {
-    title: "For rental companies",
-    links: [
-      { href: COMPANIES_PATH, label: "List your fleet" },
-      { href: `${COMPANIES_PATH}#pricing`, label: "Pricing" },
-      ...(siteConfig.portalUrl
-        ? [{ href: siteConfig.portalUrl, label: "Company sign in" }]
-        : []),
-    ],
-  },
-  {
-    title: "Veltrio",
-    links: [
-      { href: "/how-it-works", label: "How it works" },
-      { href: "/how-it-works#faq", label: "FAQ" },
-    ],
-  },
-];
+const HOST_IMAGE = unsplash("1492144534655-ae79c964c9d7", [800, 1600], 16 / 7);
 
-/** Beside the copyright line on every page. Privacy and Terms join it once their text exists. */
-export const footerLegalLinks = siteConfig.supportEmail
-  ? [{ href: `mailto:${siteConfig.supportEmail}`, label: "Contact" }]
-  : [];
+/** Everything the landing and how-it-works pages say, in the reader's language. */
+export function landingContent(t: Translator<"landing">) {
+  /** The landing page opens on its search, under the title alone. */
+  const intro = {
+    title: t("intro.title"),
+    image: {
+      variants: [{ url: "/images/landing.jpg", width: 5357, height: 3164 }],
+      alt: t("intro.imageAlt"),
+    },
+  };
+  const faqs: Faq[] = FAQS.map((key) => ({
+    question: t(`faq.items.${key}.question`),
+    answer: t(`faq.items.${key}.answer`),
+  }));
+  const value = (
+    key: "fees" | "terms" | "professional" | "direct",
+    icon: Feature["icon"],
+  ): Feature => ({
+    icon,
+    title: t(`howItWorksPage.values.${key}.title`),
+    description: t(`howItWorksPage.values.${key}.description`),
+  });
+  const trust = (
+    key: "noFees" | "noCharge" | "professional",
+    icon: TrustPoint["icon"],
+  ): TrustPoint => ({
+    icon,
+    title: t(`trust.${key}.title`),
+    description: t(`trust.${key}.description`),
+  });
+
+  return {
+    intro,
+    /** The three promises under the landing page's search. */
+    trustPoints: [
+      trust("noFees", BadgePercent),
+      trust("noCharge", CalendarCheck),
+      trust("professional", ShieldCheck),
+    ],
+    howItWorks: STEPS.map((key): HowItWorksStep => ({
+      title: t(`steps.${key}.title`),
+      description: t(`steps.${key}.description`),
+    })),
+    faqs,
+    topFaqs: faqs.slice(0, TOP_FAQS),
+    hostCta: {
+      eyebrow: t("hostCta.eyebrow"),
+      title: t("hostCta.title"),
+      description: t("hostCta.description"),
+      cta: { label: t("hostCta.cta"), href: COMPANIES_PATH },
+      image: { variants: HOST_IMAGE, alt: t("hostCta.imageAlt") },
+    },
+    howItWorksHero: {
+      description: t("howItWorksPage.heroDescription"),
+      image: {
+        variants: [
+          { url: "/images/how-it-works.jpg", width: 2000, height: 1335 },
+        ],
+        alt: t("howItWorksPage.heroImageAlt"),
+      },
+    },
+    valueProps: [
+      value("fees", BadgePercent),
+      value("terms", ListChecks),
+      value("professional", ShieldCheck),
+      value("direct", Handshake),
+    ],
+    valuePropsImage: {
+      variants: [{ url: "/images/why-veltrio.jpg", width: 2000, height: 2996 }],
+      alt: t("howItWorksPage.whyImageAlt"),
+    },
+    /** Closes the how-it-works page by sending the reader back to the cars. */
+    browseCta: {
+      eyebrow: t("howItWorksPage.browseCta.eyebrow"),
+      title: t("howItWorksPage.browseCta.title"),
+      description: t("howItWorksPage.browseCta.description"),
+      cta: { label: t("howItWorksPage.browseCta.cta"), href: "/" },
+      image: intro.image,
+    },
+  };
+}
+
+/** The footer of every page. City and company links land on sections of the landing page. */
+export function footerContent(t: Translator<"common">) {
+  const columns: FooterColumn[] = [
+    {
+      title: t("footer.explore.title"),
+      links: [
+        { href: "/search", label: t("footer.explore.vehicles") },
+        { href: "/#cities", label: t("footer.explore.cities") },
+        { href: "/#companies", label: t("footer.explore.companies") },
+      ],
+    },
+    {
+      title: t("footer.forCompanies.title"),
+      links: [
+        { href: COMPANIES_PATH, label: t("footer.forCompanies.list") },
+        {
+          href: `${COMPANIES_PATH}#pricing`,
+          label: t("footer.forCompanies.pricing"),
+        },
+        ...(siteConfig.portalUrl
+          ? [
+              {
+                href: siteConfig.portalUrl,
+                label: t("footer.forCompanies.signIn"),
+              },
+            ]
+          : []),
+      ],
+    },
+    {
+      title: t("footer.veltrio.title"),
+      links: [
+        { href: "/how-it-works", label: t("footer.veltrio.howItWorks") },
+        { href: "/how-it-works#faq", label: t("footer.veltrio.faq") },
+      ],
+    },
+  ];
+  /** Beside the copyright line. Privacy and Terms join it once their text exists. */
+  const legalLinks = siteConfig.supportEmail
+    ? [
+        {
+          href: `mailto:${siteConfig.supportEmail}`,
+          label: t("footer.contact"),
+        },
+      ]
+    : [];
+  return { columns, legalLinks };
+}

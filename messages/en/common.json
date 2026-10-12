@@ -1,5 +1,9 @@
 {
   "skipToContent": "Skip to content",
+  "site": {
+    "title": "Veltrio — Rent from independent car rental companies",
+    "description": "Discover, compare and book rental cars from independent rental companies. Upfront prices, clear terms, one simple booking."
+  },
   "language": {
     "label": "Language",
     "en": "English",
@@ -14,5 +18,32 @@
     "title": "This road doesn't go anywhere.",
     "body": "The page you're looking for doesn't exist yet.",
     "home": "Back to home"
+  },
+  "carCount": "{count, plural, =1 {1 car} other {# cars}}",
+  "scrollRow": {
+    "seeAll": "See all",
+    "back": "Scroll back",
+    "forward": "Scroll forward"
+  },
+  "footer": {
+    "tagline": "The marketplace for independent rental companies and the people who love to drive.",
+    "explore": {
+      "title": "Explore",
+      "vehicles": "Browse vehicles",
+      "cities": "Browse by city",
+      "companies": "Rental companies"
+    },
+    "forCompanies": {
+      "title": "For rental companies",
+      "list": "List your fleet",
+      "pricing": "Pricing",
+      "signIn": "Company sign in"
+    },
+    "veltrio": {
+      "title": "Veltrio",
+      "howItWorks": "How it works",
+      "faq": "FAQ"
+    },
+    "contact": "Contact"
   }
 }

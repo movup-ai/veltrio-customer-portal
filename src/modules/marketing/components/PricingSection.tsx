@@ -1,4 +1,5 @@
 import { Check } from "lucide-react";
+import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 import { cn } from "@/shared/lib/cn";
 import { Badge } from "@/shared/ui/atoms/Badge";
@@ -36,6 +37,7 @@ export function PricingSection({
   plans,
   note,
 }: PricingSectionProps) {
+  const t = useTranslations("companies.pricing");
   return (
     <section
       id="pricing"
@@ -62,7 +64,9 @@ export function PricingSection({
               <h3 className="text-lead font-semibold tracking-tight">
                 {plan.name}
               </h3>
-              {plan.featured && <Badge variant="accent">Most popular</Badge>}
+              {plan.featured && (
+                <Badge variant="accent">{t("mostPopular")}</Badge>
+              )}
             </div>
             <p className="mt-4 flex items-baseline gap-2">
               <span className="font-display text-h2">{plan.price}</span>
@@ -90,7 +94,9 @@ export function PricingSection({
               >
                 <a href={plan.cta.href}>
                   {plan.cta.label}
-                  <span className="sr-only"> on the {plan.name} plan</span>
+                  <span className="sr-only">
+                    {t("onPlan", { name: plan.name })}
+                  </span>
                 </a>
               </Button>
             )}

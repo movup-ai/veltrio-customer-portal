@@ -6,11 +6,17 @@ export interface TrustPoint {
   description: string;
 }
 
+interface TrustStripProps {
+  /** Names the list for assistive tech, e.g. "Why book on Veltrio". */
+  label: string;
+  points: TrustPoint[];
+}
+
 /** A thin row of promises under the search, e.g. "No booking fees". */
-export function TrustStrip({ points }: { points: TrustPoint[] }) {
+export function TrustStrip({ label, points }: TrustStripProps) {
   return (
     <ul
-      aria-label="Why book on Veltrio"
+      aria-label={label}
       className="grid gap-x-8 gap-y-5 rounded-xl border border-border bg-surface p-5 sm:grid-cols-3 md:px-8"
     >
       {points.map(({ icon: Icon, title, description }) => (

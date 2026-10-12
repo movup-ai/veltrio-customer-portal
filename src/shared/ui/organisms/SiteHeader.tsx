@@ -9,7 +9,7 @@ import { Logo } from "@/shared/ui/atoms/Logo";
 import { LanguageSwitch } from "@/shared/ui/molecules/LanguageSwitch";
 
 const NAV_LINK =
-  "h-10 items-center rounded-full px-4 text-sm font-semibold hover:bg-current/10";
+  "h-10 items-center rounded-full px-2.5 text-sm font-semibold whitespace-nowrap hover:bg-current/10 sm:px-4";
 
 interface SiteHeaderProps {
   /**

@@ -1,58 +1,68 @@
 import type { Metadata } from "next";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import type { Locale } from "@/i18n/routing";
+import { em, emOnInverse } from "@/i18n/rich";
 import { listCompanies } from "@/modules/company/company.repository";
 import { FaqSection } from "@/modules/marketing/components/FaqSection";
 import { HeroSection } from "@/modules/marketing/components/HeroSection";
 import { HostCtaSection } from "@/modules/marketing/components/HostCtaSection";
 import { HowItWorksSection } from "@/modules/marketing/components/HowItWorksSection";
 import { ValuePropsSection } from "@/modules/marketing/components/ValuePropsSection";
-import {
-  browseCta,
-  faqs,
-  howItWorks,
-  howItWorksHero,
-  valueProps,
-  valuePropsImage,
-} from "@/modules/marketing/landing.content";
+import { landingContent } from "@/modules/marketing/landing.content";
 import { listCities } from "@/modules/search/search.repository";
 import { listVehicles } from "@/modules/vehicle/vehicle.repository";
 import { buildMetadata } from "@/shared/lib/seo";
 import { settle } from "@/shared/lib/settle";
 import { SiteHeader } from "@/shared/ui/organisms/SiteHeader";
 
-const DESCRIPTION =
-  "How renting through Veltrio works: request a car from an independent rental company, pay once they confirm, and get answers to common questions.";
+interface PageProps {
+  params: Promise<{ locale: Locale }>;
+}
 
-export const metadata: Metadata = buildMetadata({
-  title: "How it works",
-  description: DESCRIPTION,
-  path: "/how-it-works",
-});
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "landing" });
+  return buildMetadata({
+    title: t("howItWorksPage.metaTitle"),
+    description: t("howItWorksPage.metaDescription"),
+    path: "/how-it-works",
+    locale,
+  });
+}
 
 /** What is on the marketplace right now; a count that cannot be read is left out. */
 async function marketplaceStats() {
+  const t = await getTranslations("landing.howItWorksPage.stats");
   const [companies, vehicles, cities] = await Promise.all([
     settle(listCompanies()),
     settle(listVehicles()),
     settle(listCities()),
   ]);
-  return [
-    {
-      value: companies?.length,
-      one: "Rental company",
-      many: "Rental companies",
-    },
-    {
-      value: vehicles?.length,
-      one: "Vehicle to rent",
-      many: "Vehicles to rent",
-    },
-    { value: cities?.length, one: "City", many: "Cities" },
-  ].flatMap(({ value, one, many }) =>
-    value ? [{ value, label: value === 1 ? one : many }] : [],
+  return (
+    [
+      ["companies", companies?.length],
+      ["vehicles", vehicles?.length],
+      ["cities", cities?.length],
+    ] as const
+  ).flatMap(([key, count]) =>
+    count ? [{ value: count, label: t(key, { count }) }] : [],
   );
 }
 
-export default async function HowItWorksPage() {
+export default async function HowItWorksPage({ params }: PageProps) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations("landing");
+  const {
+    browseCta,
+    faqs,
+    howItWorks,
+    howItWorksHero,
+    valueProps,
+    valuePropsImage,
+  } = landingContent(t);
   const stats = await marketplaceStats();
   return (
     <>
@@ -61,44 +71,26 @@ export default async function HowItWorksPage() {
         <HeroSection
           {...howItWorksHero}
           compact
-          title={
-            <>
-              Renting from independent companies,{" "}
-              <em className="text-accent-on-inverse">made simple.</em>
-            </>
-          }
+          title={t.rich("howItWorksPage.heroTitle", { em: emOnInverse })}
         />
         <div className="container-page space-y-16 pt-10 pb-16 md:pt-16">
           <HowItWorksSection
-            eyebrow="The steps"
-            title={
-              <>
-                From browsing to the keys, <em>in four steps.</em>
-              </>
-            }
+            eyebrow={t("howItWorksPage.stepsEyebrow")}
+            title={t.rich("steps.title", { em })}
             steps={howItWorks}
           />
 
           <ValuePropsSection
-            eyebrow="Why Veltrio"
-            title={
-              <>
-                The company&apos;s price is{" "}
-                <em className="text-accent-on-inverse">the price you pay.</em>
-              </>
-            }
+            eyebrow={t("howItWorksPage.whyEyebrow")}
+            title={t.rich("howItWorksPage.whyTitle", { em: emOnInverse })}
             values={valueProps}
             image={valuePropsImage}
             stats={stats}
           />
 
           <FaqSection
-            eyebrow="Questions"
-            title={
-              <>
-                Good to know <em>before you book.</em>
-              </>
-            }
+            eyebrow={t("faq.eyebrow")}
+            title={t.rich("faq.title", { em })}
             faqs={faqs}
           />
 

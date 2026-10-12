@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import { getTranslations, setRequestLocale } from "next-intl/server";
+import type { Locale } from "@/i18n/routing";
+import { em, emOnInverse } from "@/i18n/rich";
 import { ComparisonSection } from "@/modules/marketing/components/ComparisonSection";
 import { FaqSection } from "@/modules/marketing/components/FaqSection";
 import { FeatureGridSection } from "@/modules/marketing/components/FeatureGridSection";
@@ -9,31 +12,45 @@ import { PricingSection } from "@/modules/marketing/components/PricingSection";
 import { ValuePropsSection } from "@/modules/marketing/components/ValuePropsSection";
 import {
   COMPANIES_PATH,
-  companiesHero,
-  companyFaqs,
-  comparison,
-  gettingStarted,
-  marketplaceBenefits,
-  pricingNote,
-  pricingPlans,
-  signUpCta,
+  companiesContent,
   signUpHref,
-  softwareFeatures,
 } from "@/modules/marketing/companies.content";
 import { buildMetadata } from "@/shared/lib/seo";
 import { Button } from "@/shared/ui/atoms/Button";
 import { SiteHeader } from "@/shared/ui/organisms/SiteHeader";
 
-const DESCRIPTION =
-  "List your rental fleet on Veltrio with 0% commission. One flat subscription covers fleet software, online bookings and payments paid straight to your Stripe account.";
+interface PageProps {
+  params: Promise<{ locale: Locale }>;
+}
 
-export const metadata: Metadata = buildMetadata({
-  title: "For rental companies",
-  description: DESCRIPTION,
-  path: COMPANIES_PATH,
-});
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "companies" });
+  return buildMetadata({
+    title: t("metaTitle"),
+    description: t("metaDescription"),
+    path: COMPANIES_PATH,
+    locale,
+  });
+}
 
-export default function ForRentalCompaniesPage() {
+export default async function ForRentalCompaniesPage({ params }: PageProps) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations("companies");
+  const {
+    companiesHero,
+    companyFaqs,
+    comparison,
+    gettingStarted,
+    marketplaceBenefits,
+    pricingNote,
+    pricingPlans,
+    signUpCta,
+    softwareFeatures,
+  } = companiesContent(t);
   return (
     <>
       <SiteHeader variant="overlay" />
@@ -41,85 +58,55 @@ export default function ForRentalCompaniesPage() {
         <HeroSection
           {...companiesHero}
           compact
-          title={
-            <>
-              Run your rental business.{" "}
-              <em className="text-accent-on-inverse">Keep every dollar.</em>
-            </>
-          }
+          title={t.rich("hero.title", { em: emOnInverse })}
         >
           <div className="flex flex-wrap gap-3">
             {signUpHref && (
               <Button asChild>
-                <a href={signUpHref}>Start free trial</a>
+                <a href={signUpHref}>{t("hero.startTrial")}</a>
               </Button>
             )}
             <Button asChild variant="glass">
-              <a href="#pricing">See pricing</a>
+              <a href="#pricing">{t("hero.seePricing")}</a>
             </Button>
           </div>
         </HeroSection>
         <div className="container-page space-y-16 pt-10 pb-16 md:pt-16">
           <ValuePropsSection
-            eyebrow="The marketplace"
-            title={
-              <>
-                0% commission.{" "}
-                <em className="text-accent-on-inverse">On every booking.</em>
-              </>
-            }
+            eyebrow={t("marketplace.eyebrow")}
+            title={t.rich("marketplace.title", { em: emOnInverse })}
             values={marketplaceBenefits}
           />
 
           <ComparisonSection
-            eyebrow="The difference"
-            title={
-              <>
-                A marketplace that <em>does not take a cut.</em>
-              </>
-            }
+            eyebrow={t("comparison.eyebrow")}
+            title={t.rich("comparison.title", { em })}
             {...comparison}
           />
 
           <FeatureGridSection
             id="software"
-            eyebrow="The software"
-            title={
-              <>
-                Everything to run your fleet, <em>in one place.</em>
-              </>
-            }
+            eyebrow={t("software.eyebrow")}
+            title={t.rich("software.title", { em })}
             features={softwareFeatures}
           />
 
           <HowItWorksSection
-            eyebrow="Getting started"
-            title={
-              <>
-                From sign-up to your first booking, <em>in four steps.</em>
-              </>
-            }
+            eyebrow={t("start.eyebrow")}
+            title={t.rich("start.title", { em })}
             steps={gettingStarted}
           />
 
           <PricingSection
-            eyebrow="Pricing"
-            title={
-              <>
-                One flat price. <em>No commission.</em>
-              </>
-            }
+            eyebrow={t("pricing.eyebrow")}
+            title={t.rich("pricing.title", { em })}
             plans={pricingPlans}
             note={pricingNote}
           />
 
           <FaqSection
-            eyebrow="Questions"
-            title={
-              <>
-                Good to know <em>before you list.</em>
-              </>
-            }
+            eyebrow={t("faq.eyebrow")}
+            title={t.rich("faq.title", { em })}
             faqs={companyFaqs}
           />
 

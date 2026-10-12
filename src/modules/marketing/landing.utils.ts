@@ -66,16 +66,15 @@ export function browseByMake(vehicles: Vehicle[]) {
 /** The first row, shown even when nothing is listed yet. */
 export const NEW_VEHICLES = {
   id: "new-vehicles",
-  title: "Newly listed",
-  description: "The latest vehicles added by rental companies.",
+  theme: "new",
   href: buildSearchUrl(),
-};
+} as const;
 
 /** One row of vehicle cards on the landing page, with the search that lists the rest. */
 export interface VehicleRow {
   id: string;
-  title: string;
-  description: string;
+  /** Which row it is; its title and description are in the landing messages under this name. */
+  theme: "new" | "budget" | "electric";
   href: string;
   vehicles: Vehicle[];
 }
@@ -85,7 +84,7 @@ const ROW_SIZE = 8;
 /** A themed row with fewer vehicles than this is left out. */
 const ROW_MIN = 4;
 /** Highest daily rate of the budget row, in whole dollars. */
-const BUDGET = 75;
+export const BUDGET = 75;
 
 /** The landing page's rows: the newest vehicles, then each theme with enough to show. */
 export function vehicleRows(vehicles: Vehicle[]): VehicleRow[] {
@@ -94,15 +93,13 @@ export function vehicleRows(vehicles: Vehicle[]): VehicleRow[] {
   const themed = [
     {
       id: "budget-vehicles",
-      title: `$${BUDGET} a day or less`,
-      description: "The lowest daily rates on the marketplace.",
+      theme: "budget" as const,
       href: buildSearchUrl(budget),
       vehicles: sortVehicles(filterVehicles(vehicles, budget), budget.sort),
     },
     {
       id: "electric-vehicles",
-      title: "Electric vehicles",
-      description: "Skip the pump and plug in instead.",
+      theme: "electric" as const,
       href: buildSearchUrl(electric),
       vehicles: filterVehicles(vehicles, electric),
     },
