@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/Link";
 import { CompanyLogo } from "./CompanyLogo";
 
@@ -15,6 +16,7 @@ export function RentalCompanyCard({
   location,
   href,
 }: RentalCompanyCardProps) {
+  const t = useTranslations("vehicle.page");
   return (
     <div className="flex items-center gap-4">
       <CompanyLogo name={name} />
@@ -24,9 +26,7 @@ export function RentalCompanyCard({
             {name}
           </Link>
         </p>
-        <p className="text-sm text-muted">
-          Pick-up at {location}. Your booking goes straight to this company.
-        </p>
+        <p className="text-sm text-muted">{t("pickupAt", { location })}</p>
       </div>
     </div>
   );

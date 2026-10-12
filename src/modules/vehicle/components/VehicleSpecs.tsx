@@ -1,5 +1,5 @@
+import { useTranslations } from "next-intl";
 import type { VehicleSpecs as Specs } from "../types";
-import { FUEL_LABEL, TRANSMISSION_LABEL } from "../vehicle-types";
 
 interface VehicleSpecsProps {
   specs: Specs;
@@ -7,15 +7,19 @@ interface VehicleSpecsProps {
 
 /** Spec sheet. Figures the company did not provide are left out. */
 export function VehicleSpecs({ specs }: VehicleSpecsProps) {
+  const t = useTranslations("vehicle");
   const rows = [
-    { label: "Transmission", value: TRANSMISSION_LABEL[specs.transmission] },
-    { label: "Fuel", value: FUEL_LABEL[specs.fuelType] },
-    { label: "Seats", value: specs.seats },
-    { label: "Doors", value: specs.doors },
-    { label: "Power", value: specs.horsepower, unit: "hp" },
-    { label: "0–60 mph", value: specs.zeroToSixtySec, unit: "s" },
-    { label: "Top speed", value: specs.topSpeedMph, unit: "mph" },
-    { label: "Cylinders", value: specs.cylinders },
+    {
+      label: t("specs.transmission"),
+      value: t(`transmission.${specs.transmission}`),
+    },
+    { label: t("specs.fuel"), value: t(`fuel.${specs.fuelType}`) },
+    { label: t("specs.seats"), value: specs.seats },
+    { label: t("specs.doors"), value: specs.doors },
+    { label: t("specs.power"), value: specs.horsepower, unit: "hp" },
+    { label: t("specs.zeroToSixty"), value: specs.zeroToSixtySec, unit: "s" },
+    { label: t("specs.topSpeed"), value: specs.topSpeedMph, unit: "mph" },
+    { label: t("specs.cylinders"), value: specs.cylinders },
   ].filter((row) => row.value !== null);
 
   return (

@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
+import type { Locale } from "@/i18n/routing";
 import { Suspense } from "react";
 import { BookingPanel } from "@/modules/booking/components/BookingPanel";
 import { MobileBookingBar } from "@/modules/booking/components/MobileBookingBar";
@@ -24,7 +26,7 @@ import { Skeleton } from "@/shared/ui/atoms/Skeleton";
 import { SiteHeader } from "@/shared/ui/organisms/SiteHeader";
 
 interface PageProps {
-  params: Promise<{ subdomain: string; uri: string }>;
+  params: Promise<{ locale: Locale; subdomain: string; uri: string }>;
 }
 
 function largestPhotoUrl(vehicle: Vehicle) {
@@ -32,27 +34,42 @@ function largestPhotoUrl(vehicle: Vehicle) {
   return [...variants].sort((a, b) => b.width - a.width)[0]?.url;
 }
 
-function describe(vehicle: Vehicle) {
-  const rate =
-    vehicle.dailyRateCents === null
-      ? ""
-      : ` from ${formatMoney(vehicle.dailyRateCents)} a day`;
-  return (
-    vehicle.description ??
-    `Rent the ${vehicle.year} ${vehicleName(vehicle)} from ${vehicle.company.name} in ${vehicle.location}${rate}. See photos, specs and available dates.`
-  );
+type Translator = Awaited<ReturnType<typeof getTranslations<"vehicle">>>;
+
+/** The company's own description, or one written from what is known of the vehicle. */
+function describe(vehicle: Vehicle, t: Translator) {
+  if (vehicle.description) return vehicle.description;
+  const facts = {
+    year: vehicle.year,
+    name: vehicleName(vehicle),
+    company: vehicle.company.name,
+    location: vehicle.location,
+  };
+  return vehicle.dailyRateCents === null
+    ? t("page.metaDescription", facts)
+    : t("page.metaDescriptionRate", {
+        ...facts,
+        price: formatMoney(vehicle.dailyRateCents),
+      });
 }
 
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
-  const { subdomain, uri } = await params;
+  const { locale, subdomain, uri } = await params;
   const vehicle = await getVehicle(subdomain, uri);
   if (!vehicle) return {};
+  const t = await getTranslations({ locale, namespace: "vehicle" });
   return buildMetadata({
-    title: `${vehicle.year} ${vehicleName(vehicle)} rental in ${vehicle.location} · ${vehicle.company.name}`,
-    description: describe(vehicle),
+    title: t("page.metaTitle", {
+      year: vehicle.year,
+      name: vehicleName(vehicle),
+      location: vehicle.location,
+      company: vehicle.company.name,
+    }),
+    description: describe(vehicle, t),
     path: vehicleHref(vehicle),
+    locale,
     image: largestPhotoUrl(vehicle),
     siteName: vehicle.company.name,
   });
@@ -63,6 +80,7 @@ export default async function VehiclePage({ params }: PageProps) {
   const vehicle = await getVehicle(subdomain, uri);
   if (!vehicle) notFound();
 
+  const t = await getTranslations("vehicle");
   const name = vehicleName(vehicle);
   const url = vehicleHref(vehicle);
 
@@ -74,7 +92,7 @@ export default async function VehiclePage({ params }: PageProps) {
           "@type": "Car",
           name: `${vehicle.year} ${name}`,
           url,
-          description: describe(vehicle),
+          description: describe(vehicle, t),
           brand: { "@type": "Brand", name: vehicle.make },
           model: vehicle.model,
           vehicleModelDate: String(vehicle.year),
@@ -107,29 +125,33 @@ export default async function VehiclePage({ params }: PageProps) {
           <div className="mt-6">
             <VehicleGallery
               photos={vehicle.photos}
-              alt={`${vehicle.year} ${name} in ${vehicle.color}`}
+              alt={t("card.photoAlt", {
+                year: vehicle.year,
+                name,
+                color: vehicle.color,
+              })}
               photosHref={`${url}/photos`}
             />
           </div>
 
           <div className="mt-10 grid gap-x-18 lg:grid-cols-[minmax(0,1fr)_25rem]">
             <div>
-              <VehicleDetailSection id="specs" title="Specifications">
+              <VehicleDetailSection id="specs" title={t("page.specs")}>
                 <VehicleSpecs specs={vehicle.specs} />
               </VehicleDetailSection>
               {vehicle.description && (
-                <VehicleDetailSection id="about" title="About this vehicle">
+                <VehicleDetailSection id="about" title={t("page.about")}>
                   <p className="max-w-prose whitespace-pre-line text-foreground-secondary">
                     {vehicle.description}
                   </p>
                 </VehicleDetailSection>
               )}
               {vehicle.features.length > 0 && (
-                <VehicleDetailSection id="features" title="Features">
+                <VehicleDetailSection id="features" title={t("page.features")}>
                   <VehicleFeatures features={vehicle.features} />
                 </VehicleDetailSection>
               )}
-              <VehicleDetailSection id="company" title="Rental company">
+              <VehicleDetailSection id="company" title={t("page.company")}>
                 <RentalCompanyCard
                   name={vehicle.company.name}
                   location={vehicle.location}
@@ -140,7 +162,7 @@ export default async function VehiclePage({ params }: PageProps) {
 
             <aside
               id="booking"
-              aria-label="Book this vehicle"
+              aria-label={t("page.bookLabel")}
               className="mt-9 scroll-mt-24 lg:mt-0"
             >
               <div className="lg:sticky lg:top-24">

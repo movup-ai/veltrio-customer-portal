@@ -1,4 +1,5 @@
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, screen } from "@testing-library/react";
+import { renderInEnglish } from "@/test/render";
 import { afterEach, describe, expect, it } from "vitest";
 import type { CompanyLocation } from "../types";
 import { CompanyLocations } from "./CompanyLocations";
@@ -31,7 +32,7 @@ afterEach(cleanup);
 
 describe("CompanyLocations", () => {
   it("shows each branch with its hours, vehicle count and main-branch mark", () => {
-    render(<CompanyLocations locations={[base, airport]} />);
+    renderInEnglish(<CompanyLocations locations={[base, airport]} />);
     expect(screen.getByText("Mon–Sat, 9:00 AM – 6:30 PM")).toBeTruthy();
     expect(screen.getByText("Every day, 9:00 AM – 6:30 PM")).toBeTruthy();
     expect(screen.getByText("4 vehicles here")).toBeTruthy();
@@ -40,7 +41,7 @@ describe("CompanyLocations", () => {
   });
 
   it("moves the map to the chosen branch, by address when it has no coordinates", () => {
-    render(<CompanyLocations locations={[base, airport]} />);
+    renderInEnglish(<CompanyLocations locations={[base, airport]} />);
     const map = () => screen.getByTitle(/^Map of/) as HTMLIFrameElement;
     expect(map().src).toContain(encodeURIComponent("25.79,-80.13"));
 
@@ -50,7 +51,9 @@ describe("CompanyLocations", () => {
   });
 
   it("says so when a branch has neither coordinates nor an address", () => {
-    render(<CompanyLocations locations={[{ ...airport, address: "" }]} />);
+    renderInEnglish(
+      <CompanyLocations locations={[{ ...airport, address: "" }]} />,
+    );
     expect(
       screen.getByText("Airport has no address on file yet."),
     ).toBeTruthy();

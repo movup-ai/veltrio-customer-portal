@@ -1,4 +1,4 @@
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/Link";
 import { cn } from "@/shared/lib/cn";
 import { companyHref, countryName } from "../company.utils";
@@ -12,6 +12,7 @@ interface CompanyCardProps {
 
 export function CompanyCard({ company, className }: CompanyCardProps) {
   const t = useTranslations("common");
+  const locale = useLocale();
   return (
     <article
       className={cn(
@@ -31,7 +32,9 @@ export function CompanyCard({ company, className }: CompanyCardProps) {
               {company.name}
             </Link>
           </h3>
-          <p className="text-meta text-muted">{countryName(company.country)}</p>
+          <p className="text-meta text-muted">
+            {countryName(company.country, locale)}
+          </p>
         </div>
       </div>
       <p className="mt-5 border-t border-border pt-4 text-meta text-muted">

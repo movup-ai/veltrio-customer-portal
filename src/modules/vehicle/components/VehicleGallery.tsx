@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { LayoutGrid } from "lucide-react";
 import { Link } from "@/i18n/Link";
 import { cn } from "@/shared/lib/cn";
@@ -32,10 +33,11 @@ export function VehicleGallery({
   alt,
   photosHref,
 }: VehicleGalleryProps) {
+  const t = useTranslations("vehicle.gallery");
   if (photos.length === 0) {
     return (
       <div className="grid aspect-4/3 place-items-center rounded-xl bg-surface-muted text-muted md:aspect-auto md:h-126">
-        No photos yet
+        {t("none")}
       </div>
     );
   }
@@ -45,7 +47,7 @@ export function VehicleGallery({
   return (
     <div className="relative">
       <ul
-        aria-label="Photos"
+        aria-label={t("label")}
         className={cn(
           "bleed-gutter scrollbar-none flex snap-x snap-mandatory gap-2 overflow-x-auto md:mx-0 md:grid md:h-126 md:overflow-hidden md:rounded-xl md:px-0",
           MOSAIC[shown],
@@ -63,12 +65,19 @@ export function VehicleGallery({
           >
             <Link
               href={`${photosHref}#${photoAnchor(i)}`}
-              aria-label={`Open photo ${i + 1} of ${photos.length}`}
+              aria-label={t("open", {
+                index: i + 1,
+                total: photos.length,
+              })}
               className="group block size-full"
             >
               <ResponsiveImage
                 variants={photo.variants}
-                alt={`${alt}, photo ${i + 1} of ${photos.length}`}
+                alt={t("alt", {
+                  alt,
+                  index: i + 1,
+                  total: photos.length,
+                })}
                 sizes={
                   i === 0
                     ? "(min-width: 768px) 50vw, 100vw"
@@ -89,7 +98,7 @@ export function VehicleGallery({
       >
         <Link href={photosHref}>
           <LayoutGrid aria-hidden className="size-4" />
-          All photos
+          {t("all")}
         </Link>
       </Button>
     </div>

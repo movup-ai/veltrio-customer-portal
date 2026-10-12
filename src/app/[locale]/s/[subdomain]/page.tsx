@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
+import type { Locale } from "@/i18n/routing";
 import {
   getCompanyProfile,
   listCompanyLocations,
@@ -18,22 +20,24 @@ import { SectionHeading } from "@/shared/ui/molecules/SectionHeading";
 import { SiteHeader } from "@/shared/ui/organisms/SiteHeader";
 
 interface PageProps {
-  params: Promise<{ subdomain: string }>;
+  params: Promise<{ locale: Locale; subdomain: string }>;
 }
 
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
-  const { subdomain } = await params;
+  const { locale, subdomain } = await params;
   const company = await getCompanyProfile(subdomain);
   if (!company) return {};
+  const t = await getTranslations({ locale, namespace: "company" });
   return buildMetadata({
-    title: `${company.name} car rental`,
+    title: t("metaTitle", { name: company.name }),
     description:
       company.brand.headline ??
       company.description ??
-      `Rent a car from ${company.name}. See every vehicle and price.`,
+      t("metaDescription", { name: company.name }),
     path: companyHref(company),
+    locale,
     image: company.brand.bannerUrl ?? company.logoUrl ?? undefined,
     siteName: company.name,
   });
@@ -44,6 +48,7 @@ export default async function CompanyPage({ params }: PageProps) {
   const company = await getCompanyProfile(subdomain);
   if (!company) notFound();
 
+  const t = await getTranslations("company");
   const vehicles = await listCompanyVehicles(subdomain);
   // Optional: the page still works if branches cannot be loaded.
   const locations = (await settle(listCompanyLocations(subdomain))) ?? [];
@@ -87,8 +92,11 @@ export default async function CompanyPage({ params }: PageProps) {
           >
             <SectionHeading
               id="fleet-heading"
-              title="The fleet"
-              description={`${vehicles.length} ${vehicles.length === 1 ? "vehicle" : "vehicles"} available to book from ${company.name}.`}
+              title={t("fleet")}
+              description={t("fleetDescription", {
+                count: vehicles.length,
+                name: company.name,
+              })}
             />
             <ul className="grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {vehicles.map((vehicle, index) => (
@@ -106,7 +114,7 @@ export default async function CompanyPage({ params }: PageProps) {
           <section aria-labelledby="about-heading">
             <SectionHeading
               id="about-heading"
-              title={`About ${company.name}`}
+              title={t("about", { name: company.name })}
             />
             <CompanyAbout company={company} />
           </section>
@@ -115,11 +123,9 @@ export default async function CompanyPage({ params }: PageProps) {
             <section aria-labelledby="locations-heading">
               <SectionHeading
                 id="locations-heading"
-                title="Pick-up locations"
+                title={t("locations")}
                 description={
-                  locations.length > 1
-                    ? "Choose a branch to see it on the map."
-                    : undefined
+                  locations.length > 1 ? t("chooseBranch") : undefined
                 }
               />
               <CompanyLocations locations={locations} />
@@ -127,10 +133,7 @@ export default async function CompanyPage({ params }: PageProps) {
           ) : (
             company.address && (
               <section aria-labelledby="location-heading">
-                <SectionHeading
-                  id="location-heading"
-                  title="Where to find us"
-                />
+                <SectionHeading id="location-heading" title={t("findUs")} />
                 <CompanyMap address={company.address} />
               </section>
             )

@@ -6,6 +6,7 @@ import { routing } from "./routing";
 const NAMESPACES = [
   "common",
   "companies",
+  "company",
   "landing",
   "search",
   "vehicle",

@@ -34,5 +34,68 @@
     "viewDetailsOf": " of the {year} {name} (opens in a new tab)",
     "previousPhoto": "Previous photo",
     "nextPhoto": "Next photo"
+  },
+  "page": {
+    "metaTitle": "{year} {name} rental in {location} · {company}",
+    "metaDescription": "Rent the {year} {name} from {company} in {location}. See photos, specs and available dates.",
+    "metaDescriptionRate": "Rent the {year} {name} from {company} in {location} from {price} a day. See photos, specs and available dates.",
+    "allVehicles": "All vehicles",
+    "offeredBy": "Offered by <link>{company}</link>",
+    "specs": "Specifications",
+    "about": "About this vehicle",
+    "features": "Features",
+    "company": "Rental company",
+    "bookLabel": "Book this vehicle",
+    "pickupAt": "Pick-up at {location}. Your booking goes straight to this company."
+  },
+  "specs": {
+    "transmission": "Transmission",
+    "fuel": "Fuel",
+    "seats": "Seats",
+    "doors": "Doors",
+    "power": "Power",
+    "zeroToSixty": "0–60 mph",
+    "topSpeed": "Top speed",
+    "cylinders": "Cylinders"
+  },
+  "features": {
+    "air_conditioning": "Air conditioning",
+    "gps_navigation": "GPS navigation",
+    "bluetooth_audio": "Bluetooth audio",
+    "usb_charging": "USB charging",
+    "sunroof": "Sunroof",
+    "driver_assist": "Driver assist",
+    "apple_car_play": "Apple CarPlay",
+    "rear_view_camera": "Rear-view camera"
+  },
+  "gallery": {
+    "label": "Photos",
+    "none": "No photos yet",
+    "open": "Open photo {index} of {total}",
+    "alt": "{alt}, photo {index} of {total}",
+    "altNamed": "{alt}, {label}",
+    "altNumbered": "{alt}, photo {index}",
+    "all": "All photos",
+    "groups": "Photo groups",
+    "count": "{count, plural, =1 {1 photo} other {# photos}}",
+    "back": "Back to {name}"
+  },
+  "photosPage": {
+    "metaTitle": "Photos of the {name} · {company}",
+    "metaDescription": "All {count} photos of the {name} offered by {company}."
+  },
+  "booking": {
+    "onRequest": "Price on request",
+    "choosePickup": "Choose a pick-up date.",
+    "chooseReturn": "Now choose a return date.",
+    "includingTaxes": "including taxes",
+    "total": "total",
+    "continue": "Continue to book",
+    "selectDates": "Select dates",
+    "clearDates": "Clear dates",
+    "notCharged": "You won't be charged yet.",
+    "checkAvailability": "Check availability",
+    "days": "{count, plural, =1 {1 day} other {# days}}",
+    "hours": "{count, plural, =1 {1 hour} other {# hours}}"
   }
 }

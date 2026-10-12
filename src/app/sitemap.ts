@@ -9,13 +9,10 @@ import { siteConfig } from "@/shared/config/site";
 import { settle } from "@/shared/lib/settle";
 
 /** The other languages of a page whose text is translated, for search engines. */
-function translations(path: string) {
+function translations(url: string) {
   return {
     languages: Object.fromEntries(
-      routing.locales.map((locale) => [
-        locale,
-        siteConfig.url + localizeHref(path, locale).replace(/\/$/, ""),
-      ]),
+      routing.locales.map((locale) => [locale, localizeHref(url, locale)]),
     ),
   };
 }
@@ -29,29 +26,31 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: siteConfig.url,
       changeFrequency: "daily",
       priority: 1,
-      alternates: translations("/"),
+      alternates: translations(siteConfig.url),
     },
     {
       url: `${siteConfig.url}/how-it-works`,
       changeFrequency: "monthly",
       priority: 0.5,
-      alternates: translations("/how-it-works"),
+      alternates: translations(`${siteConfig.url}/how-it-works`),
     },
     {
       url: `${siteConfig.url}/for-rental-companies`,
       changeFrequency: "monthly",
       priority: 0.5,
-      alternates: translations("/for-rental-companies"),
+      alternates: translations(`${siteConfig.url}/for-rental-companies`),
     },
     ...companies.map((company) => ({
       url: companyHref(company),
       changeFrequency: "daily" as const,
       priority: 0.9,
+      alternates: translations(companyHref(company)),
     })),
     ...vehicles.map((vehicle) => ({
       url: vehicleHref(vehicle),
       changeFrequency: "daily" as const,
       priority: 0.8,
+      alternates: translations(vehicleHref(vehicle)),
     })),
   ];
 }

@@ -69,11 +69,19 @@ export function quoteBooking(
 }
 
 /** "9 days 3 hours": how long a quote's rental lasts, rounding a part hour up. */
-export function rentalLength(quote: Pick<BookingQuote, "hours">) {
+export function rentalLength(
+  quote: Pick<BookingQuote, "hours">,
+  /** Words a count of days and of hours in the reader's language. */
+  words: Record<"days" | "hours", (count: number) => string> = ENGLISH,
+) {
   const total = Math.max(1, Math.ceil(quote.hours - 1e-6));
   const days = Math.floor(total / 24);
   const hours = total % 24;
-  const part = (count: number, unit: string) =>
-    count > 0 ? `${count} ${unit}${count === 1 ? "" : "s"}` : "";
-  return [part(days, "day"), part(hours, "hour")].filter(Boolean).join(" ");
+  return [days > 0 && words.days(days), hours > 0 && words.hours(hours)]
+    .filter(Boolean)
+    .join(" ");
 }
+
+const plural = (unit: string) => (count: number) =>
+  `${count} ${unit}${count === 1 ? "" : "s"}`;
+const ENGLISH = { days: plural("day"), hours: plural("hour") };

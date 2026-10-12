@@ -1,0 +1,21 @@
+{
+  "metaTitle": "Alquiler de autos {name}",
+  "metaDescription": "Alquila un auto con {name}. Consulta todos los vehículos y precios.",
+  "fleet": "La flota",
+  "fleetDescription": "{count, plural, =1 {1 vehículo disponible} other {# vehículos disponibles}} para reservar con {name}.",
+  "about": "Sobre {name}",
+  "noDescription": "{name} todavía no ha añadido una descripción.",
+  "locations": "Lugares de recogida",
+  "chooseBranch": "Elige una sucursal para verla en el mapa.",
+  "findUs": "Dónde encontrarnos",
+  "seeFleet": "Ver la flota",
+  "mainBranch": "Sucursal principal",
+  "days": {
+    "mon_sun": "Todos los días",
+    "mon_fri": "Lun–Vie",
+    "mon_sat": "Lun–Sáb"
+  },
+  "vehiclesHere": "{count, plural, =1 {1 vehículo} other {# vehículos}} aquí",
+  "mapOf": "Mapa de {place}",
+  "noAddress": "{name} todavía no tiene una dirección registrada."
+}

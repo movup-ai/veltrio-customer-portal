@@ -34,5 +34,68 @@
     "viewDetailsOf": " del {name} {year} (se abre en una pestaña nueva)",
     "previousPhoto": "Foto anterior",
     "nextPhoto": "Foto siguiente"
+  },
+  "page": {
+    "metaTitle": "Alquiler de {name} {year} en {location} · {company}",
+    "metaDescription": "Alquila el {name} {year} de {company} en {location}. Consulta fotos, especificaciones y fechas disponibles.",
+    "metaDescriptionRate": "Alquila el {name} {year} de {company} en {location} desde {price} al día. Consulta fotos, especificaciones y fechas disponibles.",
+    "allVehicles": "Todos los vehículos",
+    "offeredBy": "Ofrecido por <link>{company}</link>",
+    "specs": "Especificaciones",
+    "about": "Sobre este vehículo",
+    "features": "Equipamiento",
+    "company": "Empresa de alquiler",
+    "bookLabel": "Reservar este vehículo",
+    "pickupAt": "Recogida en {location}. Tu reserva llega directamente a esta empresa."
+  },
+  "specs": {
+    "transmission": "Transmisión",
+    "fuel": "Combustible",
+    "seats": "Asientos",
+    "doors": "Puertas",
+    "power": "Potencia",
+    "zeroToSixty": "0–60 mph",
+    "topSpeed": "Velocidad máxima",
+    "cylinders": "Cilindros"
+  },
+  "features": {
+    "air_conditioning": "Aire acondicionado",
+    "gps_navigation": "Navegación GPS",
+    "bluetooth_audio": "Audio Bluetooth",
+    "usb_charging": "Carga USB",
+    "sunroof": "Techo solar",
+    "driver_assist": "Asistencia al conductor",
+    "apple_car_play": "Apple CarPlay",
+    "rear_view_camera": "Cámara de reversa"
+  },
+  "gallery": {
+    "label": "Fotos",
+    "none": "Todavía no hay fotos",
+    "open": "Abrir la foto {index} de {total}",
+    "alt": "{alt}, foto {index} de {total}",
+    "altNamed": "{alt}, {label}",
+    "altNumbered": "{alt}, foto {index}",
+    "all": "Todas las fotos",
+    "groups": "Grupos de fotos",
+    "count": "{count, plural, =1 {1 foto} other {# fotos}}",
+    "back": "Volver a {name}"
+  },
+  "photosPage": {
+    "metaTitle": "Fotos del {name} · {company}",
+    "metaDescription": "Las {count} fotos del {name} que ofrece {company}."
+  },
+  "booking": {
+    "onRequest": "Precio a consultar",
+    "choosePickup": "Elige una fecha de recogida.",
+    "chooseReturn": "Ahora elige una fecha de devolución.",
+    "includingTaxes": "impuestos incluidos",
+    "total": "en total",
+    "continue": "Continuar con la reserva",
+    "selectDates": "Selecciona fechas",
+    "clearDates": "Borrar fechas",
+    "notCharged": "Todavía no se te cobrará nada.",
+    "checkAvailability": "Ver disponibilidad",
+    "days": "{count, plural, =1 {1 día} other {# días}}",
+    "hours": "{count, plural, =1 {1 hora} other {# horas}}"
   }
 }

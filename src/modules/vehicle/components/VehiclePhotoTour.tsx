@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { cn } from "@/shared/lib/cn";
 import { ResponsiveImage } from "@/shared/ui/atoms/ResponsiveImage";
 import type { VehiclePhoto } from "../types";
@@ -14,12 +15,13 @@ interface VehiclePhotoTourProps {
  * while its photos scroll past; a thumbnail row at the top jumps between groups.
  */
 export function VehiclePhotoTour({ photos, alt }: VehiclePhotoTourProps) {
-  const groups = groupPhotos(photos);
+  const t = useTranslations("vehicle.gallery");
+  const groups = groupPhotos(photos, t("all"));
 
   return (
     <>
       {groups.length > 1 && (
-        <nav aria-label="Photo groups" className="mb-12">
+        <nav aria-label={t("groups")} className="mb-12">
           <ul className="bleed-gutter scrollbar-none flex gap-4 overflow-x-auto md:mx-0 md:px-0">
             {groups.map((group) => (
               <li key={group.id} className="w-32 shrink-0 md:w-40">
@@ -57,8 +59,7 @@ export function VehiclePhotoTour({ photos, alt }: VehiclePhotoTourProps) {
                 {group.label}
               </h2>
               <p className="mt-1 text-sm text-muted">
-                {group.photos.length}{" "}
-                {group.photos.length === 1 ? "photo" : "photos"}
+                {t("count", { count: group.photos.length })}
               </p>
             </div>
             <ul className="grid grid-cols-2 gap-2">
@@ -76,7 +77,11 @@ export function VehiclePhotoTour({ photos, alt }: VehiclePhotoTourProps) {
                   >
                     <ResponsiveImage
                       variants={photo.variants}
-                      alt={`${alt}, ${photo.label ?? `photo ${index + 1}`}`}
+                      alt={
+                        photo.label
+                          ? t("altNamed", { alt, label: photo.label })
+                          : t("altNumbered", { alt, index: index + 1 })
+                      }
                       sizes={
                         wide
                           ? "(min-width: 768px) 70vw, 100vw"

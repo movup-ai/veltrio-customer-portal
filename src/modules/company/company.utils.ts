@@ -16,12 +16,10 @@ export function companyHref(company: Pick<Company, "subdomain">) {
   return tenantUrl(company.subdomain);
 }
 
-const regionNames = new Intl.DisplayNames("en", { type: "region" });
-
-/** "US" -> "United States". Unknown codes are returned as they are. */
-export function countryName(code: string) {
+/** "US" -> "United States", or "Estados Unidos" in Spanish. Unknown codes are returned as they are. */
+export function countryName(code: string, locale = "en") {
   try {
-    return regionNames.of(code) ?? code;
+    return new Intl.DisplayNames(locale, { type: "region" }).of(code) ?? code;
   } catch {
     return code;
   }
