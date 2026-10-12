@@ -74,5 +74,6 @@
     "noRefund": "No refund",
     "refund": "{percent}% refund",
     "footnote": "Counted back from your pick-up time. To cancel, contact {company}."
-  }
+  },
+  "home": "{name} home"
 }

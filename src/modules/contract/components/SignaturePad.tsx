@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Eraser } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import SignaturePadCore from "signature_pad";
@@ -21,6 +22,7 @@ interface SignaturePadProps {
 
 /** A box to sign in with a finger, a stylus or a mouse. */
 export function SignaturePad({ onChange, label, invalid }: SignaturePadProps) {
+  const t = useTranslations("contract.form");
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const padRef = useRef<SignaturePadCore | null>(null);
   const [empty, setEmpty] = useState(true);
@@ -102,7 +104,7 @@ export function SignaturePad({ onChange, label, invalid }: SignaturePadProps) {
         className="absolute top-1.5 right-1.5 text-carbon disabled:bg-transparent"
       >
         <Eraser aria-hidden className="size-4" />
-        Clear
+        {t("clear")}
       </Button>
     </div>
   );

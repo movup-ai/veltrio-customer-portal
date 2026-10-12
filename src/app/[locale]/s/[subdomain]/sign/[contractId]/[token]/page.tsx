@@ -1,6 +1,8 @@
 import { FileDown } from "lucide-react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
+import type { Locale } from "@/i18n/routing";
 import { getCompanyProfile } from "@/modules/company/company.repository";
 import { CompanyBadge } from "@/modules/company/components/CompanyBadge";
 import { AgreementDocument } from "@/modules/contract/components/AgreementDocument";
@@ -14,19 +16,25 @@ import { StatusNotice } from "@/shared/ui/molecules/StatusNotice";
 import { RenterPanel } from "@/shared/ui/organisms/RenterPanel";
 
 interface PageProps {
-  params: Promise<{ subdomain: string; contractId: string; token: string }>;
+  params: Promise<{
+    locale: Locale;
+    subdomain: string;
+    contractId: string;
+    token: string;
+  }>;
 }
 
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
-  const { subdomain } = await params;
+  const { locale, subdomain } = await params;
   const company = await getCompanyProfile(subdomain);
+  const t = await getTranslations({ locale, namespace: "contract" });
   return {
     title: {
       absolute: company
-        ? `Rental agreement · ${company.name}`
-        : "Rental agreement",
+        ? t("metaTitle", { company: company.name })
+        : t("metaTitlePlain"),
     },
     // The address is the renter's key to the page: keep it out of indexes and Referer headers.
     robots: { index: false, follow: false },
@@ -63,6 +71,8 @@ export default async function SignPage({ params }: PageProps) {
   const link = await params;
   const company = await getCompanyProfile(link.subdomain);
   if (!company) notFound();
+  const t = await getTranslations("contract");
+  const names = { company: company.name };
 
   // Null when the API cannot be reached.
   const result = await getAgreement(link).then(
@@ -74,14 +84,14 @@ export default async function SignPage({ params }: PageProps) {
       <RenterPanel>
         <StatusNotice
           tone="waiting"
-          title="We couldn't load your agreement"
-          body={`Try again in a moment, or contact ${company.name} if it keeps happening.`}
+          title={t("loadFailedTitle")}
+          body={t("loadFailedBody", names)}
           action={
             <Button asChild variant="dark">
               <a
                 href={`/sign/${encodeURIComponent(link.contractId)}/${encodeURIComponent(link.token)}`}
               >
-                Try again
+                {t("tryAgain")}
               </a>
             </Button>
           }
@@ -96,8 +106,8 @@ export default async function SignPage({ params }: PageProps) {
       <RenterPanel>
         <StatusNotice
           tone="warning"
-          title="This link is not valid"
-          body={`Check the link you were sent, or ask ${company.name} for a new one.`}
+          title={t("invalidTitle")}
+          body={t("invalidBody", names)}
         />
       </RenterPanel>
     );
@@ -107,7 +117,7 @@ export default async function SignPage({ params }: PageProps) {
     <CompanyBadge
       name={company.name}
       logoUrl={company.logoUrl}
-      caption={`Booking ${agreement.reference}`}
+      caption={t("caption", { reference: agreement.reference })}
     />
   );
 
@@ -118,14 +128,20 @@ export default async function SignPage({ params }: PageProps) {
         {agreement.status === "replaced" ? (
           <StatusNotice
             tone="warning"
-            title="This agreement was replaced"
-            body={`${company.name} issued a newer agreement for booking ${agreement.reference}. Ask them for the new link.`}
+            title={t("replacedTitle")}
+            body={t("replacedBody", {
+              ...names,
+              reference: agreement.reference,
+            })}
           />
         ) : (
           <StatusNotice
             tone="warning"
-            title="This agreement can no longer be signed"
-            body={`Booking ${agreement.reference} is not waiting for a signature any more. Contact ${company.name} if you think this is a mistake.`}
+            title={t("closedTitle")}
+            body={t("closedBody", {
+              ...names,
+              reference: agreement.reference,
+            })}
           />
         )}
       </RenterPanel>
@@ -134,29 +150,31 @@ export default async function SignPage({ params }: PageProps) {
 
   const pdfHref = agreementPdfUrl(link);
   const signed = agreement.status === "signed";
+  const signer = agreement.signerName ?? agreement.renterName;
+  const signedOn =
+    agreement.signedAt &&
+    new Intl.DateTimeFormat(link.locale, {
+      timeZone: company.timeZone,
+      dateStyle: "long",
+    }).format(new Date(agreement.signedAt));
   return (
-    <RenterPanel
-      wide
-      footnote={
-        signed
-          ? undefined
-          : "Your signature is recorded with the date, time and device."
-      }
-    >
+    <RenterPanel wide footnote={signed ? undefined : t("footnote")}>
       <header className="grid gap-5">
         {badge}
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
-            <h1 className="font-display text-h3">Rental agreement</h1>
+            <h1 className="font-display text-h3">{t("title")}</h1>
             <p className="mt-1 text-sm text-muted">
               {signed
-                ? `Agreement ${agreement.number}`
-                : `Hi ${agreement.renterName.split(/\s+/)[0]}, please read the agreement below and sign at the end.`}
+                ? t("agreementNumber", { number: agreement.number })
+                : t("intro", {
+                    name: agreement.renterName.split(/\s+/)[0] ?? "",
+                  })}
             </p>
           </div>
           <DownloadButton
             href={pdfHref}
-            label={signed ? "Download your copy" : "Download PDF"}
+            label={signed ? t("downloadCopy") : t("downloadPdf")}
           />
         </div>
       </header>
@@ -168,17 +186,14 @@ export default async function SignPage({ params }: PageProps) {
         {signed ? (
           <StatusNotice
             tone="success"
-            title="Agreement signed"
-            body={`Signed by ${agreement.signerName ?? agreement.renterName}${
-              agreement.signedAt
-                ? ` on ${new Intl.DateTimeFormat("en-US", {
-                    timeZone: company.timeZone,
-                    dateStyle: "long",
-                  }).format(new Date(agreement.signedAt))}`
-                : ""
-            }. Keep a copy for your records.`}
+            title={t("signedTitle")}
+            body={
+              signedOn
+                ? t("signedByOn", { name: signer, date: signedOn })
+                : t("signedBy", { name: signer })
+            }
             action={
-              <DownloadButton href={pdfHref} label="Download your copy" lead />
+              <DownloadButton href={pdfHref} label={t("downloadCopy")} lead />
             }
           />
         ) : (

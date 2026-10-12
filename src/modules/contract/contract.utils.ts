@@ -11,17 +11,16 @@ export interface SignatureDraft {
   drawing: string | null;
 }
 
-/** What still stops the form from being sent, as the message for each field. */
+/** What still stops the form from being sent, as the name of the message for each field. */
 export function signatureProblems(draft: SignatureDraft) {
-  const problems: { name?: string; signature?: string; consent?: string } = {};
-  if (!draft.name.trim()) problems.name = "Type your full name.";
-  if (!draft.typed && !draft.drawing) {
-    problems.signature =
-      "Draw your signature, or choose to use your typed name.";
-  }
-  if (!draft.consent) {
-    problems.consent = "Tick the box to confirm you agree before signing.";
-  }
+  const problems: {
+    name?: "nameRequired";
+    signature?: "signatureRequired";
+    consent?: "consentRequired";
+  } = {};
+  if (!draft.name.trim()) problems.name = "nameRequired";
+  if (!draft.typed && !draft.drawing) problems.signature = "signatureRequired";
+  if (!draft.consent) problems.consent = "consentRequired";
   return problems;
 }
 

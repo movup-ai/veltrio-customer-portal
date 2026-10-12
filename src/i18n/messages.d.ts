@@ -2,6 +2,7 @@ import type booking from "../../messages/en/booking.json";
 import type common from "../../messages/en/common.json";
 import type companies from "../../messages/en/companies.json";
 import type company from "../../messages/en/company.json";
+import type contract from "../../messages/en/contract.json";
 import type landing from "../../messages/en/landing.json";
 import type payment from "../../messages/en/payment.json";
 import type search from "../../messages/en/search.json";
@@ -17,6 +18,7 @@ declare module "next-intl" {
       common: typeof common;
       companies: typeof companies;
       company: typeof company;
+      contract: typeof contract;
       landing: typeof landing;
       payment: typeof payment;
       search: typeof search;

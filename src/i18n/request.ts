@@ -8,6 +8,7 @@ const NAMESPACES = [
   "common",
   "companies",
   "company",
+  "contract",
   "landing",
   "payment",
   "search",

@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 import { cn } from "@/shared/lib/cn";
 import type { Agreement } from "../types";
@@ -18,6 +19,7 @@ function Heading({ children }: { children: ReactNode }) {
  * arrives worded by the API, so this page and the PDF it stands for cannot differ.
  */
 export function AgreementDocument({ agreement }: AgreementDocumentProps) {
+  const t = useTranslations("contract.document");
   const signed = agreement.companySignature;
   return (
     <div className="grid gap-8">
@@ -41,7 +43,7 @@ export function AgreementDocument({ agreement }: AgreementDocumentProps) {
       </div>
 
       <section>
-        <Heading>Charges</Heading>
+        <Heading>{t("charges")}</Heading>
         <ul className="mt-2 divide-y divide-border border-y border-border">
           {agreement.charges.map((charge, index) => (
             <li
@@ -76,7 +78,7 @@ export function AgreementDocument({ agreement }: AgreementDocumentProps) {
       </section>
 
       <section>
-        <Heading>Terms and conditions</Heading>
+        <Heading>{t("terms")}</Heading>
         <div className="mt-2 grid max-w-prose gap-2.5 text-sm leading-relaxed">
           {agreement.terms.map((block, index) =>
             block.heading ? (
@@ -95,14 +97,14 @@ export function AgreementDocument({ agreement }: AgreementDocumentProps) {
 
       {signed && (
         <section>
-          <Heading>Signatures</Heading>
+          <Heading>{t("signatures")}</Heading>
           <div className="mt-2 grid gap-1 text-sm">
-            <span className="text-muted">For the company</span>
+            <span className="text-muted">{t("forCompany")}</span>
             {signed.signature ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
                 src={signed.signature}
-                alt={`Signature of ${signed.name}`}
+                alt={t("signatureOf", { name: signed.name })}
                 className="h-18 w-fit rounded-md border border-border bg-white"
               />
             ) : (
@@ -112,12 +114,15 @@ export function AgreementDocument({ agreement }: AgreementDocumentProps) {
               {signed.title ? `${signed.name}, ${signed.title}` : signed.name}
             </span>
             <span className="text-muted">
-              {signed.company} · Signed {signed.signed}
+              {t("signedLine", {
+                company: signed.company,
+                date: signed.signed,
+              })}
             </span>
             {/* Said when it is not the signatory's own act: their signature is applied on issue. */}
             {signed.issuedBy !== signed.name && (
               <span className="text-meta text-muted">
-                Applied when issued by {signed.issuedBy}
+                {t("applied", { name: signed.issuedBy })}
               </span>
             )}
           </div>

@@ -74,5 +74,6 @@
     "noRefund": "Sin reembolso",
     "refund": "Reembolso del {percent}%",
     "footnote": "Se cuenta hacia atrás desde tu hora de recogida. Para cancelar, contacta a {company}."
-  }
+  },
+  "home": "Inicio de {name}"
 }
