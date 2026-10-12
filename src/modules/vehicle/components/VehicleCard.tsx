@@ -1,5 +1,5 @@
 import { Zap } from "lucide-react";
-import Link from "next/link";
+import { Link } from "@/i18n/Link";
 import { Fragment } from "react";
 import { cn } from "@/shared/lib/cn";
 import { formatMoney } from "@/shared/lib/format";

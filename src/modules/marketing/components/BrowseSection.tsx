@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@/i18n/Link";
 import { SectionHeading } from "@/shared/ui/molecules/SectionHeading";
 import type { BrowseItem } from "../landing.utils";
 

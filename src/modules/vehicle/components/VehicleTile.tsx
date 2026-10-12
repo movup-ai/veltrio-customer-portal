@@ -1,3 +1,4 @@
+import { Link } from "@/i18n/Link";
 import { CarFront } from "lucide-react";
 import { formatMoney } from "@/shared/lib/format";
 import { ResponsiveImage } from "@/shared/ui/atoms/ResponsiveImage";
@@ -38,7 +39,7 @@ export function VehicleTile({
           {rate !== null && ` · ${formatMoney(rate)} day`}
         </p>
         {/* The stretched link makes the whole tile clickable with one tab stop. */}
-        <a
+        <Link
           href={href ?? vehicleHref(vehicle)}
           target="_blank"
           rel="noopener"
@@ -49,7 +50,7 @@ export function VehicleTile({
             {" "}
             of the {vehicle.year} {vehicleName(vehicle)} (opens in a new tab)
           </span>
-        </a>
+        </Link>
       </div>
     </article>
   );

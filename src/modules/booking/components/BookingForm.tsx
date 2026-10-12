@@ -1,6 +1,8 @@
 "use client";
 
+import { useLocale } from "next-intl";
 import { useEffect, useRef, useState, type FormEvent } from "react";
+import { localizeHref } from "@/i18n/href";
 import { track } from "@/shared/lib/analytics";
 import { Button } from "@/shared/ui/atoms/Button";
 import { Select } from "@/shared/ui/molecules/Select";
@@ -89,6 +91,7 @@ export function BookingForm({
   companyName,
   companyHref,
 }: BookingFormProps) {
+  const locale = useLocale();
   const { form, submit, errorCount } = useBookingForm(dates.return, uri);
   const [status, setStatus] = useState<Status>({
     step: "form",
@@ -170,10 +173,13 @@ export function BookingForm({
       },
       formPath: window.location.pathname + window.location.search,
       pagePath: result.statusToken
-        ? bookingPagePath({
-            reference: result.reference,
-            token: result.statusToken,
-          })
+        ? localizeHref(
+            bookingPagePath({
+              reference: result.reference,
+              token: result.statusToken,
+            }),
+            locale,
+          )
         : null,
       missing: ["licence", "insurance"],
       uploading: true,

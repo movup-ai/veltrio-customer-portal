@@ -1,7 +1,7 @@
 "use client";
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import Link from "next/link";
+import { Link } from "@/i18n/Link";
 import { useCallback, useRef, useState, type ReactNode } from "react";
 import { cn } from "@/shared/lib/cn";
 import { preferredScrollBehavior } from "@/shared/lib/motion";

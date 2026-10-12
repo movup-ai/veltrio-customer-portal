@@ -1,3 +1,4 @@
+import { Link } from "@/i18n/Link";
 import { ArrowLeft } from "lucide-react";
 import { tenantUrl } from "@/shared/lib/tenant";
 import type { Vehicle } from "../types";
@@ -13,13 +14,13 @@ interface VehicleHeaderProps {
 export function VehicleHeader({ vehicle, backHref }: VehicleHeaderProps) {
   return (
     <header>
-      <a
+      <Link
         href={backHref}
         className="inline-flex items-center gap-2 text-sm font-medium text-muted hover:text-foreground"
       >
         <ArrowLeft aria-hidden className="size-4" />
         All vehicles
-      </a>
+      </Link>
       <h1 className="mt-4 font-display text-h2 md:text-h1">
         {vehicleName(vehicle)}{" "}
         <span className="align-super font-mono text-sm tracking-spec text-muted">
@@ -37,12 +38,12 @@ export function VehicleHeader({ vehicle, backHref }: VehicleHeaderProps) {
         </span>
         <span>
           Offered by{" "}
-          <a
+          <Link
             href={tenantUrl(vehicle.company.subdomain)}
             className="font-semibold underline-offset-4 hover:underline"
           >
             {vehicle.company.name}
-          </a>
+          </Link>
         </span>
       </p>
     </header>

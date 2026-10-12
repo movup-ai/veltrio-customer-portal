@@ -1,6 +1,7 @@
-import Link from "next/link";
+import { Link } from "@/i18n/Link";
 import { siteConfig, siteHref } from "@/shared/config/site";
 import { Logo } from "@/shared/ui/atoms/Logo";
+import { LanguageSwitch } from "@/shared/ui/molecules/LanguageSwitch";
 
 interface FooterLink {
   /** A marketplace path, or a full address such as the portal's or a `mailto:`. */
@@ -58,6 +59,8 @@ export function SiteFooter({ columns, legalLinks = [] }: SiteFooterProps) {
           <p>
             © {new Date().getFullYear()} {siteConfig.name}
           </p>
+          {/* Here too, since a renter's payment or agreement page has no header. */}
+          <LanguageSwitch className="-mx-4" />
           {legalLinks.length > 0 && (
             <ul className="flex flex-wrap gap-x-6 gap-y-2">
               {legalLinks.map((link) => (

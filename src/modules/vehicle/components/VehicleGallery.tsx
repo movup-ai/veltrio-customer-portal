@@ -1,5 +1,5 @@
 import { LayoutGrid } from "lucide-react";
-import Link from "next/link";
+import { Link } from "@/i18n/Link";
 import { cn } from "@/shared/lib/cn";
 import { Button } from "@/shared/ui/atoms/Button";
 import { ResponsiveImage } from "@/shared/ui/atoms/ResponsiveImage";

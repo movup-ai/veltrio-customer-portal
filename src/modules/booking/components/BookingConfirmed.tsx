@@ -1,3 +1,4 @@
+import { Link } from "@/i18n/Link";
 import { CircleCheck } from "lucide-react";
 import { Button } from "@/shared/ui/atoms/Button";
 import type { DocumentKind, PaymentMethod, PaymentTiming } from "../types";
@@ -140,7 +141,7 @@ export function BookingConfirmed({
       </p>
 
       <Button asChild variant="dark" className="mt-8">
-        <a href={companyHref}>More from {companyName}</a>
+        <Link href={companyHref}>More from {companyName}</Link>
       </Button>
     </div>
   );

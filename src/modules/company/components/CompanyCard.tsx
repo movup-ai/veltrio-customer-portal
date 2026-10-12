@@ -1,3 +1,4 @@
+import { Link } from "@/i18n/Link";
 import { cn } from "@/shared/lib/cn";
 import { companyHref, countryName } from "../company.utils";
 import type { Company } from "../types";
@@ -21,12 +22,12 @@ export function CompanyCard({ company, className }: CompanyCardProps) {
         <div className="min-w-0">
           <h3 className="truncate text-ui font-semibold">
             {/* The stretched link makes the whole card clickable with one tab stop. */}
-            <a
+            <Link
               href={companyHref(company)}
               className="after:absolute after:inset-0"
             >
               {company.name}
-            </a>
+            </Link>
           </h3>
           <p className="text-meta text-muted">{countryName(company.country)}</p>
         </div>

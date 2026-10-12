@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@/i18n/Link";
 import { Button } from "@/shared/ui/atoms/Button";
 import { Eyebrow } from "@/shared/ui/atoms/Eyebrow";
 import {

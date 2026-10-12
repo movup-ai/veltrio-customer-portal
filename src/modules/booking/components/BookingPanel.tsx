@@ -1,7 +1,7 @@
 "use client";
 
 import { format } from "date-fns";
-import Link from "next/link";
+import { Link } from "@/i18n/Link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import type { DateRange } from "react-day-picker";
 import { fromIsoDate, toIsoDate } from "@/shared/lib/date";

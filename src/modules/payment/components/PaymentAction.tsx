@@ -1,5 +1,6 @@
 "use client";
 
+import { Link } from "@/i18n/Link";
 import { FileText, ReceiptText } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
@@ -114,18 +115,18 @@ export function PaymentAction({
           <div className="flex flex-wrap justify-center gap-2">
             {receiptHref && (
               <Button asChild variant="outline">
-                <a href={receiptHref}>
+                <Link href={receiptHref}>
                   <ReceiptText aria-hidden className="size-4" />
                   View receipt
-                </a>
+                </Link>
               </Button>
             )}
             {addendumHref && (
               <Button asChild variant="outline">
-                <a href={addendumHref}>
+                <Link href={addendumHref}>
                   <FileText aria-hidden className="size-4" />
                   Download addendum
-                </a>
+                </Link>
               </Button>
             )}
           </div>

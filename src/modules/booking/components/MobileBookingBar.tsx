@@ -1,3 +1,4 @@
+import { Link } from "@/i18n/Link";
 import { formatMoney } from "@/shared/lib/format";
 import { Button } from "@/shared/ui/atoms/Button";
 
@@ -28,7 +29,7 @@ export function MobileBookingBar({
           )}
         </p>
         <Button asChild>
-          <a href={href}>Check availability</a>
+          <Link href={href}>Check availability</Link>
         </Button>
       </div>
     </div>

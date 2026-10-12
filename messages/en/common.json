@@ -1,0 +1,18 @@
+{
+  "skipToContent": "Skip to content",
+  "language": {
+    "label": "Language",
+    "en": "English",
+    "es": "Español"
+  },
+  "nav": {
+    "label": "Primary",
+    "howItWorks": "How it works",
+    "listYourFleet": "List your fleet"
+  },
+  "notFound": {
+    "title": "This road doesn't go anywhere.",
+    "body": "The page you're looking for doesn't exist yet.",
+    "home": "Back to home"
+  }
+}

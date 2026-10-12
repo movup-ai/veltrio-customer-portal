@@ -1,3 +1,4 @@
+import { Link } from "@/i18n/Link";
 import { CompanyLogo } from "./CompanyLogo";
 
 interface RentalCompanyCardProps {
@@ -19,9 +20,9 @@ export function RentalCompanyCard({
       <CompanyLogo name={name} />
       <div className="min-w-0">
         <p className="text-lead font-semibold">
-          <a href={href} className="underline-offset-4 hover:underline">
+          <Link href={href} className="underline-offset-4 hover:underline">
             {name}
-          </a>
+          </Link>
         </p>
         <p className="text-sm text-muted">
           Pick-up at {location}. Your booking goes straight to this company.

@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Link } from "@/i18n/Link";
 import { siteConfig, siteHref } from "@/shared/config/site";
 import { cn } from "@/shared/lib/cn";
 

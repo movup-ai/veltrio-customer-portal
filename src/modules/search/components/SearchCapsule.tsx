@@ -3,7 +3,7 @@
 import { format } from "date-fns";
 import { Building2, Globe, LocateFixed, Search, X } from "lucide-react";
 import dynamic from "next/dynamic";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
 import { useId, useRef, useState, type FormEvent, type ReactNode } from "react";
 import type { DateRange } from "react-day-picker";
 import { siteConfig } from "@/shared/config/site";

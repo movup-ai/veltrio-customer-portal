@@ -1,0 +1,18 @@
+{
+  "skipToContent": "Ir al contenido",
+  "language": {
+    "label": "Idioma",
+    "en": "English",
+    "es": "Español"
+  },
+  "nav": {
+    "label": "Principal",
+    "howItWorks": "Cómo funciona",
+    "listYourFleet": "Publica tu flota"
+  },
+  "notFound": {
+    "title": "Este camino no lleva a ninguna parte.",
+    "body": "La página que buscas todavía no existe.",
+    "home": "Volver al inicio"
+  }
+}
