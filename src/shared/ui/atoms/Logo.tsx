@@ -1,4 +1,5 @@
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/Link";
 import { siteConfig, siteHref } from "@/shared/config/site";
 import { cn } from "@/shared/lib/cn";
 
@@ -9,10 +10,11 @@ interface LogoProps {
 }
 
 export function Logo({ inverse, className }: LogoProps) {
+  const t = useTranslations("common");
   return (
     <Link
       href={siteHref("/")}
-      aria-label={`${siteConfig.name} home`}
+      aria-label={t("home", { name: siteConfig.name })}
       className={cn("inline-flex items-center gap-2.5", className)}
     >
       <svg width="30" height="30" viewBox="0 0 32 32" aria-hidden>

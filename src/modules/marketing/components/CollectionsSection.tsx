@@ -1,5 +1,5 @@
 import { ArrowRight } from "lucide-react";
-import Link from "next/link";
+import { Link } from "@/i18n/Link";
 import type { ReactNode } from "react";
 import {
   ResponsiveImage,

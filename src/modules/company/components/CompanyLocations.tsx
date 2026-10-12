@@ -1,26 +1,22 @@
 "use client";
 
 import { Car, Clock, MapPin } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { formatTime, minutesToTime } from "@/shared/lib/time";
 import { Badge } from "@/shared/ui/atoms/Badge";
 import { mapEmbedSrc } from "../company.utils";
-import type { CompanyLocation, OpeningDays } from "../types";
+import type { CompanyLocation } from "../types";
 
 interface CompanyLocationsProps {
   locations: CompanyLocation[];
 }
 
-const DAYS_LABEL: Record<OpeningDays, string> = {
-  mon_sun: "Every day",
-  mon_fri: "Mon–Fri",
-  mon_sat: "Mon–Sat",
-};
-
-function hours(location: CompanyLocation) {
+/** "Mon–Fri, 9:00 AM – 6:00 PM", given the words for the days. */
+function hours(location: CompanyLocation, days: string) {
   const opens = formatTime(minutesToTime(location.opensAt));
   const closes = formatTime(minutesToTime(location.closesAt));
-  return `${DAYS_LABEL[location.openingDays]}, ${opens} – ${closes}`;
+  return `${days}, ${opens} – ${closes}`;
 }
 
 /** What to point the map at: coordinates when known, otherwise the address. */
@@ -32,6 +28,7 @@ function mapQuery({ latitude, longitude, address }: CompanyLocation) {
 
 /** A company's branches beside a map. Choosing a branch moves the map to it. */
 export function CompanyLocations({ locations }: CompanyLocationsProps) {
+  const t = useTranslations("company");
   const [selectedId, setSelectedId] = useState(locations[0]?.id);
   const selected =
     locations.find((location) => location.id === selectedId) ?? locations[0];
@@ -53,7 +50,7 @@ export function CompanyLocations({ locations }: CompanyLocationsProps) {
               <span className="flex flex-wrap items-center gap-2">
                 <span className="font-semibold">{location.name}</span>
                 {location.isDefault && (
-                  <Badge variant="muted">Main branch</Badge>
+                  <Badge variant="muted">{t("mainBranch")}</Badge>
                 )}
               </span>
               <span className="mt-3 grid gap-1.5 text-sm text-graphite">
@@ -65,12 +62,11 @@ export function CompanyLocations({ locations }: CompanyLocationsProps) {
                 )}
                 <span className="flex gap-2">
                   <Clock aria-hidden className="mt-0.5 size-4 shrink-0" />
-                  {hours(location)}
+                  {hours(location, t(`days.${location.openingDays}`))}
                 </span>
                 <span className="flex gap-2">
                   <Car aria-hidden className="mt-0.5 size-4 shrink-0" />
-                  {location.vehicleCount}{" "}
-                  {location.vehicleCount === 1 ? "vehicle" : "vehicles"} here
+                  {t("vehiclesHere", { count: location.vehicleCount })}
                 </span>
               </span>
             </button>
@@ -81,14 +77,14 @@ export function CompanyLocations({ locations }: CompanyLocationsProps) {
         <iframe
           key={selected.id}
           src={mapEmbedSrc(query)}
-          title={`Map of ${selected.name}`}
+          title={t("mapOf", { place: selected.name })}
           loading="lazy"
           referrerPolicy="no-referrer-when-downgrade"
           className="h-80 w-full rounded-xl border border-border bg-surface-muted lg:h-full lg:min-h-96"
         />
       ) : (
         <p className="grid h-80 place-items-center rounded-xl border border-border bg-surface-muted p-6 text-center text-muted lg:h-full lg:min-h-96">
-          {selected.name} has no address on file yet.
+          {t("noAddress", { name: selected.name })}
         </p>
       )}
     </div>

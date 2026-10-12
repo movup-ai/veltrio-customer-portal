@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { ImageUp, X } from "lucide-react";
 import { useEffect, useId, useState, type DragEvent } from "react";
 import { cn } from "@/shared/lib/cn";
@@ -51,6 +52,7 @@ export function ImageUploadField({
   optional,
   className,
 }: ImageUploadFieldProps) {
+  const t = useTranslations("common.upload");
   const id = useId();
   const hintId = hint ? `${id}-hint` : undefined;
   const errorId = error ? `${id}-error` : undefined;
@@ -118,7 +120,7 @@ export function ImageUploadField({
           <Button
             variant="ghost"
             size="icon-sm"
-            aria-label={`Remove ${value.name}`}
+            aria-label={t("remove", { name: value.name })}
             onClick={() => choose(null)}
             className="hover:bg-sand"
           >
@@ -147,9 +149,9 @@ export function ImageUploadField({
           />
           <span className="text-sm">
             <span className="font-semibold underline underline-offset-4">
-              Choose a photo
-            </span>{" "}
-            or drop it here
+              {t("choose")}
+            </span>
+            {t("orDrop")}
           </span>
         </label>
       )}

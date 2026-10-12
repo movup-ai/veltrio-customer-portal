@@ -1,0 +1,141 @@
+{
+  "payPage": {
+    "metaTitle": "Pagar a {company}",
+    "metaTitlePlain": "Pago",
+    "footnote": "Pago seguro con Stripe. Los datos de la tarjeta van directamente a Stripe.",
+    "loading": "Cargando tu pago",
+    "loadFailedTitle": "No pudimos cargar tu pago",
+    "loadFailedBody": "No podemos mostrar el estado de este pago en este momento. Si ya pagaste, no necesitas pagar de nuevo. Inténtalo de nuevo en un momento, o contacta a {company} si sigue ocurriendo.",
+    "tryAgain": "Intentar de nuevo",
+    "invalidTitle": "Este enlace de pago no es válido",
+    "invalidBody": "Puede que lo haya reemplazado uno más reciente. Pide a {company} un enlace nuevo.",
+    "caption": "Reserva {reference}",
+    "titleExtension": "Extiende tu alquiler",
+    "titleDeposit": "Depósito de garantía",
+    "titlePay": "Paga tu alquiler",
+    "intro": "Hola, {name}: revisa los detalles antes de {action, select, extension {aceptar y pagar} deposit {autorizar la retención} other {pagar}}."
+  },
+  "trip": {
+    "pickup": "Recogida",
+    "where": "Dónde",
+    "return": "Devolución",
+    "newReturn": "Nueva devolución"
+  },
+  "amounts": {
+    "extension": "Extensión",
+    "extensionNote": "Se cobra a tu tarjeta cuando aceptes la nueva hora de devolución",
+    "due": "Importe a pagar",
+    "dueNote": "Se cobra a tu tarjeta ahora",
+    "dueNoteDeposit": "Se cobra a tu tarjeta ahora. No incluye el depósito.",
+    "hold": "Retención del depósito de garantía",
+    "holdNote": "Se retiene en tu tarjeta, no se cobra. Se libera después de la devolución.",
+    "deposit": "Depósito de garantía",
+    "depositLater": "No forma parte de este pago. {company} lo gestiona antes de la recogida."
+  },
+  "action": {
+    "processingTitle": "Procesando el pago",
+    "processingBody": "Tu banco todavía está confirmando el pago. Esta página se actualiza sola.",
+    "viewReceipt": "Ver recibo",
+    "downloadAddendum": "Descargar anexo"
+  },
+  "checkout": {
+    "unavailable": "Los pagos con tarjeta no están disponibles en este momento. Contacta a la empresa de alquiler.",
+    "failed": "El pago no se completó. Revisa tu conexión e inténtalo de nuevo.",
+    "failedShort": "El pago no se completó.",
+    "holdFailed": "La retención del depósito no se completó.",
+    "resumeHoldFailed": "Tu pago se completó, pero el depósito no se pudo retener con el mismo método de pago. Ingresa una tarjeta para la retención.",
+    "resumeEnterCard": "Tu pago se completó. Ingresa una tarjeta para la retención del depósito.",
+    "cancellationLabel": "Política de cancelación:",
+    "depositLabel": "Depósito de garantía:",
+    "confirming": "Confirmando…",
+    "pay": "Pagar {amount}",
+    "payAndHold": "Pagar {amount} y retener {deposit}",
+    "authorise": "Autorizar retención de {deposit}",
+    "consentPay": "Al pagar, autorizas a {company} a retener {deposit} en esta tarjeta. Solo se cobra si tu contrato de alquiler lo exige, y se libera después de la devolución.",
+    "consentHold": "{company} retiene {deposit} en esta tarjeta. Solo se cobra si tu contrato de alquiler lo exige, y se libera después de la devolución."
+  },
+  "outcome": {
+    "paid_and_held": {
+      "title": "Todo listo",
+      "body": "{company} recibió tu pago de {amount} y retiene {deposit} como depósito por la reserva {reference}. Puedes cerrar esta página."
+    },
+    "paid": {
+      "title": "Pago recibido",
+      "body": "{company} recibió tu pago de {amount} por la reserva {reference}. Puedes cerrar esta página."
+    },
+    "paid_deposit_later": {
+      "title": "Pago recibido",
+      "body": "{company} recibió tu pago de {amount} por la reserva {reference}. Te enviarán un enlace aparte para el depósito de garantía de {deposit} antes de la recogida."
+    },
+    "paid_deposit_failed": {
+      "title": "Pago recibido",
+      "body": "{company} recibió tu pago de {amount} por la reserva {reference}. La retención del depósito de garantía de {deposit} no se completó, así que {company} se pondrá en contacto contigo."
+    },
+    "held": {
+      "title": "Depósito retenido",
+      "body": "{company} retiene {deposit} en tu tarjeta por la reserva {reference}. Puedes cerrar esta página."
+    },
+    "extended": {
+      "title": "Tu alquiler está extendido",
+      "body": "{company} recibió tu pago de {amount}, y la reserva {reference} ahora llega hasta la hora de devolución indicada arriba. Puedes cerrar esta página."
+    },
+    "extension_late": {
+      "title": "La extensión no se completó",
+      "body": "Tu pago de {amount} llegó cuando la solicitud ya había vencido y el vehículo ya no estaba disponible. {company} te lo reembolsará y se pondrá en contacto por la reserva {reference}."
+    },
+    "closed": {
+      "title": "Este enlace ya no está activo",
+      "body": "Pide a {company} un nuevo enlace de pago."
+    }
+  },
+  "extension": {
+    "title": "Acepta la nueva hora de devolución",
+    "name": "Nombre completo",
+    "namePlaceholder": "Tal como aparece en tu licencia",
+    "agree": "Acepto devolver el vehículo a más tardar el {when} y pagar {amount} por la extensión. Todos los demás términos de {agreement} siguen vigentes.",
+    "agreementNumbered": "el contrato de alquiler {number}",
+    "agreementMine": "mi contrato de alquiler",
+    "kept": "La nueva hora de devolución se reserva para ti hasta el {when}. Solo entra en vigor cuando hayas pagado.",
+    "failed": "No pudimos registrarlo. Revisa tu conexión e inténtalo de nuevo.",
+    "saving": "Guardando…",
+    "submit": "Aceptar y continuar al pago",
+    "nameRequired": "Escribe tu nombre completo.",
+    "consentRequired": "Marca la casilla para confirmar que aceptas antes de pagar."
+  },
+  "receipt": {
+    "metaTitle": "Recibo · {company}",
+    "metaTitlePlain": "Recibo",
+    "loading": "Cargando tu recibo",
+    "loadFailedTitle": "No pudimos cargar tu recibo",
+    "loadFailedBody": "Inténtalo de nuevo en un momento, o contacta a {company} si sigue ocurriendo.",
+    "tryAgain": "Intentar de nuevo",
+    "invalidTitle": "Este enlace de recibo no es válido",
+    "invalidBody": "Pide a {company} un enlace nuevo.",
+    "unpaidTitle": "Todavía no hay pagos",
+    "unpaidBody": "Todavía no se ha pagado nada por esta reserva. Tu recibo aparecerá aquí cuando {company} reciba un pago.",
+    "caption": "Reserva {reference}",
+    "title": "Recibo",
+    "downloadPdf": "Descargar PDF",
+    "depositCaptured": "Depósito cobrado",
+    "rentalPayment": "Pago del alquiler",
+    "refunded": "{amount} reembolsado",
+    "totalReceived": "Total recibido",
+    "stillDue": "Pendiente de pago"
+  },
+  "terms": {
+    "nonRefundable": "No reembolsable: si cancelas después de pagar, no se reembolsa nada.",
+    "ended": "Los reembolsos terminan {when}, así que no se reembolsa nada si cancelas después de pagar.",
+    "endedDays": "{count, plural, =1 {1 día} other {# días}} antes de la recogida",
+    "endedAtPickup": "en la recogida",
+    "anyTime": "en cualquier momento antes de la recogida",
+    "by": "antes del {deadline}",
+    "deadline": "{date} a las {time}",
+    "fullRefund": "un reembolso total",
+    "partialRefund": "un reembolso del {percent}%",
+    "laterRefund": "el {percent}%",
+    "clause": "{when} y recibe {refund}",
+    "series": "{list}, o {last}",
+    "cancel": "Cancela {series}.",
+    "after": " Después de eso, no se reembolsa nada."
+  }
+}

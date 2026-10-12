@@ -9,13 +9,14 @@ import {
   useMapsLibrary,
 } from "@vis.gl/react-google-maps";
 import { ChevronLeft, ChevronRight, MapPin, X } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { VehicleCard } from "@/modules/vehicle/components/VehicleCard";
 import type { Vehicle } from "@/modules/vehicle/types";
 import { vehicleHref } from "@/modules/vehicle/vehicle.utils";
 import { cn } from "@/shared/lib/cn";
 import { Button } from "@/shared/ui/atoms/Button";
-import { branchLabel, type Branch } from "../branches";
+import { branchLabel, type Branch, type PinWords } from "../branches";
 import type { Point } from "../search-params";
 
 interface SearchMapProps {
@@ -82,6 +83,11 @@ export function SearchMap({
   pointedVehicle,
   onPointBranch,
 }: SearchMapProps) {
+  const t = useTranslations("search.map");
+  const words: PinWords = {
+    cars: (count) => t("cars", { count }),
+    fromPrice: (price, count) => t("fromPrice", { price, count }),
+  };
   // The branch whose card is open, and which of its vehicles the card shows.
   const [opened, setOpened] = useState<{ key: string; index: number }>();
   const [pointedKey, setPointedKey] = useState<string>();
@@ -121,7 +127,7 @@ export function SearchMap({
       >
         <FitBranches branches={branches} origin={origin} />
         {origin && (
-          <AdvancedMarker position={origin} title="Where you searched">
+          <AdvancedMarker position={origin} title={t("origin")}>
             <MapPin
               aria-hidden
               className="size-10 fill-primary text-surface drop-shadow-md"
@@ -140,7 +146,11 @@ export function SearchMap({
             <AdvancedMarker
               key={branch.key}
               position={position(branch)}
-              title={`${count === 1 ? "1 car" : `${count} cars`} at ${branch.name}, ${branch.company}`}
+              title={t("pin", {
+                count,
+                branch: branch.name,
+                company: branch.company,
+              })}
               zIndex={active ? 1 : 0}
               onClick={() => setOpened({ key: branch.key, index: 0 })}
               onMouseEnter={() => point(branch.key)}
@@ -154,7 +164,7 @@ export function SearchMap({
                     : "border-border-strong bg-surface text-foreground",
                 )}
               >
-                {branchLabel(branch, pointedVehicle)}
+                {branchLabel(branch, pointedVehicle, words)}
               </span>
             </AdvancedMarker>
           );
@@ -177,7 +187,7 @@ export function SearchMap({
               <Button
                 variant="light"
                 size="icon-sm"
-                aria-label="Close"
+                aria-label={t("close")}
                 className="absolute top-5 right-5 z-20 shadow-1"
                 onClick={() => setOpened(undefined)}
               >
@@ -188,18 +198,21 @@ export function SearchMap({
                   <Button
                     variant="ghost"
                     size="icon-sm"
-                    aria-label="Previous car"
+                    aria-label={t("previous")}
                     onClick={() => step(-1)}
                   >
                     <ChevronLeft aria-hidden className="size-4" />
                   </Button>
                   <span aria-live="polite">
-                    {here.indexOf(shown) + 1} of {here.length} cars here
+                    {t("position", {
+                      index: here.indexOf(shown) + 1,
+                      total: here.length,
+                    })}
                   </span>
                   <Button
                     variant="ghost"
                     size="icon-sm"
-                    aria-label="Next car"
+                    aria-label={t("next")}
                     onClick={() => step(1)}
                   >
                     <ChevronRight aria-hidden className="size-4" />

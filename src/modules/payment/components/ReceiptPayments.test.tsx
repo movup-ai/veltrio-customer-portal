@@ -1,4 +1,5 @@
-import { cleanup, render, screen, within } from "@testing-library/react";
+import { cleanup, screen, within } from "@testing-library/react";
+import { renderInEnglish } from "@/test/render";
 import { afterEach, describe, expect, it } from "vitest";
 import type { Receipt } from "../types";
 import { ReceiptPayments } from "./ReceiptPayments";
@@ -30,7 +31,7 @@ const receipt: Pick<
 };
 
 const show = (overrides: Partial<typeof receipt> = {}) =>
-  render(
+  renderInEnglish(
     <ReceiptPayments
       receipt={{ ...receipt, ...overrides }}
       timeZone="America/New_York"

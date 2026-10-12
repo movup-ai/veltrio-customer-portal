@@ -29,10 +29,14 @@ export interface PhotoGroup {
 }
 
 /** Groups photos by label in first-seen order. Unlabelled photos share one group. */
-export function groupPhotos(photos: VehiclePhoto[]): PhotoGroup[] {
+export function groupPhotos(
+  photos: VehiclePhoto[],
+  /** What the group of unlabelled photos is called. */
+  unlabelled = "All photos",
+): PhotoGroup[] {
   const groups = new Map<string, PhotoGroup>();
   photos.forEach((photo, index) => {
-    const label = photo.label ?? "All photos";
+    const label = photo.label ?? unlabelled;
     const group = groups.get(label) ?? {
       id: `group-${groups.size + 1}`,
       label,

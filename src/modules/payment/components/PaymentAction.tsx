@@ -1,6 +1,8 @@
 "use client";
 
+import { Link } from "@/i18n/Link";
 import { FileText, ReceiptText } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { Button } from "@/shared/ui/atoms/Button";
@@ -38,6 +40,7 @@ export function PaymentAction({
   addendumHref,
   cancellationTerms,
 }: PaymentActionProps) {
+  const t = useTranslations("payment");
   const router = useRouter();
   const step = paymentStep(link);
   // A hold the bank turned down after the payment went through, shown on the deposit form.
@@ -61,7 +64,7 @@ export function PaymentAction({
   );
 
   if (step.kind === "checkout") {
-    const copy = checkoutCopy(step.mode, link);
+    const copy = checkoutCopy(step.mode, link, t);
     return (
       <PaymentCheckout
         stripeAccountId={step.stripeAccountId}
@@ -98,13 +101,13 @@ export function PaymentAction({
     return (
       <StatusNotice
         tone="waiting"
-        title="Payment processing"
-        body="Your bank is still confirming the payment. This page updates on its own."
+        title={t("action.processingTitle")}
+        body={t("action.processingBody")}
       />
     );
   }
 
-  const copy = outcomeCopy(step.outcome, link);
+  const copy = outcomeCopy(step.outcome, link, t);
   return (
     <StatusNotice
       {...copy}
@@ -114,18 +117,18 @@ export function PaymentAction({
           <div className="flex flex-wrap justify-center gap-2">
             {receiptHref && (
               <Button asChild variant="outline">
-                <a href={receiptHref}>
+                <Link href={receiptHref}>
                   <ReceiptText aria-hidden className="size-4" />
-                  View receipt
-                </a>
+                  {t("action.viewReceipt")}
+                </Link>
               </Button>
             )}
             {addendumHref && (
               <Button asChild variant="outline">
-                <a href={addendumHref}>
+                <Link href={addendumHref}>
                   <FileText aria-hidden className="size-4" />
-                  Download addendum
-                </a>
+                  {t("action.downloadAddendum")}
+                </Link>
               </Button>
             )}
           </div>

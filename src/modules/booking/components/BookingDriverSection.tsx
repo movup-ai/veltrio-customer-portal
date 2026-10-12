@@ -1,30 +1,23 @@
+import { useTranslations } from "next-intl";
 import { DateField } from "@/shared/ui/molecules/DateField";
-import type { ListboxOption } from "@/shared/ui/molecules/Listbox";
 import { Select } from "@/shared/ui/molecules/Select";
 import { TextField } from "@/shared/ui/molecules/TextField";
 import type { BookingFormApi } from "../booking.form";
 import type { Gender } from "../types";
 import { BookingSection } from "./BookingSection";
 
-const GENDERS: ListboxOption<Gender>[] = [
-  { value: "female", label: "Female" },
-  { value: "male", label: "Male" },
-  { value: "non_binary", label: "Non-binary" },
-  { value: "undisclosed", label: "Prefer not to say" },
-];
+const GENDERS: Gender[] = ["female", "male", "non_binary", "undisclosed"];
 
 /** Who is renting: name, contact details, gender, date of birth and address. */
 export function BookingDriverSection({ form }: { form: BookingFormApi }) {
+  const t = useTranslations("booking.driver");
   const { values, errors, set, touch, isValid } = form;
   return (
-    <BookingSection
-      title="Your details"
-      description="The main driver's details, used for the rental agreement."
-    >
+    <BookingSection title={t("title")} description={t("description")}>
       <div data-field="name">
         <TextField
-          label="Full name"
-          hint="As it appears on your driving licence."
+          label={t("name")}
+          hint={t("nameHint")}
           autoComplete="name"
           value={values.name}
           onChange={(event) => set("name", event.target.value)}
@@ -36,7 +29,7 @@ export function BookingDriverSection({ form }: { form: BookingFormApi }) {
       <div className="grid gap-4 sm:grid-cols-2">
         <div data-field="email">
           <TextField
-            label="Email"
+            label={t("email")}
             type="email"
             autoComplete="email"
             inputMode="email"
@@ -49,7 +42,7 @@ export function BookingDriverSection({ form }: { form: BookingFormApi }) {
         </div>
         <div data-field="phone">
           <TextField
-            label="Phone"
+            label={t("phone")}
             type="tel"
             autoComplete="tel"
             inputMode="tel"
@@ -64,8 +57,11 @@ export function BookingDriverSection({ form }: { form: BookingFormApi }) {
       <div className="grid gap-4 sm:grid-cols-2">
         <div data-field="gender">
           <Select
-            label="Gender"
-            options={GENDERS}
+            label={t("gender")}
+            options={GENDERS.map((gender) => ({
+              value: gender,
+              label: t(`genders.${gender}`),
+            }))}
             value={values.gender}
             onChange={(gender) => set("gender", gender)}
             onBlur={() => touch("gender")}
@@ -74,7 +70,7 @@ export function BookingDriverSection({ form }: { form: BookingFormApi }) {
         </div>
         <div data-field="dateOfBirth">
           <DateField
-            legend="Date of birth"
+            legend={t("birth")}
             birthday
             value={values.dateOfBirth}
             onChange={(date) => set("dateOfBirth", date)}
@@ -85,7 +81,7 @@ export function BookingDriverSection({ form }: { form: BookingFormApi }) {
       </div>
       <div data-field="address">
         <TextField
-          label="Home address"
+          label={t("address")}
           autoComplete="street-address"
           value={values.address}
           onChange={(event) => set("address", event.target.value)}

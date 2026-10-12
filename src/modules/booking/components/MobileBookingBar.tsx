@@ -1,3 +1,5 @@
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/Link";
 import { formatMoney } from "@/shared/lib/format";
 import { Button } from "@/shared/ui/atoms/Button";
 
@@ -12,23 +14,26 @@ export function MobileBookingBar({
   dailyRateCents,
   href,
 }: MobileBookingBarProps) {
+  const t = useTranslations("vehicle");
   return (
     <div className="sticky bottom-0 z-30 border-t border-border bg-surface lg:hidden">
       <div className="container-page flex items-center gap-4 py-3">
         <p className="min-w-0 flex-1">
           {dailyRateCents === null ? (
-            <span className="font-semibold">Price on request</span>
+            <span className="font-semibold">{t("booking.onRequest")}</span>
           ) : (
             <>
-              <span className="text-lead font-bold">
-                {formatMoney(dailyRateCents)}
-              </span>{" "}
-              day
+              {t.rich("card.rate", {
+                price: formatMoney(dailyRateCents),
+                b: (chunks) => (
+                  <span className="text-lead font-bold">{chunks}</span>
+                ),
+              })}
             </>
           )}
         </p>
         <Button asChild>
-          <a href={href}>Check availability</a>
+          <Link href={href}>{t("booking.checkAvailability")}</Link>
         </Button>
       </div>
     </div>

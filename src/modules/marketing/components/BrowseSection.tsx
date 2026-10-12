@@ -1,4 +1,5 @@
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/Link";
 import { SectionHeading } from "@/shared/ui/molecules/SectionHeading";
 import type { BrowseItem } from "../landing.utils";
 
@@ -17,6 +18,7 @@ export function BrowseSection({
   description,
   items,
 }: BrowseSectionProps) {
+  const t = useTranslations("common");
   const headingId = `${id}-heading`;
   return (
     <section id={id} aria-labelledby={headingId} className="scroll-mt-24">
@@ -37,7 +39,7 @@ export function BrowseSection({
               <span>
                 <span className="block text-ui font-semibold">{label}</span>
                 <span className="mt-0.5 block text-sm text-muted">
-                  {count === 1 ? "1 car" : `${count} cars`}
+                  {t("carCount", { count })}
                 </span>
               </span>
             </Link>

@@ -1,10 +1,10 @@
 "use client";
 
-import { format } from "date-fns";
-import Link from "next/link";
+import { useLocale, useTranslations } from "next-intl";
+import { Link } from "@/i18n/Link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import type { DateRange } from "react-day-picker";
-import { fromIsoDate, toIsoDate } from "@/shared/lib/date";
+import { formatDay, fromIsoDate, toIsoDate } from "@/shared/lib/date";
 import { formatMoney } from "@/shared/lib/format";
 import { DEFAULT_TIME, formatTime, parseTime } from "@/shared/lib/time";
 import { todayIn } from "@/shared/lib/time-zone";
@@ -45,6 +45,8 @@ export function BookingPanel({
   booked,
   through,
 }: BookingPanelProps) {
+  const t = useTranslations("vehicle");
+  const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -100,13 +102,15 @@ export function BookingPanel({
     <div className="rounded-xl border border-border bg-surface p-6 shadow-2">
       <p className="flex items-baseline gap-1.5">
         {dailyRateCents === null ? (
-          <span className="text-h4 font-bold">Price on request</span>
+          <span className="text-h4 font-bold">{t("booking.onRequest")}</span>
         ) : (
           <>
-            <span className="text-h3 font-bold">
-              {formatMoney(dailyRateCents)}
-            </span>{" "}
-            day
+            {t.rich("card.rate", {
+              price: formatMoney(dailyRateCents),
+              b: (chunks) => (
+                <span className="text-h3 font-bold">{chunks}</span>
+              ),
+            })}
           </>
         )}
       </p>
@@ -128,23 +132,30 @@ export function BookingPanel({
         {from && to ? (
           <>
             <span className="font-semibold">
-              {format(from, "MMM d")}, {formatTime(times.pickup)} –{" "}
-              {format(to, "MMM d")}, {formatTime(times.return)}
+              {formatDay(toIsoDate(from), locale)}, {formatTime(times.pickup)} –{" "}
+              {formatDay(toIsoDate(to), locale)}, {formatTime(times.return)}
             </span>
             {quote && (
               <span className="text-muted">
                 {" "}
-                · {rentalLength(quote)} ·{" "}
+                ·{" "}
+                {rentalLength(quote, {
+                  days: (count) => t("booking.days", { count }),
+                  hours: (count) => t("booking.hours", { count }),
+                })}{" "}
+                ·{" "}
                 <span className="font-semibold text-foreground">
                   {formatMoney(quote.totalCents)}
                 </span>{" "}
-                {quote.taxRatePct > 0 ? "including taxes" : "total"}
+                {quote.taxRatePct > 0
+                  ? t("booking.includingTaxes")
+                  : t("booking.total")}
               </span>
             )}
           </>
         ) : (
           <span className="text-muted">
-            {from ? "Now choose a return date." : "Choose a pick-up date."}
+            {from ? t("booking.chooseReturn") : t("booking.choosePickup")}
           </span>
         )}
       </p>
@@ -159,12 +170,12 @@ export function BookingPanel({
               returnTime: times.return,
             })}
           >
-            Continue to book
+            {t("booking.continue")}
           </Link>
         </Button>
       ) : (
         <Button size="lg" disabled className="mt-4 w-full">
-          Select dates
+          {t("booking.selectDates")}
         </Button>
       )}
 
@@ -175,11 +186,11 @@ export function BookingPanel({
           className="mt-2 w-full"
           onClick={() => update(undefined, times)}
         >
-          Clear dates
+          {t("booking.clearDates")}
         </Button>
       )}
       <p className="mt-3 text-center text-meta text-muted">
-        You won&apos;t be charged yet.
+        {t("booking.notCharged")}
       </p>
     </div>
   );

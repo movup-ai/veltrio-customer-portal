@@ -1,4 +1,5 @@
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, screen } from "@testing-library/react";
+import { renderInEnglish } from "@/test/render";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { PaymentExtension } from "../types";
 
@@ -24,7 +25,7 @@ const extension: PaymentExtension = {
 };
 
 const renderForm = () =>
-  render(
+  renderInEnglish(
     <ExtensionConsent
       address={{ subdomain: "thewheeldeal", token: "tok" }}
       extension={extension}

@@ -1,6 +1,8 @@
+import { useTranslations } from "next-intl";
 import {
   policyLines,
   type CancellationPolicy as Policy,
+  type PolicyWords,
 } from "@/shared/lib/cancellation-policy";
 import { cn } from "@/shared/lib/cn";
 
@@ -17,17 +19,27 @@ export function CancellationPolicy({
   companyName,
   className,
 }: CancellationPolicyProps) {
+  const t = useTranslations("common.policy");
+  const words: PolicyWords = {
+    anyTime: t("anyTime"),
+    atLeast: (count) => t("atLeast", { count }),
+    lessThan: (count) => t("lessThan", { count }),
+    exactly: (count) => t("exactly", { count }),
+    between: (from, to) => t("between", { from, to }),
+    noRefund: t("noRefund"),
+    refund: (percent) => t("refund", { percent }),
+  };
   return (
     <section
-      aria-label="Cancellation policy"
+      aria-label={t("title")}
       className={cn(
         "rounded-xl border border-border bg-surface p-5 text-sm",
         className,
       )}
     >
-      <h2 className="type-label text-muted">Cancellation policy</h2>
+      <h2 className="type-label text-muted">{t("title")}</h2>
       <dl className="mt-3 grid gap-2">
-        {policyLines(policy).map((line) => (
+        {policyLines(policy, words).map((line) => (
           <div
             key={line.notice}
             className="flex items-baseline justify-between gap-4"
@@ -46,7 +58,7 @@ export function CancellationPolicy({
         ))}
       </dl>
       <p className="mt-3 text-meta text-pretty text-muted">
-        Counted back from your pick-up time. To cancel, contact {companyName}.
+        {t("footnote", { company: companyName })}
       </p>
     </section>
   );

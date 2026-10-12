@@ -1,0 +1,79 @@
+{
+  "skipToContent": "Skip to content",
+  "site": {
+    "title": "Veltrio — Rent from independent car rental companies",
+    "description": "Discover, compare and book rental cars from independent rental companies. Upfront prices, clear terms, one simple booking."
+  },
+  "language": {
+    "label": "Language",
+    "en": "English",
+    "es": "Español"
+  },
+  "nav": {
+    "label": "Primary",
+    "howItWorks": "How it works",
+    "listYourFleet": "List your fleet"
+  },
+  "notFound": {
+    "title": "This road doesn't go anywhere.",
+    "body": "The page you're looking for doesn't exist yet.",
+    "home": "Back to home"
+  },
+  "carCount": "{count, plural, =1 {1 car} other {# cars}}",
+  "scrollRow": {
+    "seeAll": "See all",
+    "back": "Scroll back",
+    "forward": "Scroll forward"
+  },
+  "footer": {
+    "tagline": "The marketplace for independent rental companies and the people who love to drive.",
+    "explore": {
+      "title": "Explore",
+      "vehicles": "Browse vehicles",
+      "cities": "Browse by city",
+      "companies": "Rental companies"
+    },
+    "forCompanies": {
+      "title": "For rental companies",
+      "list": "List your fleet",
+      "pricing": "Pricing",
+      "signIn": "Company sign in"
+    },
+    "veltrio": {
+      "title": "Veltrio",
+      "howItWorks": "How it works",
+      "faq": "FAQ"
+    },
+    "contact": "Contact"
+  },
+  "vehicleCount": "{count, plural, =1 {vehicle} other {vehicles}}",
+  "calendar": {
+    "pickup": "Pick-up",
+    "return": "Return",
+    "timeOf": "{label} time"
+  },
+  "optional": " (optional)",
+  "select": "Select",
+  "dateField": {
+    "month": "Month",
+    "day": "Day",
+    "year": "Year"
+  },
+  "upload": {
+    "choose": "Choose a photo",
+    "orDrop": " or drop it here",
+    "remove": "Remove {name}"
+  },
+  "policy": {
+    "title": "Cancellation policy",
+    "anyTime": "Any time before pick-up",
+    "atLeast": "At least {count, plural, =1 {1 day} other {# days}} before pick-up",
+    "lessThan": "Less than {count, plural, =1 {1 day} other {# days}} before pick-up",
+    "exactly": "{count, plural, =1 {1 day} other {# days}} before pick-up",
+    "between": "{from} to {to} days before pick-up",
+    "noRefund": "No refund",
+    "refund": "{percent}% refund",
+    "footnote": "Counted back from your pick-up time. To cancel, contact {company}."
+  },
+  "home": "{name} home"
+}

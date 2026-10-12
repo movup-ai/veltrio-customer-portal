@@ -1,0 +1,172 @@
+{
+  "imageAlt": "White Chevrolet Camaro in a dimly lit garage",
+  "metaTitle": "For rental companies",
+  "metaDescription": "List your rental fleet on Veltrio with 0% commission. One flat subscription covers fleet software, online bookings and payments paid straight to your Stripe account.",
+  "hero": {
+    "title": "Run your rental business. <em>Keep every dollar.</em>",
+    "description": "One subscription covers the software that runs your fleet and your listing on the marketplace. We take 0% of every booking.",
+    "startTrial": "Start free trial",
+    "seePricing": "See pricing"
+  },
+  "marketplace": {
+    "eyebrow": "The marketplace",
+    "title": "0% commission. <em>On every booking.</em>",
+    "benefits": {
+      "find": {
+        "title": "Renters find you",
+        "description": "Your vehicles appear when renters search by city and dates, with no extra data entry."
+      },
+      "page": {
+        "title": "Your own branded page",
+        "description": "A page for your fleet at yourcompany.{domain}, under your name and your terms."
+      },
+      "approve": {
+        "title": "You approve every booking",
+        "description": "Each request waits for your answer. Nothing is charged until you confirm it."
+      },
+      "paid": {
+        "title": "Paid straight to you",
+        "description": "Connect your Stripe account and every payment is paid out to it. We never hold your money."
+      }
+    }
+  },
+  "comparison": {
+    "eyebrow": "The difference",
+    "title": "A marketplace that <em>does not take a cut.</em>",
+    "others": {
+      "title": "Typical marketplaces",
+      "commission": "Take a commission on every booking",
+      "fee": "Add a service fee on top of your price",
+      "payout": "Collect the payment, then pay you out later",
+      "software": "Leave you to buy fleet software separately"
+    },
+    "ours": {
+      "title": "Veltrio",
+      "commission": "0% commission, on one flat subscription",
+      "fee": "No renter fees: renters pay the price you set",
+      "payout": "Payments go straight to your Stripe account",
+      "software": "Fleet software included in every plan"
+    }
+  },
+  "software": {
+    "eyebrow": "The software",
+    "title": "Everything to run your fleet, <em>in one place.</em>",
+    "features": {
+      "fleet": {
+        "title": "Fleet",
+        "description": "Every vehicle with its photos, specs and features in one place."
+      },
+      "bookings": {
+        "title": "Bookings and calendar",
+        "description": "Accept requests and see which car is out, and when, at a glance."
+      },
+      "pricing": {
+        "title": "Pricing",
+        "description": "Hourly, daily, weekly and monthly rates, deposits and long-rental discounts."
+      },
+      "customers": {
+        "title": "Customers",
+        "description": "Renter details, driving licence and insurance documents, checked before you confirm."
+      },
+      "agreements": {
+        "title": "Rental agreements",
+        "description": "Send the agreement and have it signed online before pick-up."
+      },
+      "payments": {
+        "title": "Payments",
+        "description": "Send a secure payment link, take cash at pick-up, and issue receipts."
+      },
+      "branches": {
+        "title": "Branches",
+        "description": "Run several locations, each with its own address and opening hours."
+      },
+      "dashboard": {
+        "title": "Dashboard",
+        "description": "Your bookings and fleet at a glance."
+      }
+    }
+  },
+  "start": {
+    "eyebrow": "Getting started",
+    "title": "From sign-up to your first booking, <em>in four steps.</em>",
+    "steps": {
+      "account": {
+        "title": "Create your account",
+        "description": "Sign up as a rental company and start your 7-day free trial."
+      },
+      "vehicles": {
+        "title": "Add your vehicles",
+        "description": "Upload photos, set your rates, deposit and rental terms."
+      },
+      "stripe": {
+        "title": "Connect Stripe",
+        "description": "Link your Stripe account so renters' payments are paid out to you."
+      },
+      "live": {
+        "title": "Go live",
+        "description": "Your fleet is listed on the marketplace and booking requests start arriving."
+      }
+    }
+  },
+  "pricing": {
+    "eyebrow": "Pricing",
+    "title": "One flat price. <em>No commission.</em>",
+    "mostPopular": "Most popular",
+    "onPlan": " on the {name} plan",
+    "perMonth": "per month",
+    "custom": "Custom",
+    "startTrial": "Start free trial",
+    "talkToSales": "Talk to sales",
+    "note": "Every plan starts with a 7-day free trial and includes the full software, online payments through Stripe and 0% commission on bookings.",
+    "features": {
+      "vehiclesUpTo": "Up to {count} vehicles",
+      "vehiclesMoreThan": "More than {count} vehicles",
+      "branches": "{count, plural, =1 {1 branch} other {Up to # branches}}",
+      "unlimitedBranches": "Unlimited branches",
+      "listing": "Marketplace listing",
+      "onboarding": "Guided onboarding with our team"
+    },
+    "plans": {
+      "starter": "For new and small fleets.",
+      "growth": "For growing rental companies.",
+      "pro": "For established, multi-branch fleets.",
+      "enterprise": "For large fleets with needs of their own."
+    }
+  },
+  "faq": {
+    "eyebrow": "Questions",
+    "title": "Good to know <em>before you list.</em>",
+    "items": {
+      "cost": {
+        "question": "What does Veltrio cost?",
+        "answer": "A flat monthly subscription based on the size of your fleet. There is no commission and no charge per booking."
+      },
+      "share": {
+        "question": "Does Veltrio take a share of my bookings?",
+        "answer": "No. Renters pay the price you set, and all of it is yours. Our only income is your subscription."
+      },
+      "paid": {
+        "question": "How do I get paid?",
+        "answer": "You connect your own Stripe account, and renters' online payments are paid out to it. Stripe charges its standard processing fee. You can also take cash at pick-up."
+      },
+      "who": {
+        "question": "Who can list on Veltrio?",
+        "answer": "Rental companies only. Veltrio is for businesses that rent out vehicles; private owners cannot list a personal car."
+      },
+      "decline": {
+        "question": "Can I decline a booking request?",
+        "answer": "Yes. Every request waits for your confirmation, and the renter is not charged until you accept it."
+      },
+      "trial": {
+        "question": "Is there a free trial?",
+        "answer": "Yes. Every plan starts with a 7-day free trial, so you can add your fleet and take bookings before you pay."
+      }
+    }
+  },
+  "signUp": {
+    "eyebrow": "Ready to list?",
+    "title": "Put your fleet in front of renters today.",
+    "description": "Start your 7-day free trial, add your vehicles and keep 100% of every booking.",
+    "cta": "Start free trial"
+  }
+}

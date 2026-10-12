@@ -1,0 +1,173 @@
+{
+  "bookPage": {
+    "metaTitle": "Book the {name} · {company}",
+    "summaryLabel": "Your rental",
+    "changeDates": "Change dates"
+  },
+  "form": {
+    "title": "Request to book",
+    "intro": "Tell {company} who is driving and how you would like to pay. They review your request before anything is charged.",
+    "returnTitle": "Return location",
+    "returnDescription": "You pick the car up at {location}. Bring it back there, or to another {company} branch.",
+    "returnTo": "Return to",
+    "notesTitle": "Anything else?",
+    "notesLabel": "Note for the company",
+    "notesHint": "Flight number, a child seat, a late pick-up, or anything they should know.",
+    "needAttention": "{count, plural, =1 {One field above needs your attention.} other {# fields above need your attention.}}",
+    "sending": "Sending request…",
+    "submit": "Request to book",
+    "notCharged": "You won't be charged yet."
+  },
+  "failures": {
+    "unavailable": "This vehicle is no longer available for those dates. Change your dates and try again.",
+    "pickup_in_past": "That pick-up time has already passed. Change your dates and try again.",
+    "location_unavailable": "The company is not handing over vehicles at this branch right now. Contact them to arrange a pick-up.",
+    "rejected": "The company's system did not accept these details. Check them and try again.",
+    "failed": "The request could not be sent. Check your connection and try again."
+  },
+  "driver": {
+    "title": "Your details",
+    "description": "The main driver's details, used for the rental agreement.",
+    "name": "Full name",
+    "nameHint": "As it appears on your driving licence.",
+    "email": "Email",
+    "phone": "Phone",
+    "gender": "Gender",
+    "genders": {
+      "female": "Female",
+      "male": "Male",
+      "non_binary": "Non-binary",
+      "undisclosed": "Prefer not to say"
+    },
+    "birth": "Date of birth",
+    "address": "Home address"
+  },
+  "documents": {
+    "title": "Licence and insurance",
+    "description": "Clear photos let the company check your documents before you arrive. JPG, PNG, WebP or HEIC, up to 10 MB each.",
+    "licenceNumber": "Licence number",
+    "licenceExpiry": "Licence expiry date",
+    "licencePhoto": "Driving licence photo",
+    "licencePhotoHint": "The front of the card.",
+    "insurancePhoto": "Insurance card photo",
+    "insurancePhotoHint": "Your current auto policy."
+  },
+  "payment": {
+    "title": "Payment preference",
+    "description": "You are not charged when you send this request.",
+    "legend": "How would you like to pay?",
+    "timingLegend": "When should the deposit be secured?",
+    "theRental": "the rental",
+    "depositOf": "{amount} deposit",
+    "securityDeposit": "security deposit",
+    "online": {
+      "title": "Pay online",
+      "description": "{company} emails you a secure payment link once they accept your request."
+    },
+    "cash": {
+      "title": "Pay in cash",
+      "description": "Pay {rental} when you collect the car. {company} will tell you how the deposit is taken."
+    },
+    "rentalFirst": {
+      "title": "Rental now, deposit at pick-up",
+      "description": "Pay {rental} online. The {deposit} is secured on your card when you collect the car."
+    },
+    "allAtOnce": {
+      "title": "Rental and deposit together",
+      "description": "Pay {rental} and secure the {deposit} in one online payment. Nothing left to do at pick-up."
+    }
+  },
+  "errors": {
+    "nameRequired": "Enter your full name.",
+    "nameTooLong": "Use 80 characters or fewer.",
+    "nameDigits": "A name cannot contain numbers.",
+    "emailRequired": "Enter your email address.",
+    "emailInvalid": "Enter an email address like name@example.com.",
+    "phoneRequired": "Enter your phone number.",
+    "phoneCharacters": "Use only digits, spaces and + ( ) - in a phone number.",
+    "phoneLength": "Enter a phone number with 7 to 15 digits.",
+    "genderRequired": "Select an option.",
+    "birthRequired": "Enter your date of birth.",
+    "birthInvalid": "Enter a real date, like 04 27 1990.",
+    "birthFuture": "Your date of birth must be in the past.",
+    "birthTooYoung": "You must be at least {minAge} to rent.",
+    "birthYear": "Check the year of your date of birth.",
+    "addressRequired": "Enter your home address.",
+    "addressShort": "Enter your full home address.",
+    "addressTooLong": "Use 160 characters or fewer.",
+    "licenceRequired": "Enter your licence number.",
+    "licenceCharacters": "Use only letters, numbers, spaces and hyphens.",
+    "licenceLength": "Enter a licence number of 3 to 30 characters.",
+    "expiryRequired": "Enter your licence expiry date.",
+    "expiryInvalid": "Enter a real date, like 08 15 2029.",
+    "expiryBeforeReturn": "Your licence must be valid until you return the car.",
+    "licencePhotoRequired": "Add a photo of your driving licence.",
+    "insurancePhotoRequired": "Add a photo of your insurance card.",
+    "photoType": "Upload a JPG, PNG, WebP or HEIC photo.",
+    "photoSize": "Upload a photo of 10 MB or less.",
+    "paymentMethodRequired": "Choose how you would like to pay.",
+    "paymentTimingRequired": "Choose when to pay the deposit.",
+    "notesTooLong": "Use {maxNotes} characters or fewer."
+  },
+  "summary": {
+    "pickup": "Pick-up",
+    "return": "Return",
+    "pickupLocation": "Pick-up location",
+    "returnLocation": "Return location",
+    "when": "{date} at {time}",
+    "line": "{label}: {price} × {count}",
+    "cappedHours": "A day is billed as {hours} hours.",
+    "discount": "Discount ({percent}% off)",
+    "taxes": "Taxes ({percent}%)",
+    "total": "Total",
+    "deposit": "A refundable security deposit of {amount} is released when the car comes back.",
+    "noRate": "{company} has not set a rate for this vehicle and will confirm the price with you."
+  },
+  "confirmed": {
+    "title": "Request sent",
+    "body": "{company} has your booking request. Your reference is <ref>{reference}</ref>.",
+    "uploading": "Sending your documents… Keep this page open until they are through.",
+    "uploadFailed": {
+      "licence": "Your driving licence photo did not upload.",
+      "insurance": "Your insurance card photo did not upload.",
+      "both": "Your driving licence photo and insurance card photo did not upload."
+    },
+    "notArrived": {
+      "licence": "Your driving licence photo has not arrived.",
+      "insurance": "Your insurance card photo has not arrived.",
+      "both": "Your driving licence photo and insurance card photo have not arrived."
+    },
+    "retryOrBring": "Your request is with {company} either way. Try again now, or bring the {count, plural, =1 {document} other {documents}} to pick-up.",
+    "bring": "Your request is with {company} either way. Bring the {count, plural, =1 {document} other {documents}} to pick-up.",
+    "tryAgain": "Try again",
+    "nextTitle": "What happens next",
+    "steps": {
+      "review": "{company} checks the dates, your details and your documents.",
+      "cashConfirm": "They confirm the booking by email to {email}.",
+      "cashPay": "You pay in cash when you collect the car.",
+      "onlineLink": "They email a secure payment link to {email}.",
+      "allAtOnce": "You pay the rental and secure the deposit together, and the booking is confirmed.",
+      "rentalFirst": "You pay the rental and the booking is confirmed. The deposit is secured at pick-up."
+    },
+    "notCharged": "Nothing has been charged. Your dates are held while the company reviews the request.",
+    "more": "More from {company}"
+  },
+  "statusPage": {
+    "metaTitle": "Booking {reference} · {company}",
+    "metaTitlePlain": "Booking {reference}",
+    "caption": "Booking {reference}",
+    "loading": "Loading your booking",
+    "loadFailedTitle": "We couldn't load your booking",
+    "loadFailedBody": "Try again in a moment, or contact {company} if it keeps happening.",
+    "tryAgain": "Try again",
+    "invalidTitle": "This booking link isn't valid",
+    "invalidBody": "Check the link, or contact {company} with your booking reference.",
+    "confirmedTitle": "Your booking is confirmed",
+    "confirmedBody": "{company} accepted request {reference}. Check your email for what comes next.",
+    "cancelledTitle": "This booking was cancelled",
+    "cancelledBody": "Request {reference} is no longer active. Contact {company} if you did not expect this.",
+    "otherBody": "This rental is under way or finished. Contact {company} with any question.",
+    "quotedTotal": "Quoted total",
+    "deposit": "Refundable deposit"
+  }
+}

@@ -1,9 +1,11 @@
+import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { loadBookingDraft, saveBookingDraft } from "./booking.draft";
 import {
   EMPTY_BOOKING_FORM,
+  MIN_RENTER_AGE,
+  NOTES_MAX_LENGTH,
   validateBooking,
-  type BookingErrors,
   type BookingField,
   type BookingFormValues,
 } from "./booking.validation";
@@ -11,8 +13,8 @@ import {
 /** What each section of the booking form needs to read and update the form. */
 export interface BookingFormApi {
   values: BookingFormValues;
-  /** Messages for fields the renter has already been through. */
-  errors: BookingErrors;
+  /** Messages, in the reader's language, for fields the renter has already been through. */
+  errors: Partial<Record<BookingField, string>>;
   /** True once a field has been visited, filled in and found valid. */
   isValid: (field: BookingField) => boolean;
   set: <F extends BookingField>(field: F, value: BookingFormValues[F]) => void;
@@ -25,6 +27,7 @@ export interface BookingFormApi {
  * field's message appears once the renter has left that field or tried to send.
  */
 export function useBookingForm(returnDate: string, uri: string) {
+  const t = useTranslations("booking.errors");
   const [values, setValues] = useState(EMPTY_BOOKING_FORM);
 
   // After mount, so the first render matches the server's empty form.
@@ -44,9 +47,14 @@ export function useBookingForm(returnDate: string, uri: string) {
 
   const allErrors = validateBooking(values, returnDate);
   const shown = (field: BookingField) => submitted || touched.has(field);
-  const errors = Object.fromEntries(
-    Object.entries(allErrors).filter(([field]) => shown(field as BookingField)),
-  ) as BookingErrors;
+  const errors: BookingFormApi["errors"] = Object.fromEntries(
+    Object.entries(allErrors)
+      .filter(([field]) => shown(field as BookingField))
+      .map(([field, code]) => [
+        field,
+        t(code, { minAge: MIN_RENTER_AGE, maxNotes: NOTES_MAX_LENGTH }),
+      ]),
+  );
 
   const touch = (field: BookingField) =>
     setTouched((current) =>

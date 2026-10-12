@@ -1,0 +1,79 @@
+{
+  "skipToContent": "Ir al contenido",
+  "site": {
+    "title": "Veltrio — Alquila con empresas de alquiler de autos independientes",
+    "description": "Descubre, compara y reserva autos de alquiler de empresas independientes. Precios claros desde el inicio, condiciones a la vista y una reserva sencilla."
+  },
+  "language": {
+    "label": "Idioma",
+    "en": "English",
+    "es": "Español"
+  },
+  "nav": {
+    "label": "Principal",
+    "howItWorks": "Cómo funciona",
+    "listYourFleet": "Publica tu flota"
+  },
+  "notFound": {
+    "title": "Este camino no lleva a ninguna parte.",
+    "body": "La página que buscas todavía no existe.",
+    "home": "Volver al inicio"
+  },
+  "carCount": "{count, plural, =1 {1 auto} other {# autos}}",
+  "scrollRow": {
+    "seeAll": "Ver todos",
+    "back": "Desplazar hacia atrás",
+    "forward": "Desplazar hacia adelante"
+  },
+  "footer": {
+    "tagline": "El mercado de las empresas de alquiler independientes y de quienes disfrutan conducir.",
+    "explore": {
+      "title": "Explorar",
+      "vehicles": "Ver vehículos",
+      "cities": "Buscar por ciudad",
+      "companies": "Empresas de alquiler"
+    },
+    "forCompanies": {
+      "title": "Para empresas de alquiler",
+      "list": "Publica tu flota",
+      "pricing": "Precios",
+      "signIn": "Acceso para empresas"
+    },
+    "veltrio": {
+      "title": "Veltrio",
+      "howItWorks": "Cómo funciona",
+      "faq": "Preguntas frecuentes"
+    },
+    "contact": "Contacto"
+  },
+  "vehicleCount": "{count, plural, =1 {vehículo} other {vehículos}}",
+  "calendar": {
+    "pickup": "Recogida",
+    "return": "Devolución",
+    "timeOf": "Hora de {label}"
+  },
+  "optional": " (opcional)",
+  "select": "Seleccionar",
+  "dateField": {
+    "month": "Mes",
+    "day": "Día",
+    "year": "Año"
+  },
+  "upload": {
+    "choose": "Elige una foto",
+    "orDrop": " o suéltala aquí",
+    "remove": "Quitar {name}"
+  },
+  "policy": {
+    "title": "Política de cancelación",
+    "anyTime": "En cualquier momento antes de la recogida",
+    "atLeast": "Al menos {count, plural, =1 {1 día} other {# días}} antes de la recogida",
+    "lessThan": "Menos de {count, plural, =1 {1 día} other {# días}} antes de la recogida",
+    "exactly": "{count, plural, =1 {1 día} other {# días}} antes de la recogida",
+    "between": "De {from} a {to} días antes de la recogida",
+    "noRefund": "Sin reembolso",
+    "refund": "Reembolso del {percent}%",
+    "footnote": "Se cuenta hacia atrás desde tu hora de recogida. Para cancelar, contacta a {company}."
+  },
+  "home": "Inicio de {name}"
+}

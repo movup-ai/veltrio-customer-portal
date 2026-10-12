@@ -1,5 +1,5 @@
 import { ArrowRight, Heart, Search, ShieldCheck, Zap } from "lucide-react";
-import Link from "next/link";
+import { Link } from "@/i18n/Link";
 import { Badge } from "@/shared/ui/atoms/Badge";
 import { Button } from "@/shared/ui/atoms/Button";
 import { Eyebrow } from "@/shared/ui/atoms/Eyebrow";

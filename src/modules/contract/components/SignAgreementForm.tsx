@@ -1,6 +1,7 @@
 "use client";
 
 import { PenLine } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { Button } from "@/shared/ui/atoms/Button";
@@ -16,11 +17,11 @@ import {
 import type { AgreementLink, SignFailure } from "../types";
 import { SignaturePad } from "./SignaturePad";
 
-/** The API's refusal of a drawing, worded for under the pad. */
-const DRAWING_REFUSED: Partial<Record<SignFailure, string>> = {
-  signature_blank: "Draw your signature, or choose to use your typed name.",
-  signature_invalid: "We couldn't read that signature. Clear it and try again.",
-};
+/** The API's refusal of a drawing, as the message to show under the pad. */
+const DRAWING_REFUSED = {
+  signature_blank: "signatureRequired",
+  signature_invalid: "signatureInvalid",
+} as const satisfies Partial<Record<SignFailure, string>>;
 
 interface SignAgreementFormProps {
   link: AgreementLink;
@@ -33,6 +34,7 @@ export function SignAgreementForm({
   link,
   defaultName,
 }: SignAgreementFormProps) {
+  const t = useTranslations("contract.form");
   const router = useRouter();
   const [draft, setDraft] = useState<SignatureDraft>({
     name: defaultName,
@@ -46,8 +48,12 @@ export function SignAgreementForm({
   const [failure, setFailure] = useState<SignFailure | null>(null);
 
   const problems = attempted ? signatureProblems(draft) : {};
-  const signatureError =
-    problems.signature ?? (failure ? DRAWING_REFUSED[failure] : undefined);
+  const refused =
+    failure && failure in DRAWING_REFUSED
+      ? DRAWING_REFUSED[failure as keyof typeof DRAWING_REFUSED]
+      : undefined;
+  const signatureProblem = problems.signature ?? refused;
+  const signatureError = signatureProblem && t(signatureProblem);
 
   const submit = async (event: FormEvent) => {
     event.preventDefault();
@@ -71,28 +77,28 @@ export function SignAgreementForm({
 
   return (
     <form noValidate onSubmit={submit} className="grid gap-5">
-      <h2 className="text-h4 font-semibold">Sign the agreement</h2>
+      <h2 className="text-h4 font-semibold">{t("title")}</h2>
 
       <TextField
-        label="Full name"
-        placeholder="As it appears on your licence"
+        label={t("name")}
+        placeholder={t("namePlaceholder")}
         autoComplete="name"
         maxLength={SIGNER_NAME_MAX}
         value={draft.name}
         onChange={(event) => setDraft({ ...draft, name: event.target.value })}
-        error={problems.name}
+        error={problems.name && t(problems.name)}
       />
 
       <div>
-        <p className="text-sm font-semibold">Signature</p>
+        <p className="text-sm font-semibold">{t("signature")}</p>
         <div className="mt-1.5">
           {draft.typed ? (
             <p className="rounded-md border border-border bg-surface-muted px-3.5 py-4 text-sm">
-              Your typed name will be recorded as your signature.
+              {t("typedNote")}
             </p>
           ) : (
             <SignaturePad
-              label="Draw your signature in the box"
+              label={t("draw")}
               invalid={Boolean(signatureError)}
               onChange={(drawing) => {
                 setFailure(null);
@@ -113,7 +119,7 @@ export function SignAgreementForm({
             setDraft({ ...draft, typed: event.target.checked, drawing: null });
           }}
         >
-          Use my typed name as my signature instead
+          {t("useTyped")}
         </Checkbox>
       </div>
 
@@ -122,22 +128,20 @@ export function SignAgreementForm({
         onChange={(event) =>
           setDraft({ ...draft, consent: event.target.checked })
         }
-        error={problems.consent}
+        error={problems.consent && t(problems.consent)}
       >
-        I have read this rental agreement and agree to be bound by it, and I
-        agree to sign it electronically.
+        {t("consent")}
       </Checkbox>
 
       {failure === "failed" && (
         <p role="alert" className="text-sm font-medium text-primary-hover">
-          We couldn&apos;t record the signature. Check your connection and try
-          again.
+          {t("failed")}
         </p>
       )}
 
       <Button type="submit" size="lg" disabled={submitting} className="w-full">
         <PenLine aria-hidden className="size-4" />
-        {submitting ? "Signing…" : "Sign agreement"}
+        {submitting ? t("signing") : t("submit")}
       </Button>
     </form>
   );

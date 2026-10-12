@@ -5,6 +5,7 @@ import {
   isoFromParts,
   type DateParts,
 } from "@/shared/lib/date";
+import type messages from "../../../messages/en/booking.json";
 import type {
   BookingCustomer,
   BookingRequest,
@@ -14,7 +15,7 @@ import type {
 } from "./types";
 
 /** The same limits the API enforces on a renter (CustomerWrite) and on documents. */
-const MIN_RENTER_AGE = 18;
+export const MIN_RENTER_AGE = 18;
 const MAX_RENTER_AGE = 110;
 export const NOTES_MAX_LENGTH = 500;
 export const DOCUMENT_TYPES = [
@@ -49,7 +50,9 @@ export interface BookingFormValues {
 }
 
 export type BookingField = keyof BookingFormValues;
-export type BookingErrors = Partial<Record<BookingField, string>>;
+/** What is wrong with a field: the name of its message under `booking.errors`. */
+export type BookingErrorCode = keyof typeof messages.errors;
+export type BookingErrors = Partial<Record<BookingField, BookingErrorCode>>;
 
 export const EMPTY_BOOKING_FORM: BookingFormValues = {
   name: "",
@@ -85,16 +88,16 @@ export const BOOKING_FIELD_ORDER: BookingField[] = [
   "notes",
 ];
 
-function documentError(file: File) {
+function documentError(file: File): BookingErrorCode | undefined {
   if (!DOCUMENT_TYPES.includes(file.type)) {
-    return "Upload a JPG, PNG, WebP or HEIC photo.";
+    return "photoType";
   }
-  if (file.size > DOCUMENT_MAX_BYTES) return "Upload a photo of 10 MB or less.";
+  if (file.size > DOCUMENT_MAX_BYTES) return "photoSize";
   return undefined;
 }
 
 /**
- * Checks the whole booking form and returns a message for each field that
+ * Checks the whole booking form and names what is wrong with each field that
  * needs fixing. `returnDate` is the rental's last day, "YYYY-MM-DD".
  */
 export function validateBooking(
@@ -104,89 +107,87 @@ export function validateBooking(
   const errors: BookingErrors = {};
 
   const name = values.name.trim();
-  if (!name) errors.name = "Enter your full name.";
-  else if (name.length < 2) errors.name = "Enter your full name.";
-  else if (name.length > 80) errors.name = "Use 80 characters or fewer.";
-  else if (/\d/.test(name)) errors.name = "A name cannot contain numbers.";
+  if (!name) errors.name = "nameRequired";
+  else if (name.length < 2) errors.name = "nameRequired";
+  else if (name.length > 80) errors.name = "nameTooLong";
+  else if (/\d/.test(name)) errors.name = "nameDigits";
 
   const email = values.email.trim();
-  if (!email) errors.email = "Enter your email address.";
+  if (!email) errors.email = "emailRequired";
   else if (!EMAIL.test(email) || email.length > 254) {
-    errors.email = "Enter an email address like name@example.com.";
+    errors.email = "emailInvalid";
   }
 
   const phone = values.phone.trim();
   const digits = phone.replace(/\D/g, "").length;
-  if (!phone) errors.phone = "Enter your phone number.";
+  if (!phone) errors.phone = "phoneRequired";
   else if (!PHONE_CHARACTERS.test(phone)) {
-    errors.phone = "Use only digits, spaces and + ( ) - in a phone number.";
+    errors.phone = "phoneCharacters";
   } else if (digits < 7 || digits > 15) {
-    errors.phone = "Enter a phone number with 7 to 15 digits.";
+    errors.phone = "phoneLength";
   }
 
-  if (!values.gender) errors.gender = "Select an option.";
+  if (!values.gender) errors.gender = "genderRequired";
 
   const dateOfBirth = isoFromParts(values.dateOfBirth);
   if (dateOfBirth === "empty") {
-    errors.dateOfBirth = "Enter your date of birth.";
+    errors.dateOfBirth = "birthRequired";
   } else if (dateOfBirth === null) {
-    errors.dateOfBirth = "Enter a real date, like 04 27 1990.";
+    errors.dateOfBirth = "birthInvalid";
   } else {
     const age = differenceInYears(startOfToday(), fromIsoDate(dateOfBirth)!);
-    if (age < 0) errors.dateOfBirth = "Your date of birth must be in the past.";
+    if (age < 0) errors.dateOfBirth = "birthFuture";
     else if (age < MIN_RENTER_AGE) {
-      errors.dateOfBirth = `You must be at least ${MIN_RENTER_AGE} to rent.`;
+      errors.dateOfBirth = "birthTooYoung";
     } else if (age > MAX_RENTER_AGE) {
-      errors.dateOfBirth = "Check the year of your date of birth.";
+      errors.dateOfBirth = "birthYear";
     }
   }
 
   const address = values.address.trim();
-  if (!address) errors.address = "Enter your home address.";
-  else if (address.length < 5) errors.address = "Enter your full home address.";
-  else if (address.length > 160)
-    errors.address = "Use 160 characters or fewer.";
+  if (!address) errors.address = "addressRequired";
+  else if (address.length < 5) errors.address = "addressShort";
+  else if (address.length > 160) errors.address = "addressTooLong";
 
   const licenceNumber = values.licenceNumber.trim();
-  if (!licenceNumber) errors.licenceNumber = "Enter your licence number.";
+  if (!licenceNumber) errors.licenceNumber = "licenceRequired";
   else if (!LICENCE_NUMBER.test(licenceNumber)) {
-    errors.licenceNumber = "Use only letters, numbers, spaces and hyphens.";
+    errors.licenceNumber = "licenceCharacters";
   } else if (licenceNumber.length < 3 || licenceNumber.length > 30) {
-    errors.licenceNumber = "Enter a licence number of 3 to 30 characters.";
+    errors.licenceNumber = "licenceLength";
   }
 
   const licenceExpiry = isoFromParts(values.licenceExpiry);
   if (licenceExpiry === "empty") {
-    errors.licenceExpiry = "Enter your licence expiry date.";
+    errors.licenceExpiry = "expiryRequired";
   } else if (licenceExpiry === null) {
-    errors.licenceExpiry = "Enter a real date, like 08 15 2029.";
+    errors.licenceExpiry = "expiryInvalid";
   } else if (licenceExpiry < returnDate) {
     // ISO dates compare correctly as strings.
-    errors.licenceExpiry =
-      "Your licence must be valid until you return the car.";
+    errors.licenceExpiry = "expiryBeforeReturn";
   }
 
   if (!values.licencePhoto) {
-    errors.licencePhoto = "Add a photo of your driving licence.";
+    errors.licencePhoto = "licencePhotoRequired";
   } else {
     const error = documentError(values.licencePhoto);
     if (error) errors.licencePhoto = error;
   }
   if (!values.insurancePhoto) {
-    errors.insurancePhoto = "Add a photo of your insurance card.";
+    errors.insurancePhoto = "insurancePhotoRequired";
   } else {
     const error = documentError(values.insurancePhoto);
     if (error) errors.insurancePhoto = error;
   }
 
   if (!values.paymentMethod) {
-    errors.paymentMethod = "Choose how you would like to pay.";
+    errors.paymentMethod = "paymentMethodRequired";
   } else if (values.paymentMethod === "online" && !values.paymentTiming) {
-    errors.paymentTiming = "Choose when to pay the deposit.";
+    errors.paymentTiming = "paymentTimingRequired";
   }
 
   if (values.notes.length > NOTES_MAX_LENGTH) {
-    errors.notes = `Use ${NOTES_MAX_LENGTH} characters or fewer.`;
+    errors.notes = "notesTooLong";
   }
 
   return errors;

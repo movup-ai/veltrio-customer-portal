@@ -3,6 +3,7 @@
 
 import { APIProvider, useMapsLibrary } from "@vis.gl/react-google-maps";
 import { MapPin } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import { Skeleton } from "@/shared/ui/atoms/Skeleton";
 import type { SearchPlace } from "../search-params";
@@ -22,6 +23,7 @@ type Prediction = google.maps.places.PlacePrediction;
 const TYPING_PAUSE = 250;
 
 function Suggestions({ input, onPick }: Omit<PlaceSuggestionsProps, "apiKey">) {
+  const t = useTranslations("search.places");
   const places = useMapsLibrary("places");
   // One token from the first keystroke to the pick bills the whole lookup as one session.
   const session =
@@ -79,11 +81,7 @@ function Suggestions({ input, onPick }: Omit<PlaceSuggestionsProps, "apiKey">) {
   // Suggestions for an earlier spelling are not shown against the current one.
   if (result?.input !== input) {
     return (
-      <div
-        role="status"
-        aria-label="Looking up places"
-        className="space-y-2 p-2"
-      >
+      <div role="status" aria-label={t("loading")} className="space-y-2 p-2">
         <Skeleton className="h-11" />
         <Skeleton className="h-11" />
       </div>
@@ -92,17 +90,15 @@ function Suggestions({ input, onPick }: Omit<PlaceSuggestionsProps, "apiKey">) {
   if (!result.found || result.found.length === 0) {
     return (
       <p role="status" className="p-2 text-sm text-muted">
-        {result.found
-          ? "No places match. Try a city, ZIP code or street address."
-          : "Address search is unavailable right now. Choose a city instead."}
+        {result.found ? t("none") : t("unavailable")}
       </p>
     );
   }
   return (
-    <ul aria-label="Places">
+    <ul aria-label={t("label")}>
       {pickFailed && (
         <li role="alert" className="p-2 text-sm font-medium text-primary-hover">
-          That place could not be loaded. Try again, or pick another.
+          {t("pickFailed")}
         </li>
       )}
       {result.found.map((prediction) => (

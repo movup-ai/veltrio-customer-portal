@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { ArrowUpRight, Mail, Phone } from "lucide-react";
 import type { CompanyProfile, CompanySocials } from "../types";
 
@@ -16,6 +17,7 @@ const CONTACT = "flex items-center gap-3 font-semibold hover:text-primary";
 
 /** The company in its own words, with ways to reach and follow it. */
 export function CompanyAbout({ company }: CompanyAboutProps) {
+  const t = useTranslations("company");
   const socials = (
     Object.keys(SOCIAL_LABEL) as (keyof CompanySocials)[]
   ).flatMap((key) => {
@@ -26,8 +28,7 @@ export function CompanyAbout({ company }: CompanyAboutProps) {
   return (
     <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_22rem]">
       <p className="max-w-prose text-lead whitespace-pre-line text-foreground-secondary">
-        {company.description ??
-          `${company.name} has not added a description yet.`}
+        {company.description ?? t("noDescription", { name: company.name })}
       </p>
       <ul className="grid content-start gap-3">
         {company.phone && (

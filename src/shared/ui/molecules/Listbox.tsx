@@ -1,7 +1,12 @@
 "use client";
 
 import { Check } from "lucide-react";
-import { useRef, type ComponentProps, type KeyboardEvent } from "react";
+import {
+  useRef,
+  type ComponentProps,
+  type KeyboardEvent,
+  type ReactNode,
+} from "react";
 import { cn } from "@/shared/lib/cn";
 import { PopoverContent } from "@/shared/ui/molecules/Popover";
 
@@ -10,6 +15,10 @@ export interface ListboxOption<T extends string> {
   label: string;
   /** Quieter text after the label, e.g. a branch's address. */
   detail?: string;
+  /** Drawn before the label, e.g. a flag. */
+  icon?: ReactNode;
+  /** The language the label is written in, when it differs from the page's. */
+  lang?: string;
 }
 
 interface ListboxContentProps<T extends string> extends Pick<
@@ -88,10 +97,12 @@ export function ListboxContent<T extends string>({
             type="button"
             role="option"
             aria-selected={option.value === value}
+            lang={option.lang}
             onClick={() => onSelect(option.value)}
             className="flex h-10 w-full items-center justify-between gap-3 rounded-sm px-3 text-left text-sm text-carbon hover:bg-sand aria-selected:bg-sand aria-selected:font-semibold"
           >
-            <span className="min-w-0 truncate">
+            {option.icon}
+            <span className="min-w-0 flex-1 truncate">
               {option.label}
               {option.detail && (
                 <span className="font-normal text-muted">

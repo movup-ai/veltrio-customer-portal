@@ -1,15 +1,15 @@
 "use client";
 
-import { format } from "date-fns";
 import { Building2, Globe, LocateFixed, Search, X } from "lucide-react";
 import dynamic from "next/dynamic";
-import { useRouter } from "next/navigation";
+import { useLocale, useTranslations } from "next-intl";
 import { useId, useRef, useState, type FormEvent, type ReactNode } from "react";
 import type { DateRange } from "react-day-picker";
+import { useRouter } from "@/i18n/navigation";
 import { siteConfig } from "@/shared/config/site";
 import { track } from "@/shared/lib/analytics";
 import { cn } from "@/shared/lib/cn";
-import { fromIsoDate, toIsoDate } from "@/shared/lib/date";
+import { formatDay, fromIsoDate, toIsoDate } from "@/shared/lib/date";
 import { formatTime, HOURLY_TIMES } from "@/shared/lib/time";
 import { Button } from "@/shared/ui/atoms/Button";
 import { Skeleton } from "@/shared/ui/atoms/Skeleton";
@@ -54,8 +54,6 @@ const PlaceSuggestions = dynamic(
   { ssr: false, loading: () => <Skeleton className="m-2 h-11" /> },
 );
 
-/** The location choice that searches every city. */
-const ANYWHERE = "Anywhere";
 /** Letters typed before places are looked up. */
 const MIN_TYPED = 3;
 
@@ -81,6 +79,9 @@ export function SearchCapsule({
   cities,
   className,
 }: SearchCapsuleProps) {
+  const t = useTranslations("search.bar");
+  const cars = useTranslations("common");
+  const locale = useLocale();
   const router = useRouter();
   const [openField, setOpenField] = useState<Field | null>(null);
   const [where, setWhere] = useState<Where>({
@@ -109,20 +110,20 @@ export function SearchCapsule({
   const places = [
     {
       slug: undefined,
-      label: ANYWHERE,
-      detail: "Browse all cars",
+      label: t("anywhere"),
+      detail: t("browseAll"),
       icon: Globe,
     },
     ...cities.map((each) => ({
       slug: citySlug(each),
       label: cityLabel(each),
-      detail: each.vehicleCount === 1 ? "1 car" : `${each.vehicleCount} cars`,
+      detail: cars("carCount", { count: each.vehicleCount }),
       icon: Building2,
     })),
   ];
   // Empty until a place is chosen: nothing chosen searches everywhere.
   const chosen = where.near
-    ? (where.place ?? "Chosen place")
+    ? (where.place ?? t("yourLocation"))
     : city
       ? cityLabel(city)
       : "";
@@ -155,7 +156,7 @@ export function SearchCapsule({
     place.then(
       (found) => {
         if (mine !== lookups.current) return;
-        if (found) choose({ near: found, place: found.label });
+        if (found) choose({ near: found, place: found.label || undefined });
         else onNone?.();
       },
       () => undefined,
@@ -172,7 +173,8 @@ export function SearchCapsule({
             resolve({
               lat: coords.latitude,
               lng: coords.longitude,
-              label: "your location",
+              // Unnamed, so each language words "your location" itself.
+              label: "",
             }),
           () => resolve(null),
         );
@@ -217,7 +219,7 @@ export function SearchCapsule({
         <PopoverTrigger asChild>
           <SearchPicker
             label={label}
-            placeholder="Add time"
+            placeholder={t("addTime")}
             value={trip[field] && formatTime(trip[field])}
             aria-haspopup="listbox"
           />
@@ -239,7 +241,7 @@ export function SearchCapsule({
   return (
     <form
       role="search"
-      aria-label="Find a rental car"
+      aria-label={t("label")}
       onSubmit={submit}
       className={cn(
         "flex max-w-5xl flex-col gap-2 rounded-xl bg-surface p-1 text-foreground shadow-search md:flex-row md:items-stretch md:gap-0",
@@ -263,7 +265,7 @@ export function SearchCapsule({
             className="relative flex min-w-0 flex-1 rounded-lg bg-background transition-colors hover:bg-surface-muted has-[input:focus]:bg-surface has-[input:focus]:shadow-2 md:bg-transparent"
           >
             <label className="flex min-w-0 flex-1 cursor-text flex-col justify-center py-1.5 pr-10 pl-4">
-              <span className="type-label text-muted">Where</span>
+              <span className="type-label text-muted">{t("where")}</span>
               <input
                 type="text"
                 role="combobox"
@@ -271,7 +273,7 @@ export function SearchCapsule({
                 aria-controls={whereListId}
                 aria-autocomplete="list"
                 autoComplete="off"
-                placeholder="City, address or ZIP code"
+                placeholder={t("wherePlaceholder")}
                 value={typed ?? chosen}
                 onFocus={(event) => {
                   event.target.select();
@@ -302,7 +304,7 @@ export function SearchCapsule({
               <Button
                 variant="ghost"
                 size="icon-sm"
-                aria-label="Clear location"
+                aria-label={t("clear")}
                 className="absolute top-1/2 right-1 -translate-y-1/2 text-muted"
                 onClick={() => {
                   setWhere({});
@@ -342,17 +344,13 @@ export function SearchCapsule({
           }}
         >
           <div className="max-h-80 overflow-y-auto">
-            <ul aria-label="Cities">
+            <ul aria-label={t("cities")}>
               {!text && (
                 <li>
                   <SearchOption
                     icon={LocateFixed}
-                    title="Use my current location"
-                    detail={
-                      locateFailed
-                        ? "Your location could not be read."
-                        : undefined
-                    }
+                    title={t("currentLocation")}
+                    detail={locateFailed ? t("locationFailed") : undefined}
                     onClick={locate}
                   />
                 </li>
@@ -377,14 +375,14 @@ export function SearchCapsule({
                   onPick={(place) => chooseWhenFound(place)}
                 />
                 <p className="px-2 pt-2 text-right text-caption text-muted">
-                  Powered by Google
+                  {t("poweredBy")}
                 </p>
               </>
             )}
             {!lookUp && matching.length === 0 && (
               <p role="status" className="p-2 text-sm text-muted">
-                No city matches.
-                {apiKey && " Keep typing to search addresses."}
+                {t("noCity")}
+                {apiKey && t("keepTyping")}
               </p>
             )}
           </div>
@@ -397,27 +395,27 @@ export function SearchCapsule({
       <Popover {...popoverProps("dates")}>
         <PopoverAnchor asChild>
           <div className="flex flex-col gap-2 md:flex-2 md:flex-row md:gap-0">
-            <Segment label="From">
+            <Segment label={t("from")}>
               <PopoverTrigger asChild>
                 <SearchPicker
-                  label="Pick-up date"
-                  placeholder="Add dates"
-                  value={from && format(from, "MMM d")}
+                  label={t("pickupDate")}
+                  placeholder={t("addDates")}
+                  value={trip.pickup && formatDay(trip.pickup, locale)}
                 />
               </PopoverTrigger>
-              {timePicker("pickup", "Pick-up time")}
+              {timePicker("pickup", t("pickupTime"))}
             </Segment>
             <Divider />
-            <Segment label="Until">
+            <Segment label={t("until")}>
               <SearchPicker
-                label="Return date"
-                placeholder="Add dates"
-                value={to && format(to, "MMM d")}
+                label={t("returnDate")}
+                placeholder={t("addDates")}
+                value={trip.return && formatDay(trip.return, locale)}
                 aria-haspopup="dialog"
                 aria-expanded={openField === "dates"}
                 onClick={() => setOpenField("dates")}
               />
-              {timePicker("return", "Return time")}
+              {timePicker("return", t("returnTime"))}
             </Segment>
           </div>
         </PopoverAnchor>
@@ -430,10 +428,10 @@ export function SearchCapsule({
             actions={
               <>
                 <Button variant="ghost" size="sm" onClick={() => setTrip({})}>
-                  Reset
+                  {t("reset")}
                 </Button>
                 <Button size="sm" onClick={() => setOpenField(null)}>
-                  Save
+                  {t("save")}
                 </Button>
               </>
             }
@@ -446,7 +444,7 @@ export function SearchCapsule({
         className="rounded-lg md:mr-1 md:ml-1.5 md:w-11 md:self-center md:px-0 md:has-[>svg:first-child]:pl-0"
       >
         <Search aria-hidden className="size-5" />
-        <span className="md:sr-only">Search</span>
+        <span className="md:sr-only">{t("search")}</span>
       </Button>
     </form>
   );

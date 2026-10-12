@@ -1,13 +1,15 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "@/i18n/Link";
+import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { siteHref } from "@/shared/config/site";
 import { cn } from "@/shared/lib/cn";
 import { Logo } from "@/shared/ui/atoms/Logo";
+import { LanguageSwitch } from "@/shared/ui/molecules/LanguageSwitch";
 
 const NAV_LINK =
-  "h-10 items-center rounded-full px-4 text-sm font-semibold hover:bg-current/10";
+  "h-10 items-center rounded-full px-2.5 text-sm font-semibold whitespace-nowrap hover:bg-current/10 sm:px-4";
 
 interface SiteHeaderProps {
   /**
@@ -18,6 +20,7 @@ interface SiteHeaderProps {
 }
 
 export function SiteHeader({ variant = "solid" }: SiteHeaderProps) {
+  const t = useTranslations("common.nav");
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -42,19 +45,20 @@ export function SiteHeader({ variant = "solid" }: SiteHeaderProps) {
     >
       <div className="container-page flex h-full items-center gap-6">
         <Logo inverse={transparent} />
-        <nav aria-label="Primary" className="ml-auto flex gap-1">
+        <nav aria-label={t("label")} className="ml-auto flex gap-1">
           <Link
             href={siteHref("/how-it-works")}
             className={cn("hidden md:flex", NAV_LINK)}
           >
-            How it works
+            {t("howItWorks")}
           </Link>
           <Link
             href={siteHref("/for-rental-companies")}
             className={cn("flex", NAV_LINK)}
           >
-            List your fleet
+            {t("listYourFleet")}
           </Link>
+          <LanguageSwitch />
         </nav>
       </div>
     </header>

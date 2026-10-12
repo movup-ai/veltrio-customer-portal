@@ -1,6 +1,7 @@
 "use client";
 
 import { Clock } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { cn } from "@/shared/lib/cn";
 import { formatTime, HOURLY_TIMES } from "@/shared/lib/time";
@@ -26,6 +27,7 @@ export function TimeSelect({
   options = HOURLY_TIMES,
   className,
 }: TimeSelectProps) {
+  const t = useTranslations("common.calendar");
   const [open, setOpen] = useState(false);
 
   return (
@@ -45,7 +47,7 @@ export function TimeSelect({
         </button>
       </PopoverTrigger>
       <ListboxContent
-        label={`${label} time`}
+        label={t("timeOf", { label })}
         options={options.map((option) => ({
           value: option,
           label: formatTime(option),

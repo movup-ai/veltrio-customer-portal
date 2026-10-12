@@ -1,6 +1,8 @@
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/Link";
 import { siteConfig, siteHref } from "@/shared/config/site";
 import { Logo } from "@/shared/ui/atoms/Logo";
+import { LanguageSwitch } from "@/shared/ui/molecules/LanguageSwitch";
 
 interface FooterLink {
   /** A marketplace path, or a full address such as the portal's or a `mailto:`. */
@@ -24,16 +26,14 @@ interface SiteFooterProps {
  * to sign) gets only the bottom line, so nothing leads the renter away from it.
  */
 export function SiteFooter({ columns, legalLinks = [] }: SiteFooterProps) {
+  const t = useTranslations("common.footer");
   return (
     <footer className="mt-20 bg-surface-muted pt-14 pb-8 group-has-[[data-minimal-footer]]/page:mt-0 group-has-[[data-minimal-footer]]/page:pt-8">
       <div className="container-page">
         <div className="grid grid-cols-2 gap-8 group-has-[[data-minimal-footer]]/page:hidden md:grid-cols-[1.4fr_repeat(3,1fr)]">
           <div className="col-span-2 md:col-span-1">
             <Logo />
-            <p className="mt-4 max-w-xs text-meta text-muted">
-              The marketplace for independent rental companies and the people
-              who love to drive.
-            </p>
+            <p className="mt-4 max-w-xs text-meta text-muted">{t("tagline")}</p>
           </div>
           {columns.map((column) => (
             <nav key={column.title} aria-label={column.title}>
@@ -58,6 +58,8 @@ export function SiteFooter({ columns, legalLinks = [] }: SiteFooterProps) {
           <p>
             © {new Date().getFullYear()} {siteConfig.name}
           </p>
+          {/* Here too, since a renter's payment or agreement page has no header. */}
+          <LanguageSwitch className="-mx-4" />
           {legalLinks.length > 0 && (
             <ul className="flex flex-wrap gap-x-6 gap-y-2">
               {legalLinks.map((link) => (

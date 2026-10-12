@@ -1,3 +1,4 @@
+import { useLocale, useTranslations } from "next-intl";
 import { ArrowUpRight, MapPin } from "lucide-react";
 import { Button } from "@/shared/ui/atoms/Button";
 import { countryName } from "../company.utils";
@@ -17,6 +18,8 @@ function displayUrl(url: string) {
 
 /** Full-bleed banner with the company's logo, name, headline and website. Sits under an `overlay` SiteHeader. */
 export function CompanyHero({ company, fleetHref }: CompanyHeroProps) {
+  const t = useTranslations("company");
+  const locale = useLocale();
   const { brand } = company;
   return (
     <section className="relative isolate bg-surface-inverse text-on-inverse">
@@ -48,12 +51,12 @@ export function CompanyHero({ company, fleetHref }: CompanyHeroProps) {
           </p>
         )}
         <Button asChild size="lg" className="mt-7 self-start">
-          <a href={fleetHref}>See the fleet</a>
+          <a href={fleetHref}>{t("seeFleet")}</a>
         </Button>
         <ul className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">
           <li className="flex items-center gap-2">
             <MapPin aria-hidden className="size-4" />
-            {company.address ?? countryName(company.country)}
+            {company.address ?? countryName(company.country, locale)}
           </li>
           {company.website && (
             <li>

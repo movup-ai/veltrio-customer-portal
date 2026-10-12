@@ -1,6 +1,7 @@
 "use client";
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useState, type ReactNode } from "react";
 import { cn } from "@/shared/lib/cn";
 import { ResponsiveImage } from "@/shared/ui/atoms/ResponsiveImage";
@@ -28,6 +29,7 @@ export function VehicleCardGallery({
   priority,
   children,
 }: VehicleCardGalleryProps) {
+  const t = useTranslations("vehicle.card");
   const [index, setIndex] = useState(0);
   // The other photos are only fetched once the renter shows interest in the card.
   const [armed, setArmed] = useState(false);
@@ -70,7 +72,7 @@ export function VehicleCardGallery({
         <>
           <button
             type="button"
-            aria-label="Previous photo"
+            aria-label={t("previousPhoto")}
             onClick={() => step(-1)}
             className={cn(ARROW, "left-2.5")}
           >
@@ -78,7 +80,7 @@ export function VehicleCardGallery({
           </button>
           <button
             type="button"
-            aria-label="Next photo"
+            aria-label={t("nextPhoto")}
             onClick={() => step(1)}
             className={cn(ARROW, "right-2.5")}
           >

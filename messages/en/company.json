@@ -1,0 +1,21 @@
+{
+  "metaTitle": "{name} car rental",
+  "metaDescription": "Rent a car from {name}. See every vehicle and price.",
+  "fleet": "The fleet",
+  "fleetDescription": "{count, plural, =1 {1 vehicle} other {# vehicles}} available to book from {name}.",
+  "about": "About {name}",
+  "noDescription": "{name} has not added a description yet.",
+  "locations": "Pick-up locations",
+  "chooseBranch": "Choose a branch to see it on the map.",
+  "findUs": "Where to find us",
+  "seeFleet": "See the fleet",
+  "mainBranch": "Main branch",
+  "days": {
+    "mon_sun": "Every day",
+    "mon_fri": "Mon–Fri",
+    "mon_sat": "Mon–Sat"
+  },
+  "vehiclesHere": "{count, plural, =1 {1 vehicle} other {# vehicles}} here",
+  "mapOf": "Map of {place}",
+  "noAddress": "{name} has no address on file yet."
+}

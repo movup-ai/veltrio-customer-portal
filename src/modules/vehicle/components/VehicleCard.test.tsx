@@ -1,5 +1,6 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
+import { renderInEnglish } from "@/test/render";
 import type { Vehicle } from "../types";
 import { VehicleCard } from "./VehicleCard";
 
@@ -21,12 +22,12 @@ afterEach(cleanup);
 
 describe("VehicleCard", () => {
   it("opens the vehicle in the same tab by default", () => {
-    render(<VehicleCard vehicle={vehicle} />);
+    renderInEnglish(<VehicleCard vehicle={vehicle} />);
     expect(screen.getByRole("link").getAttribute("target")).toBeNull();
   });
 
   it("opens the vehicle in a new tab when asked, and says so", () => {
-    render(<VehicleCard vehicle={vehicle} newTab />);
+    renderInEnglish(<VehicleCard vehicle={vehicle} newTab />);
     const link = screen.getByRole("link", {
       name: /opens in a new tab/,
     });

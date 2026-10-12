@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import type { Thing, WithContext } from "schema-dts";
+import { localizeHref } from "@/i18n/href";
+import { routing } from "@/i18n/routing";
 import { siteConfig } from "@/shared/config/site";
+
+/** Open Graph's name for each language the site is in. */
+export const OG_LOCALE: Record<string, string> = { en: "en_US", es: "es_US" };
 
 interface PageSeo {
   title: string;
@@ -14,6 +19,11 @@ interface PageSeo {
    * subdomain; this also drops the "| Veltrio" suffix from the title.
    */
   siteName?: string;
+  /**
+   * The language the page is rendered in, once its text is translated: the page then names
+   * itself as the original and lists its other languages. Left out, the English page is.
+   */
+  locale?: string;
 }
 
 /** Per-page metadata with canonical URL and Open Graph. Resolved against `metadataBase` in the root layout. */
@@ -23,17 +33,25 @@ export function buildMetadata({
   path,
   image,
   siteName,
+  locale,
 }: PageSeo): Metadata {
+  const url = locale ? localizeHref(path, locale) : path;
+  const languages = locale && {
+    ...Object.fromEntries(
+      routing.locales.map((each) => [each, localizeHref(path, each)]),
+    ),
+    "x-default": path,
+  };
   return {
     title: siteName ? { absolute: title } : title,
     description,
-    alternates: { canonical: path },
+    alternates: { canonical: url, ...(languages && { languages }) },
     openGraph: {
       title,
       description,
-      url: path,
+      url,
       siteName: siteName ?? siteConfig.name,
-      locale: siteConfig.locale,
+      locale: locale ? OG_LOCALE[locale] : siteConfig.locale,
       type: "website",
       ...(image && { images: [image] }),
     },

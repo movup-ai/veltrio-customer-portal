@@ -1,12 +1,12 @@
 "use client";
 
-import { format } from "date-fns";
+import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { VehicleTile } from "@/modules/vehicle/components/VehicleTile";
 import type { Vehicle } from "@/modules/vehicle/types";
 import { findVehicles } from "@/modules/vehicle/vehicle.actions";
 import { vehicleHref } from "@/modules/vehicle/vehicle.utils";
-import { fromIsoDate, toIsoDate } from "@/shared/lib/date";
+import { formatDay, toIsoDate } from "@/shared/lib/date";
 import { Skeleton } from "@/shared/ui/atoms/Skeleton";
 import { SectionHeading } from "@/shared/ui/molecules/SectionHeading";
 import { cityLabel, findCity, type City } from "../cities";
@@ -16,28 +16,19 @@ import { tripQuery } from "../search-params";
 /** Tiles shown at most; the search itself lists the rest. */
 const MAX_VEHICLES = 6;
 
-const day = (iso: string) => format(fromIsoDate(iso)!, "MMM d");
-
-/** What the last search asked for, in words: "In Miami, FL, free from Oct 9 to Oct 12." */
-function summary(city: City | undefined, pickup?: string, end?: string) {
-  const dates =
-    pickup && end
-      ? pickup === end
-        ? `free on ${day(pickup)}`
-        : `free from ${day(pickup)} to ${day(end)}`
-      : "";
-  const text = [city && `in ${cityLabel(city)}`, dates]
-    .filter(Boolean)
-    .join(", ");
-  return `${text.charAt(0).toUpperCase()}${text.slice(1)}, as you last searched.`;
-}
-
 /**
  * Vehicles matching the city and dates the renter last searched, read from their browser.
  * Renders nothing for a first visit, a search with neither, or one that matches nothing.
  */
 export function RecentSearchVehicles({ cities }: { cities: City[] }) {
-  const [description, setDescription] = useState<string>();
+  const t = useTranslations("search.recent");
+  const locale = useLocale();
+  // What the last search asked for; null once read and found to ask for nothing.
+  const [recent, setRecent] = useState<{
+    city?: City;
+    pickup?: string;
+    end?: string;
+  } | null>();
   // The saved dates and times, for each tile's link to open the vehicle on them.
   const [trip, setTrip] = useState("");
   const [vehicles, setVehicles] = useState<Vehicle[]>();
@@ -48,7 +39,7 @@ export function RecentSearchVehicles({ cities }: { cities: City[] }) {
     const { pickup, return: end } = recent ?? {};
     if (!city && !(pickup && end)) return;
     // eslint-disable-next-line react-hooks/set-state-in-effect -- reading browser storage once
-    setDescription(summary(city, pickup, end));
+    setRecent({ city, pickup, end });
     setTrip(tripQuery(recent ?? {}));
     findVehicles({ pickup, return: end, city: city?.city, state: city?.state })
       .then((found) => setVehicles(found.slice(0, MAX_VEHICLES)))
@@ -56,13 +47,30 @@ export function RecentSearchVehicles({ cities }: { cities: City[] }) {
       .catch(() => setVehicles([]));
   }, [cities]);
 
-  if (!description || vehicles?.length === 0) return null;
+  if (!recent || vehicles?.length === 0) return null;
+  const { city, pickup, end } = recent;
+  const place = city && cityLabel(city);
+  const single = pickup && pickup === end ? formatDay(pickup, locale) : null;
+  const range =
+    pickup && end && pickup !== end
+      ? { from: formatDay(pickup, locale), to: formatDay(end, locale) }
+      : null;
+  // "In Miami, FL, free from Oct 9 to Oct 12, as you last searched."
+  const description = place
+    ? single
+      ? t("cityDay", { city: place, day: single })
+      : range
+        ? t("cityRange", { city: place, ...range })
+        : t("city", { city: place })
+    : single
+      ? t("day", { day: single })
+      : range && t("range", range);
   return (
     <section aria-labelledby="recent-heading" aria-busy={!vehicles}>
       <SectionHeading
         id="recent-heading"
-        title="Inspired by your recent search"
-        description={description}
+        title={t("title")}
+        description={description ?? undefined}
       />
       <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {vehicles

@@ -1,3 +1,5 @@
+import { useLocale, useTranslations } from "next-intl";
+import { Link } from "@/i18n/Link";
 import { cn } from "@/shared/lib/cn";
 import { companyHref, countryName } from "../company.utils";
 import type { Company } from "../types";
@@ -9,6 +11,8 @@ interface CompanyCardProps {
 }
 
 export function CompanyCard({ company, className }: CompanyCardProps) {
+  const t = useTranslations("common");
+  const locale = useLocale();
   return (
     <article
       className={cn(
@@ -21,21 +25,23 @@ export function CompanyCard({ company, className }: CompanyCardProps) {
         <div className="min-w-0">
           <h3 className="truncate text-ui font-semibold">
             {/* The stretched link makes the whole card clickable with one tab stop. */}
-            <a
+            <Link
               href={companyHref(company)}
               className="after:absolute after:inset-0"
             >
               {company.name}
-            </a>
+            </Link>
           </h3>
-          <p className="text-meta text-muted">{countryName(company.country)}</p>
+          <p className="text-meta text-muted">
+            {countryName(company.country, locale)}
+          </p>
         </div>
       </div>
       <p className="mt-5 border-t border-border pt-4 text-meta text-muted">
         <span className="text-ui font-bold text-foreground">
           {company.vehicleCount}
         </span>{" "}
-        {company.vehicleCount === 1 ? "vehicle" : "vehicles"}
+        {t("vehicleCount", { count: company.vehicleCount })}
       </p>
     </article>
   );

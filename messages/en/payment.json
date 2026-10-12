@@ -1,0 +1,141 @@
+{
+  "payPage": {
+    "metaTitle": "Pay {company}",
+    "metaTitlePlain": "Payment",
+    "footnote": "Secure payment by Stripe. Card details go straight to Stripe.",
+    "loading": "Loading your payment",
+    "loadFailedTitle": "We couldn't load your payment",
+    "loadFailedBody": "We can't show where this payment stands right now. If you have already paid, you don't need to pay again. Try again in a moment, or contact {company} if it keeps happening.",
+    "tryAgain": "Try again",
+    "invalidTitle": "This payment link isn't valid",
+    "invalidBody": "It may have been replaced by a newer one. Ask {company} for a new link.",
+    "caption": "Booking {reference}",
+    "titleExtension": "Extend your rental",
+    "titleDeposit": "Security deposit",
+    "titlePay": "Pay for your rental",
+    "intro": "Hi {name}, check the details below before you {action, select, extension {agree and pay} deposit {authorise the hold} other {pay}}."
+  },
+  "trip": {
+    "pickup": "Pick-up",
+    "where": "Where",
+    "return": "Return",
+    "newReturn": "New return"
+  },
+  "amounts": {
+    "extension": "Extension",
+    "extensionNote": "Charged to your card once you agree to the new return time",
+    "due": "Amount due",
+    "dueNote": "Charged to your card now",
+    "dueNoteDeposit": "Charged to your card now. Does not include the deposit.",
+    "hold": "Security deposit hold",
+    "holdNote": "Held on your card, not charged. Released after the return.",
+    "deposit": "Security deposit",
+    "depositLater": "Not part of this payment. {company} arranges it before pick-up."
+  },
+  "action": {
+    "processingTitle": "Payment processing",
+    "processingBody": "Your bank is still confirming the payment. This page updates on its own.",
+    "viewReceipt": "View receipt",
+    "downloadAddendum": "Download addendum"
+  },
+  "checkout": {
+    "unavailable": "Card payments aren't available right now. Please contact the rental company.",
+    "failed": "The payment didn't go through. Check your connection and try again.",
+    "failedShort": "The payment didn't go through.",
+    "holdFailed": "The deposit hold didn't go through.",
+    "resumeHoldFailed": "Your payment went through, but the deposit could not be held on the same payment method. Enter a card for the hold.",
+    "resumeEnterCard": "Your payment went through. Enter a card for the deposit hold.",
+    "cancellationLabel": "Cancellation policy:",
+    "depositLabel": "Security deposit:",
+    "confirming": "Confirming…",
+    "pay": "Pay {amount}",
+    "payAndHold": "Pay {amount} & hold {deposit}",
+    "authorise": "Authorise {deposit} hold",
+    "consentPay": "By paying, you authorise {company} to hold {deposit} on this card. It is only charged if your rental agreement calls for it, and is released after the return.",
+    "consentHold": "{company} holds {deposit} on this card. It is only charged if your rental agreement calls for it, and is released after the return."
+  },
+  "outcome": {
+    "paid_and_held": {
+      "title": "You're all set",
+      "body": "{company} has your payment of {amount} and holds {deposit} as your deposit for booking {reference}. You can close this page."
+    },
+    "paid": {
+      "title": "Payment received",
+      "body": "{company} has your payment of {amount} for booking {reference}. You can close this page."
+    },
+    "paid_deposit_later": {
+      "title": "Payment received",
+      "body": "{company} has your payment of {amount} for booking {reference}. They will send a separate link for the {deposit} security deposit before pick-up."
+    },
+    "paid_deposit_failed": {
+      "title": "Payment received",
+      "body": "{company} has your payment of {amount} for booking {reference}. The {deposit} security deposit hold did not go through, so {company} will be in touch about it."
+    },
+    "held": {
+      "title": "Deposit on hold",
+      "body": "{company} holds {deposit} on your card for booking {reference}. You can close this page."
+    },
+    "extended": {
+      "title": "Your rental is extended",
+      "body": "{company} has your payment of {amount}, and booking {reference} now runs to the return time shown above. You can close this page."
+    },
+    "extension_late": {
+      "title": "The extension didn't go through",
+      "body": "Your payment of {amount} arrived after the request had run out, and the vehicle was no longer free. {company} will refund it and be in touch about booking {reference}."
+    },
+    "closed": {
+      "title": "This link is no longer active",
+      "body": "Ask {company} for a new payment link."
+    }
+  },
+  "extension": {
+    "title": "Agree to the new return time",
+    "name": "Full name",
+    "namePlaceholder": "As it appears on your licence",
+    "agree": "I agree to return the vehicle by {when} and to pay {amount} for the extension. Every other term of {agreement} continues to apply.",
+    "agreementNumbered": "rental agreement {number}",
+    "agreementMine": "my rental agreement",
+    "kept": "The new return time is kept for you until {when}. It only takes effect once you have paid.",
+    "failed": "We couldn't record that. Check your connection and try again.",
+    "saving": "Saving…",
+    "submit": "Agree and continue to payment",
+    "nameRequired": "Type your full name.",
+    "consentRequired": "Tick the box to confirm you agree before paying."
+  },
+  "receipt": {
+    "metaTitle": "Receipt · {company}",
+    "metaTitlePlain": "Receipt",
+    "loading": "Loading your receipt",
+    "loadFailedTitle": "We couldn't load your receipt",
+    "loadFailedBody": "Try again in a moment, or contact {company} if it keeps happening.",
+    "tryAgain": "Try again",
+    "invalidTitle": "This receipt link isn't valid",
+    "invalidBody": "Ask {company} for a new link.",
+    "unpaidTitle": "No payment yet",
+    "unpaidBody": "Nothing has been paid on this booking so far. Your receipt appears here once {company} takes a payment.",
+    "caption": "Booking {reference}",
+    "title": "Receipt",
+    "downloadPdf": "Download PDF",
+    "depositCaptured": "Deposit captured",
+    "rentalPayment": "Rental payment",
+    "refunded": "{amount} refunded",
+    "totalReceived": "Total received",
+    "stillDue": "Still due"
+  },
+  "terms": {
+    "nonRefundable": "Non-refundable: if you cancel after paying, nothing is refunded.",
+    "ended": "Refunds end {when}, so nothing is refunded if you cancel after paying.",
+    "endedDays": "{count, plural, =1 {1 day} other {# days}} before pick-up",
+    "endedAtPickup": "at pick-up",
+    "anyTime": "any time before pick-up",
+    "by": "by {deadline}",
+    "deadline": "{date} at {time}",
+    "fullRefund": "a full refund",
+    "partialRefund": "a {percent}% refund",
+    "laterRefund": "{percent}%",
+    "clause": "{when} for {refund}",
+    "series": "{list}, or {last}",
+    "cancel": "Cancel {series}.",
+    "after": " After that, nothing is refunded."
+  }
+}
