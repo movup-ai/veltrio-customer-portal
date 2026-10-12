@@ -68,7 +68,7 @@ export default async function BookVehiclePage({
   if (!dates) redirect(localizeHref(vehicleHref(vehicle), locale));
 
   const t = await getTranslations("booking.bookPage");
-  const quote = quoteBooking(vehicle, dates, vehicle.company.timeZone);
+  const quote = quoteBooking(vehicle, dates);
   // Without the branch list the car simply comes back where it was picked up.
   const branches = (await settle(listCompanyLocations(subdomain))) ?? [];
   const addresses = Object.fromEntries(

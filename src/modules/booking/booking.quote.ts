@@ -1,5 +1,4 @@
 import type { VehicleDetail } from "@/modules/vehicle/types";
-import { zonedInstant } from "@/shared/lib/time-zone";
 import { percentOfCents, planRental } from "./rate-plan";
 import type { BookingDates, BookingQuote } from "./types";
 
@@ -10,13 +9,13 @@ export type VehiclePricing = Pick<
 >;
 
 /**
- * Hours that pass between pick-up and return on the company's clock, as the API
- * counts them: a clock change in between adds or drops an hour. 0 when the
- * window is empty or backwards.
+ * Hours between pick-up and return as the company's clock shows them, which is
+ * what the API bills: 10:00 to 10:00 is whole days even when the clocks change
+ * in between. 0 when the window is empty or backwards.
  */
-function durationHours(dates: BookingDates, timeZone: string) {
-  const start = zonedInstant(dates.pickup, dates.pickupTime, timeZone);
-  const end = zonedInstant(dates.return, dates.returnTime, timeZone);
+function durationHours(dates: BookingDates) {
+  const start = Date.parse(`${dates.pickup}T${dates.pickupTime}:00Z`);
+  const end = Date.parse(`${dates.return}T${dates.returnTime}:00Z`);
   return end > start ? (end - start) / 3_600_000 : 0;
 }
 
@@ -29,11 +28,10 @@ function durationHours(dates: BookingDates, timeZone: string) {
  */
 export function quoteBooking(
   vehicle: VehiclePricing,
+  /** Times on the company's clock. */
   dates: BookingDates,
-  /** The company's IANA zone; `dates` are times on its clock. */
-  timeZone: string,
 ): BookingQuote | null {
-  const hours = durationHours(dates, timeZone);
+  const hours = durationHours(dates);
   if (hours === 0) return null;
   const plan = planRental(
     vehicle.rateOptions,

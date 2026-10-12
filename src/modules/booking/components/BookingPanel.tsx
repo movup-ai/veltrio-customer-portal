@@ -7,7 +7,7 @@ import type { DateRange } from "react-day-picker";
 import { formatDay, fromIsoDate, toIsoDate } from "@/shared/lib/date";
 import { formatMoney } from "@/shared/lib/format";
 import { DEFAULT_TIME, formatTime, parseTime } from "@/shared/lib/time";
-import { todayIn } from "@/shared/lib/time-zone";
+import { todayIn, zoneNameAt } from "@/shared/lib/time-zone";
 import { Button } from "@/shared/ui/atoms/Button";
 import {
   DateRangePicker,
@@ -86,17 +86,18 @@ export function BookingPanel({
 
   const quote =
     from && to
-      ? quoteBooking(
-          pricing,
-          {
-            pickup: toIsoDate(from),
-            pickupTime: times.pickup,
-            return: toIsoDate(to),
-            returnTime: times.return,
-          },
-          timeZone,
-        )
+      ? quoteBooking(pricing, {
+          pickup: toIsoDate(from),
+          pickupTime: times.pickup,
+          return: toIsoDate(to),
+          returnTime: times.return,
+        })
       : null;
+
+  // Named on the company's clock; the two differ only across a clock change.
+  const pickupZone =
+    from && zoneNameAt(toIsoDate(from), times.pickup, timeZone);
+  const returnZone = to && zoneNameAt(toIsoDate(to), times.return, timeZone);
 
   return (
     <div className="rounded-xl border border-border bg-surface p-6 shadow-2">
@@ -132,8 +133,10 @@ export function BookingPanel({
         {from && to ? (
           <>
             <span className="font-semibold">
-              {formatDay(toIsoDate(from), locale)}, {formatTime(times.pickup)} –{" "}
-              {formatDay(toIsoDate(to), locale)}, {formatTime(times.return)}
+              {formatDay(toIsoDate(from), locale)}, {formatTime(times.pickup)}
+              {pickupZone !== returnZone && ` ${pickupZone}`} –{" "}
+              {formatDay(toIsoDate(to), locale)}, {formatTime(times.return)}{" "}
+              {returnZone}
             </span>
             {quote && (
               <span className="text-muted">

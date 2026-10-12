@@ -59,13 +59,28 @@ export function zonedInstant(date: string, time: string, zone: string) {
   return real.length > 0 ? Math.min(...real) : candidates[0]!;
 }
 
-/** A moment as the clock in `zone` shows it, e.g. "Thu, Oct 22, 9:30 AM". */
+/** The zone's short name at a moment, e.g. "EDT" in summer and "EST" in winter. */
+export function zoneName(zone: string, instant: string | number | Date) {
+  // English in every language: Spanish names US zones "GMT-4", which no renter uses.
+  return (
+    new Intl.DateTimeFormat("en-US", { timeZone: zone, timeZoneName: "short" })
+      .formatToParts(new Date(instant))
+      .find((part) => part.type === "timeZoneName")?.value ?? ""
+  );
+}
+
+/** The zone's short name when its clock shows `date` and `time`. */
+export function zoneNameAt(date: string, time: string, zone: string) {
+  return zoneName(zone, zonedInstant(date, time, zone));
+}
+
+/** A moment as the clock in `zone` shows it, named, e.g. "Thu, Oct 22, 9:30 AM EDT". */
 export function formatInZone(
   instant: string | number | Date,
   zone: string,
   locale = "en-US",
 ) {
-  return new Intl.DateTimeFormat(locale, {
+  const shown = new Intl.DateTimeFormat(locale, {
     timeZone: zone,
     // Twelve-hour in every language, as times read everywhere else on the site.
     hour12: true,
@@ -75,6 +90,7 @@ export function formatInZone(
     hour: "numeric",
     minute: "2-digit",
   }).format(new Date(instant));
+  return `${shown} ${zoneName(zone, instant)}`;
 }
 
 /** Today's date in `zone`, "YYYY-MM-DD". */

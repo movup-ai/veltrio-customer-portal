@@ -83,13 +83,13 @@ describe("cancellationTerms", () => {
 
   it("dates every deadline against this booking's own pick-up", () => {
     expect(terms([tier(14, 100), tier(7, 50)], "2026-10-01T12:00:00Z")).toBe(
-      "Cancel by Oct 8 at 9:30 AM for a full refund, or by Oct 15 at 9:30 AM for 50%. After that, nothing is refunded.",
+      "Cancel by Oct 8 at 9:30 AM EDT for a full refund, or by Oct 15 at 9:30 AM EDT for 50%. After that, nothing is refunded.",
     );
   });
 
   it("leaves out a deadline that has already passed", () => {
     expect(terms([tier(14, 100), tier(7, 50)], "2026-10-10T12:00:00Z")).toBe(
-      "Cancel by Oct 15 at 9:30 AM for a 50% refund. After that, nothing is refunded.",
+      "Cancel by Oct 15 at 9:30 AM EDT for a 50% refund. After that, nothing is refunded.",
     );
   });
 
@@ -97,13 +97,13 @@ describe("cancellationTerms", () => {
     expect(
       terms([tier(14, 100), tier(7, 50), tier(1, 10)], "2026-10-01T12:00:00Z"),
     ).toBe(
-      "Cancel by Oct 8 at 9:30 AM for a full refund, by Oct 15 at 9:30 AM for 50%, or by Oct 21 at 9:30 AM for 10%. After that, nothing is refunded.",
+      "Cancel by Oct 8 at 9:30 AM EDT for a full refund, by Oct 15 at 9:30 AM EDT for 50%, or by Oct 21 at 9:30 AM EDT for 10%. After that, nothing is refunded.",
     );
   });
 
   it("promises nothing after a tier that runs up to the pick-up itself", () => {
     expect(terms([tier(2, 100), tier(0, 25)], "2026-10-01T12:00:00Z")).toBe(
-      "Cancel by Oct 20 at 9:30 AM for a full refund, or any time before pick-up for 25%.",
+      "Cancel by Oct 20 at 9:30 AM EDT for a full refund, or any time before pick-up for 25%.",
     );
     expect(terms([tier(0, 100)], "2026-10-01T12:00:00Z")).toBe(
       "Cancel any time before pick-up for a full refund.",

@@ -33,11 +33,7 @@ function vehicle(overrides: Partial<VehiclePricing> = {}): VehiclePricing {
   };
 }
 
-const quote = (
-  pricing: VehiclePricing,
-  window: Parameters<typeof quoteBooking>[1],
-  timeZone = "UTC",
-) => quoteBooking(pricing, window, timeZone);
+const quote = quoteBooking;
 
 const dates = (returnDate: string, returnTime = "10:00") => ({
   pickup: "2026-10-10",
@@ -109,26 +105,24 @@ describe("quoteBooking", () => {
     });
   });
 
-  it("counts the hours that really pass at the company, across a clock change", () => {
+  it("bills the days picked, whatever the clocks do in between", () => {
     const window = {
-      pickup: "2026-10-10",
+      pickup: "2026-10-31",
       pickupTime: "10:00",
-      return: "2026-11-09",
+      return: "2026-11-02",
       returnTime: "10:00",
     };
-    // New York clocks go back on 2026-11-01, so those 30 days hold an extra hour.
-    expect(quote(vehicle(), window, "America/New_York")?.hours).toBe(
-      30 * 24 + 1,
-    );
-    expect(quote(vehicle(), window, "Asia/Tokyo")?.hours).toBe(30 * 24);
-    // The other way in spring: the day the clocks go forward is 23 hours long.
+    // US clocks go back on 2026-11-01: 49 hours pass, and two days are billed.
+    expect(quote(vehicle(), window)?.hours).toBe(48);
+    expect(quote(vehicle(), window)?.lines).toMatchObject([{ count: 2 }]);
+    // And forward on 2026-03-08, when only 47 pass.
     expect(
-      quote(
-        vehicle(),
-        { ...window, pickup: "2026-03-07", return: "2026-03-08" },
-        "America/New_York",
-      )?.hours,
-    ).toBe(23);
+      quote(vehicle(), {
+        ...window,
+        pickup: "2026-03-07",
+        return: "2026-03-09",
+      })?.hours,
+    ).toBe(48);
   });
 
   it("returns null without rates or for an empty window", () => {

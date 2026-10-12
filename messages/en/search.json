@@ -22,6 +22,7 @@
     "returnTime": "Return time",
     "addTime": "Add time",
     "reset": "Reset",
+    "localTimes": "Dates and times are local to where you pick the car up.",
     "save": "Save",
     "search": "Search"
   },

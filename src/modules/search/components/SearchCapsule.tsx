@@ -420,6 +420,7 @@ export function SearchCapsule({
           </div>
         </PopoverAnchor>
         <PopoverContent align="center">
+          <p className="mb-3 text-caption text-muted">{t("localTimes")}</p>
           <DateRangePicker
             sameDay
             outlined

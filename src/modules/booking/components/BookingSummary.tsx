@@ -5,6 +5,7 @@ import { vehicleName } from "@/modules/vehicle/vehicle.utils";
 import { formatLongDay } from "@/shared/lib/date";
 import { formatMoney } from "@/shared/lib/format";
 import { formatTime } from "@/shared/lib/time";
+import { zoneNameAt } from "@/shared/lib/time-zone";
 import { ResponsiveImage } from "@/shared/ui/atoms/ResponsiveImage";
 import type { BookingDates, BookingQuote } from "../types";
 
@@ -32,7 +33,11 @@ export function BookingSummary({
   const t = useTranslations("booking.summary");
   const locale = useLocale();
   const when = (date: string, time: string) =>
-    t("when", { date: formatLongDay(date, locale), time: formatTime(time) });
+    t("when", {
+      date: formatLongDay(date, locale),
+      // On the company's clock, and says so: the renter may be booking from another zone.
+      time: `${formatTime(time)} ${zoneNameAt(date, time, vehicle.company.timeZone)}`,
+    });
   const photo = vehicle.photos[0];
   return (
     <div className="rounded-xl border border-border bg-surface p-6 shadow-1">
