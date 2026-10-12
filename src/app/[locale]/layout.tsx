@@ -5,7 +5,7 @@ import {
   JetBrains_Mono,
 } from "next/font/google";
 import { notFound } from "next/navigation";
-import { hasLocale, NextIntlClientProvider } from "next-intl";
+import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { ReactNode } from "react";
 import { routing } from "@/i18n/routing";
@@ -14,6 +14,7 @@ import { siteConfig } from "@/shared/config/site";
 import { OG_LOCALE } from "@/shared/lib/seo";
 import { SiteFooter } from "@/shared/ui/organisms/SiteFooter";
 import "@/styles/globals.css";
+import { ClientMessages } from "@/i18n/ClientMessages";
 
 const display = Instrument_Serif({
   subsets: ["latin"],
@@ -87,10 +88,10 @@ export default async function RootLayout({
         >
           {t("skipToContent")}
         </a>
-        <NextIntlClientProvider>
+        <ClientMessages>
           {children}
           <SiteFooter {...footer} />
-        </NextIntlClientProvider>
+        </ClientMessages>
       </body>
     </html>
   );

@@ -22,6 +22,7 @@ import { settle } from "@/shared/lib/settle";
 import { Button } from "@/shared/ui/atoms/Button";
 import { StatusNotice } from "@/shared/ui/molecules/StatusNotice";
 import { RenterPanel } from "@/shared/ui/organisms/RenterPanel";
+import { ClientMessages } from "@/i18n/ClientMessages";
 
 interface PageProps {
   params: Promise<{ locale: Locale; subdomain: string; token: string }>;
@@ -48,7 +49,11 @@ export async function generateMetadata({
 
 function Panel({ children }: { children: React.ReactNode }) {
   const t = useTranslations("payment.payPage");
-  return <RenterPanel footnote={t("footnote")}>{children}</RenterPanel>;
+  return (
+    <ClientMessages namespaces={["payment"]}>
+      <RenterPanel footnote={t("footnote")}>{children}</RenterPanel>
+    </ClientMessages>
+  );
 }
 
 export default async function PayPage({ params, searchParams }: PageProps) {

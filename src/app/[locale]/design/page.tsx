@@ -7,6 +7,7 @@ import { SectionsSection } from "@/modules/styleguide/components/SectionsSection
 import { ShapeSection } from "@/modules/styleguide/components/ShapeSection";
 import { TypographySection } from "@/modules/styleguide/components/TypographySection";
 import { SiteHeader } from "@/shared/ui/organisms/SiteHeader";
+import { ClientMessages } from "@/i18n/ClientMessages";
 
 export const metadata: Metadata = {
   title: "Style tile",
@@ -27,7 +28,7 @@ const SECTIONS = [
 
 export default function DesignPage() {
   return (
-    <>
+    <ClientMessages namespaces={["search", "vehicle"]}>
       <SiteHeader />
       <main id="main" className="container-page pt-10 md:pt-16">
         <header className="max-w-2xl">
@@ -69,6 +70,6 @@ export default function DesignPage() {
           </div>
         </div>
       </main>
-    </>
+    </ClientMessages>
   );
 }

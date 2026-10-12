@@ -18,6 +18,7 @@ import { buildMetadata, JsonLd } from "@/shared/lib/seo";
 import { settle } from "@/shared/lib/settle";
 import { SectionHeading } from "@/shared/ui/molecules/SectionHeading";
 import { SiteHeader } from "@/shared/ui/organisms/SiteHeader";
+import { ClientMessages } from "@/i18n/ClientMessages";
 
 interface PageProps {
   params: Promise<{ locale: Locale; subdomain: string }>;
@@ -58,7 +59,7 @@ export default async function CompanyPage({ params }: PageProps) {
   );
 
   return (
-    <>
+    <ClientMessages namespaces={["company", "vehicle"]}>
       <CompanyBrandStyle brand={company.brand} />
       <JsonLd
         data={{
@@ -140,6 +141,6 @@ export default async function CompanyPage({ params }: PageProps) {
           )}
         </div>
       </main>
-    </>
+    </ClientMessages>
   );
 }

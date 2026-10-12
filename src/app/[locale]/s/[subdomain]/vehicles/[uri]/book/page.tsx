@@ -25,6 +25,7 @@ import { settle } from "@/shared/lib/settle";
 import { todayIn } from "@/shared/lib/time-zone";
 import { CancellationPolicy } from "@/shared/ui/molecules/CancellationPolicy";
 import { SiteHeader } from "@/shared/ui/organisms/SiteHeader";
+import { ClientMessages } from "@/i18n/ClientMessages";
 
 interface PageProps {
   params: Promise<{ locale: Locale; subdomain: string; uri: string }>;
@@ -75,7 +76,7 @@ export default async function BookVehiclePage({
   );
 
   return (
-    <>
+    <ClientMessages namespaces={["booking"]}>
       <SiteHeader />
       <main id="main" className="container-page pt-8 pb-16 md:pt-12">
         <div className="group/booking grid gap-x-18 gap-y-10 lg:grid-cols-[minmax(0,1fr)_25rem]">
@@ -129,6 +130,6 @@ export default async function BookVehiclePage({
           </BookingReturnProvider>
         </div>
       </main>
-    </>
+    </ClientMessages>
   );
 }

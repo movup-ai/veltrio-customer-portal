@@ -28,6 +28,7 @@ import { formatDay } from "@/shared/lib/date";
 import { buildMetadata } from "@/shared/lib/seo";
 import { settle } from "@/shared/lib/settle";
 import { SiteHeader } from "@/shared/ui/organisms/SiteHeader";
+import { ClientMessages } from "@/i18n/ClientMessages";
 
 interface PageProps {
   params: Promise<{ locale: Locale }>;
@@ -113,7 +114,7 @@ export default async function SearchPage({ params, searchParams }: PageProps) {
   const branches = siteConfig.mapsKey ? findBranches(vehicles) : NO_BRANCHES;
 
   return (
-    <>
+    <ClientMessages namespaces={["search", "vehicle"]}>
       <SiteHeader />
       <main id="main" className="container-page pt-6 pb-16">
         <SearchCapsule
@@ -184,6 +185,6 @@ export default async function SearchPage({ params, searchParams }: PageProps) {
           </div>
         )}
       </main>
-    </>
+    </ClientMessages>
   );
 }

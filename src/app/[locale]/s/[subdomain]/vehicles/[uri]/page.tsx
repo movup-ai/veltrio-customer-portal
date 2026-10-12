@@ -24,6 +24,7 @@ import { formatMoney } from "@/shared/lib/format";
 import { buildMetadata, JsonLd } from "@/shared/lib/seo";
 import { Skeleton } from "@/shared/ui/atoms/Skeleton";
 import { SiteHeader } from "@/shared/ui/organisms/SiteHeader";
+import { ClientMessages } from "@/i18n/ClientMessages";
 
 interface PageProps {
   params: Promise<{ locale: Locale; subdomain: string; uri: string }>;
@@ -85,7 +86,7 @@ export default async function VehiclePage({ params }: PageProps) {
   const url = vehicleHref(vehicle);
 
   return (
-    <>
+    <ClientMessages namespaces={["vehicle"]}>
       <JsonLd
         data={{
           "@context": "https://schema.org",
@@ -191,6 +192,6 @@ export default async function VehiclePage({ params }: PageProps) {
           href="#booking"
         />
       </main>
-    </>
+    </ClientMessages>
   );
 }

@@ -14,6 +14,7 @@ import {
 import { Button } from "@/shared/ui/atoms/Button";
 import { StatusNotice } from "@/shared/ui/molecules/StatusNotice";
 import { RenterPanel } from "@/shared/ui/organisms/RenterPanel";
+import { ClientMessages } from "@/i18n/ClientMessages";
 
 interface PageProps {
   params: Promise<{
@@ -197,7 +198,9 @@ export default async function SignPage({ params }: PageProps) {
             }
           />
         ) : (
-          <SignAgreementForm link={link} defaultName={agreement.renterName} />
+          <ClientMessages namespaces={["contract"]}>
+            <SignAgreementForm link={link} defaultName={agreement.renterName} />
+          </ClientMessages>
         )}
       </div>
     </RenterPanel>

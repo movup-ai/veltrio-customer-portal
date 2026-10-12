@@ -33,6 +33,7 @@ import { settle } from "@/shared/lib/settle";
 import { ScrollRow } from "@/shared/ui/molecules/ScrollRow";
 import { SectionHeading } from "@/shared/ui/molecules/SectionHeading";
 import { SiteHeader } from "@/shared/ui/organisms/SiteHeader";
+import { ClientMessages } from "@/i18n/ClientMessages";
 
 interface PageProps {
   params: Promise<{ locale: Locale }>;
@@ -136,7 +137,7 @@ export default async function HomePage({ params }: PageProps) {
   // Without the list the search simply has no city to offer.
   const cities = (await settle(listCities())) ?? [];
   return (
-    <>
+    <ClientMessages namespaces={["search", "vehicle"]}>
       <JsonLd
         data={{
           "@context": "https://schema.org",
@@ -222,6 +223,6 @@ export default async function HomePage({ params }: PageProps) {
           <HostCtaSection {...hostCta} />
         </div>
       </main>
-    </>
+    </ClientMessages>
   );
 }
