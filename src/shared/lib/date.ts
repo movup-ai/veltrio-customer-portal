@@ -14,6 +14,16 @@ export function fromIsoDate(iso: string | null | undefined) {
   return Number.isNaN(date.getTime()) ? undefined : date;
 }
 
+/** An ISO date as a short day in the reader's language: "Oct 9" or "9 oct". */
+export function formatDay(iso: string, locale: string) {
+  return new Intl.DateTimeFormat(locale, {
+    month: "short",
+    day: "numeric",
+    // The date has no time: read and written in one zone, it cannot slip a day.
+    timeZone: "UTC",
+  }).format(new Date(`${iso}T00:00:00Z`));
+}
+
 /** A date as typed into separate month, day and year boxes. */
 export interface DateParts {
   month: string;

@@ -1,9 +1,14 @@
 "use client";
 
 import { startOfToday } from "date-fns";
+import { useLocale, useTranslations } from "next-intl";
 import { useState, type ReactNode } from "react";
 import { DayPicker, type DateRange } from "react-day-picker";
+import { enUS, es } from "react-day-picker/locale";
 import { TimeSelect } from "@/shared/ui/molecules/TimeSelect";
+
+/** Month and weekday names for each language the site is in. */
+const CALENDAR_LOCALE = { en: enUS, es };
 
 /** Pick-up and return times as "HH:mm". */
 export interface RangeTimes {
@@ -47,6 +52,8 @@ export function DateRangePicker({
   onTimesChange,
   actions,
 }: DateRangePickerProps) {
+  const t = useTranslations("common.calendar");
+  const locale = useLocale();
   // Without `months` this only renders inside an open popover, so `window` exists.
   const [count] = useState(
     () => months ?? (window.matchMedia("(min-width: 768px)").matches ? 2 : 1),
@@ -55,6 +62,7 @@ export function DateRangePicker({
     <div>
       <DayPicker
         mode="range"
+        locale={CALENDAR_LOCALE[locale]}
         min={sameDay ? 0 : 1}
         className={outlined ? "rdp-outlined" : undefined}
         excludeDisabled
@@ -76,12 +84,12 @@ export function DateRangePicker({
           {times && (
             <>
               <TimeSelect
-                label="Pick-up"
+                label={t("pickup")}
                 value={times.pickup}
                 onChange={(pickup) => onTimesChange?.({ ...times, pickup })}
               />
               <TimeSelect
-                label="Return"
+                label={t("return")}
                 value={times.return}
                 onChange={(time) => onTimesChange?.({ ...times, return: time })}
               />

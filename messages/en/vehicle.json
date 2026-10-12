@@ -1,0 +1,38 @@
+{
+  "types": {
+    "sport": "Sport",
+    "convertible": "Convertible",
+    "coupe": "Coupé",
+    "sedan": "Sedan",
+    "suv": "SUV",
+    "crossover": "Crossover",
+    "hatchback": "Hatchback",
+    "wagon": "Wagon",
+    "pickup_truck": "Pickup",
+    "minivan": "Minivan",
+    "van": "Van"
+  },
+  "fuel": {
+    "petrol": "Petrol",
+    "diesel": "Diesel",
+    "hybrid": "Hybrid",
+    "electric": "Electric"
+  },
+  "transmission": {
+    "automatic": "Automatic",
+    "manual": "Manual"
+  },
+  "card": {
+    "rate": "<b>{price}</b> day",
+    "ratePlain": "{price} day",
+    "seats": "{count, plural, =1 {1 seat} other {# seats}}",
+    "horsepower": "{count} hp",
+    "zeroToSixty": "0–60 {seconds}s",
+    "photoAlt": "{year} {name} in {color}",
+    "newTab": " (opens in a new tab)",
+    "viewDetails": "View details",
+    "viewDetailsOf": " of the {year} {name} (opens in a new tab)",
+    "previousPhoto": "Previous photo",
+    "nextPhoto": "Next photo"
+  }
+}

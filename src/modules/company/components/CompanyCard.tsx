@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/Link";
 import { cn } from "@/shared/lib/cn";
 import { companyHref, countryName } from "../company.utils";
@@ -10,6 +11,7 @@ interface CompanyCardProps {
 }
 
 export function CompanyCard({ company, className }: CompanyCardProps) {
+  const t = useTranslations("common");
   return (
     <article
       className={cn(
@@ -36,7 +38,7 @@ export function CompanyCard({ company, className }: CompanyCardProps) {
         <span className="text-ui font-bold text-foreground">
           {company.vehicleCount}
         </span>{" "}
-        {company.vehicleCount === 1 ? "vehicle" : "vehicles"}
+        {t("vehicleCount", { count: company.vehicleCount })}
       </p>
     </article>
   );

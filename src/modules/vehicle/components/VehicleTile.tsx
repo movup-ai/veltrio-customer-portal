@@ -1,5 +1,6 @@
 import { Link } from "@/i18n/Link";
 import { CarFront } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { formatMoney } from "@/shared/lib/format";
 import { ResponsiveImage } from "@/shared/ui/atoms/ResponsiveImage";
 import type { Vehicle } from "../types";
@@ -14,6 +15,7 @@ export function VehicleTile({
   /** Where the tile leads when not the plain vehicle page, e.g. with searched dates attached. */
   href?: string;
 }) {
+  const t = useTranslations("vehicle.card");
   const photo = vehicle.photos[0];
   const rate = vehicle.dailyRateCents;
   return (
@@ -36,7 +38,8 @@ export function VehicleTile({
         </h3>
         <p className="mt-0.5 truncate text-sm text-muted">
           {vehicle.year}
-          {rate !== null && ` · ${formatMoney(rate)} day`}
+          {rate !== null &&
+            ` · ${t("ratePlain", { price: formatMoney(rate) })}`}
         </p>
         {/* The stretched link makes the whole tile clickable with one tab stop. */}
         <Link
@@ -45,10 +48,12 @@ export function VehicleTile({
           rel="noopener"
           className="mt-2 inline-block text-sm font-semibold underline underline-offset-4 after:absolute after:inset-0"
         >
-          View details
+          {t("viewDetails")}
           <span className="sr-only">
-            {" "}
-            of the {vehicle.year} {vehicleName(vehicle)} (opens in a new tab)
+            {t("viewDetailsOf", {
+              year: vehicle.year,
+              name: vehicleName(vehicle),
+            })}
           </span>
         </Link>
       </div>

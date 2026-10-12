@@ -45,5 +45,11 @@
       "faq": "FAQ"
     },
     "contact": "Contact"
+  },
+  "vehicleCount": "{count, plural, =1 {vehicle} other {vehicles}}",
+  "calendar": {
+    "pickup": "Pick-up",
+    "return": "Return",
+    "timeOf": "{label} time"
   }
 }

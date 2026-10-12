@@ -92,6 +92,7 @@ async function VehicleRows() {
 /** Ways into the listed vehicles, built from what is actually listed. */
 async function BrowseSections() {
   const t = await getTranslations("landing");
+  const types = await getTranslations("vehicle.types");
   const vehicles = await settle(listVehicles());
   if (!vehicles || vehicles.length === 0) return null;
   return (
@@ -100,7 +101,7 @@ async function BrowseSections() {
         id="types"
         title={t("types.title")}
         description={t("types.description")}
-        items={browseByType(vehicles)}
+        items={browseByType(vehicles, (type) => types(type))}
       />
       <BrowseSection
         id="makes"

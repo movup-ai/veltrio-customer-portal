@@ -2,7 +2,7 @@ import { MapPin, type LucideIcon } from "lucide-react";
 import { cityLabel, citySlug, type City } from "@/modules/search/cities";
 import { buildSearchUrl } from "@/modules/search/search-params";
 import { filterVehicles, sortVehicles } from "@/modules/search/search.filter";
-import type { Vehicle } from "@/modules/vehicle/types";
+import type { Vehicle, VehicleType } from "@/modules/vehicle/types";
 import { VEHICLE_TYPE_META } from "@/modules/vehicle/vehicle-types";
 import { makeSlug } from "@/modules/vehicle/vehicle.utils";
 
@@ -43,10 +43,16 @@ export function browseByCity(cities: City[]): BrowseItem[] {
 }
 
 /** The vehicle types that have at least one vehicle listed. */
-export function browseByType(vehicles: Vehicle[]) {
+export function browseByType(
+  vehicles: Vehicle[],
+  /** Names a type in the reader's language. */
+  label: (type: VehicleType) => string = (type) =>
+    VEHICLE_TYPE_META[type].label,
+) {
   return tally(vehicles, ({ vehicleType }) => ({
     key: vehicleType,
-    ...VEHICLE_TYPE_META[vehicleType],
+    icon: VEHICLE_TYPE_META[vehicleType].icon,
+    label: label(vehicleType),
     href: buildSearchUrl({ type: vehicleType }),
   }));
 }

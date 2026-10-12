@@ -58,15 +58,31 @@ export function groupByBranch(
   return [...branches.values()];
 }
 
+/** The words a pin may need, in the reader's language. */
+export interface PinWords {
+  /** "3 cars". */
+  cars: (count: number) => string;
+  /** "from $70 · 3". */
+  fromPrice: (price: string, count: number) => string;
+}
+
+const ENGLISH: PinWords = {
+  cars: (count) => (count === 1 ? "1 car" : `${count} cars`),
+  fromPrice: (price, count) => `from ${price} · ${count}`,
+};
+
 /** A pin's text: the rate of the vehicle being pointed at, else the branch's lowest and its count. */
-export function branchLabel(branch: Branch, pointed?: Vehicle) {
+export function branchLabel(
+  branch: Branch,
+  pointed?: Vehicle,
+  words: PinWords = ENGLISH,
+) {
   const count = branch.vehicleIds.length;
-  const cars = count === 1 ? "1 car" : `${count} cars`;
   if (pointed && branch.vehicleIds.includes(pointed.id)) {
     const rate = pointed.dailyRateCents;
-    return rate === null ? cars : formatMoney(rate);
+    return rate === null ? words.cars(count) : formatMoney(rate);
   }
-  if (branch.fromCents === null) return cars;
+  if (branch.fromCents === null) return words.cars(count);
   const from = formatMoney(branch.fromCents);
-  return count === 1 ? from : `from ${from} · ${count}`;
+  return count === 1 ? from : words.fromPrice(from, count);
 }

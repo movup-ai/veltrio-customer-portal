@@ -1,6 +1,7 @@
-import { format } from "date-fns";
 import { SearchX } from "lucide-react";
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
+import type { Locale } from "@/i18n/routing";
 import { Link } from "@/i18n/Link";
 import { listCompanyLocations } from "@/modules/company/company.repository";
 import { groupByBranch, type Branch } from "@/modules/search/branches";
@@ -23,27 +24,32 @@ import { listCities } from "@/modules/search/search.repository";
 import type { Vehicle } from "@/modules/vehicle/types";
 import { findListedVehicles } from "@/modules/vehicle/vehicle.repository";
 import { siteConfig } from "@/shared/config/site";
-import { fromIsoDate } from "@/shared/lib/date";
+import { formatDay } from "@/shared/lib/date";
 import { buildMetadata } from "@/shared/lib/seo";
 import { settle } from "@/shared/lib/settle";
 import { SiteHeader } from "@/shared/ui/organisms/SiteHeader";
 
 interface PageProps {
+  params: Promise<{ locale: Locale }>;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
-export const metadata: Metadata = {
-  ...buildMetadata({
-    title: "Search rental cars",
-    description:
-      "Find a rental car from independent rental companies by city, dates, type, make and price.",
-    path: "/search",
-  }),
-  // Every combination of filters is its own URL: none of them is a page worth indexing.
-  robots: { index: false, follow: true },
-};
-
-const day = (iso: string) => format(fromIsoDate(iso)!, "MMM d");
+export async function generateMetadata({
+  params,
+}: Pick<PageProps, "params">): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "search.results" });
+  return {
+    ...buildMetadata({
+      title: t("metaTitle"),
+      description: t("metaDescription"),
+      path: "/search",
+      locale,
+    }),
+    // Every combination of filters is its own URL: none of them is a page worth indexing.
+    robots: { index: false, follow: true },
+  };
+}
 
 const NO_BRANCHES = Promise.resolve([]);
 /** Longest the map waits for one company's branches, in milliseconds. */
@@ -74,7 +80,10 @@ async function findBranches(vehicles: Vehicle[]): Promise<Branch[]> {
   return groupByBranch(vehicles, Object.fromEntries(locations));
 }
 
-export default async function SearchPage({ searchParams }: PageProps) {
+export default async function SearchPage({ params, searchParams }: PageProps) {
+  const { locale } = await params;
+  const t = await getTranslations("search.results");
+  const day = (iso: string) => formatDay(iso, locale);
   const query = parseSearchParams(await searchParams);
   const cities = (await settle(listCities())) ?? [];
   const city = findCity(cities, query.location);
@@ -118,21 +127,27 @@ export default async function SearchPage({ searchParams }: PageProps) {
         </div>
 
         <h1 className="mt-8 text-h4 font-semibold" aria-live="polite">
-          {count === 1 ? "1 car" : `${count} cars`} available
-          {city && ` in ${cityLabel(city)}`}
-          {query.near && ` near ${query.place ?? "you"}`}
+          {city
+            ? t("availableIn", { count, place: cityLabel(city) })
+            : !query.near
+              ? t("available", { count })
+              : query.place
+                ? t("availableNear", { count, place: query.place })
+                : t("availableNearYou", { count })}
         </h1>
         {outOfReach !== null && (
           <p className="mt-1 text-muted">
-            Nothing within {SEARCH_RADIUS_MILES} miles. These are at the nearest
-            branch, {outOfReach} miles away.
+            {t("outOfReach", {
+              radius: SEARCH_RADIUS_MILES,
+              distance: outOfReach,
+            })}
           </p>
         )}
         {pickup && end && (
           <p className="mt-1 text-muted">
             {pickup === end
-              ? `Free on ${day(pickup)}.`
-              : `Free from ${day(pickup)} to ${day(end)}.`}
+              ? t("freeOn", { day: day(pickup) })
+              : t("freeRange", { from: day(pickup), to: day(end) })}
           </p>
         )}
 
@@ -152,22 +167,18 @@ export default async function SearchPage({ searchParams }: PageProps) {
                   className="mx-auto mb-4 size-10 text-border-strong"
                   strokeWidth={1.5}
                 />
-                <p className="text-lead font-semibold">
-                  No cars match this search.
-                </p>
-                <p className="mt-2 text-muted">
-                  Try other dates, another place or fewer filters.
-                </p>
+                <p className="text-lead font-semibold">{t("noneTitle")}</p>
+                <p className="mt-2 text-muted">{t("noneBody")}</p>
                 <Link
                   href={buildSearchUrl()}
                   className="mt-4 inline-block font-semibold underline underline-offset-4"
                 >
-                  See all cars
+                  {t("seeAll")}
                 </Link>
               </>
             ) : (
               <p role="status" className="text-muted">
-                Vehicles are unavailable right now. Please try again shortly.
+                {t("unavailable")}
               </p>
             )}
           </div>

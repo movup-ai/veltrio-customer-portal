@@ -1,5 +1,6 @@
 import { Zap } from "lucide-react";
 import { Link } from "@/i18n/Link";
+import { useTranslations } from "next-intl";
 import { Fragment } from "react";
 import { cn } from "@/shared/lib/cn";
 import { formatMoney } from "@/shared/lib/format";
@@ -42,10 +43,12 @@ export function VehicleCard({
   const name = vehicleName(vehicle);
   const rate = vehicle.dailyRateCents;
 
+  const t = useTranslations("vehicle");
   const specLine = [
-    specs.horsepower && `${specs.horsepower} hp`,
-    specs.zeroToSixtySec && `0–60 ${specs.zeroToSixtySec}s`,
-    `${specs.seats} seats`,
+    specs.horsepower && t("card.horsepower", { count: specs.horsepower }),
+    specs.zeroToSixtySec &&
+      t("card.zeroToSixty", { seconds: specs.zeroToSixtySec }),
+    t("card.seats", { count: specs.seats }),
   ].filter(Boolean);
 
   return (
@@ -58,13 +61,17 @@ export function VehicleCard({
     >
       <VehicleCardGallery
         photos={vehicle.photos.slice(0, MAX_PHOTOS)}
-        alt={`${vehicle.year} ${name} in ${vehicle.color}`}
+        alt={t("card.photoAlt", {
+          year: vehicle.year,
+          name,
+          color: vehicle.color,
+        })}
         sizes={sizes}
         priority={priority}
       >
         {specs.fuelType === "electric" && (
           <Badge className="absolute top-3 left-3 z-10">
-            <Zap aria-hidden className="size-3.5" /> Electric
+            <Zap aria-hidden className="size-3.5" /> {t("fuel.electric")}
           </Badge>
         )}
       </VehicleCardGallery>
@@ -78,7 +85,7 @@ export function VehicleCard({
             className="after:absolute after:inset-0 after:z-10"
           >
             {name}
-            {newTab && <span className="sr-only"> (opens in a new tab)</span>}
+            {newTab && <span className="sr-only">{t("card.newTab")}</span>}
           </Link>{" "}
           <span className="font-normal text-muted">{vehicle.year}</span>
         </h3>
@@ -102,7 +109,10 @@ export function VehicleCard({
         </p>
         {rate !== null && (
           <p className="mt-2 flex items-baseline gap-1.5">
-            <span className="font-bold">{formatMoney(rate)}</span> day
+            {t.rich("card.rate", {
+              price: formatMoney(rate),
+              b: (chunks) => <span className="font-bold">{chunks}</span>,
+            })}
           </p>
         )}
       </div>

@@ -2,6 +2,7 @@
 
 import { List, Map as MapIcon } from "lucide-react";
 import dynamic from "next/dynamic";
+import { useTranslations } from "next-intl";
 import {
   Suspense,
   use,
@@ -49,11 +50,12 @@ type MapPaneProps = Omit<ComponentProps<typeof SearchMap>, "branches"> &
 
 /** The map once its branches have arrived. */
 function MapPane({ branches: pending, ...props }: MapPaneProps) {
+  const t = useTranslations("search.map");
   const branches = use(pending);
   if (branches.length === 0) {
     return (
       <p className="grid size-full place-items-center p-6 text-center text-sm text-muted">
-        These cars cannot be shown on a map right now.
+        {t("cannotShow")}
       </p>
     );
   }
@@ -67,6 +69,7 @@ export function SearchResults({
   branches,
   origin,
 }: SearchResultsProps) {
+  const t = useTranslations("search.map");
   const [pointedVehicle, setPointedVehicle] = useState<Vehicle>();
   const [pointedBranch, setPointedBranch] = useState<string>();
   const [view, setView] = useState<"list" | "map">("list");
@@ -117,7 +120,7 @@ export function SearchResults({
       )}
       {showMap && apiKey && (
         <section
-          aria-label="Map of pick-up locations"
+          aria-label={t("label")}
           className="h-[70dvh] overflow-hidden rounded-xl border border-border bg-surface-muted lg:sticky lg:top-24 lg:col-span-2 lg:h-[calc(100dvh-8rem)]"
         >
           <Suspense fallback={<Skeleton className="size-full" />}>
@@ -142,11 +145,11 @@ export function SearchResults({
         >
           {view === "list" ? (
             <>
-              <MapIcon aria-hidden className="size-4" /> Map
+              <MapIcon aria-hidden className="size-4" /> {t("map")}
             </>
           ) : (
             <>
-              <List aria-hidden className="size-4" /> List
+              <List aria-hidden className="size-4" /> {t("list")}
             </>
           )}
         </Button>
