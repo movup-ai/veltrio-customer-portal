@@ -123,7 +123,7 @@ export function SearchCapsule({
   ];
   // Empty until a place is chosen: nothing chosen searches everywhere.
   const chosen = where.near
-    ? (where.place ?? t("chosenPlace"))
+    ? (where.place ?? t("yourLocation"))
     : city
       ? cityLabel(city)
       : "";
@@ -156,7 +156,7 @@ export function SearchCapsule({
     place.then(
       (found) => {
         if (mine !== lookups.current) return;
-        if (found) choose({ near: found, place: found.label });
+        if (found) choose({ near: found, place: found.label || undefined });
         else onNone?.();
       },
       () => undefined,
@@ -173,7 +173,8 @@ export function SearchCapsule({
             resolve({
               lat: coords.latitude,
               lng: coords.longitude,
-              label: t("yourLocation"),
+              // Unnamed, so each language words "your location" itself.
+              label: "",
             }),
           () => resolve(null),
         );

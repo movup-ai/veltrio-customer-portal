@@ -34,6 +34,7 @@ export async function generateMetadata({
       // The vehicle page is the one to rank; this page only repeats its photos.
       path: vehicleHref(vehicle),
       siteName: vehicle.company.name,
+      locale,
     }),
     robots: { index: false, follow: true },
   };

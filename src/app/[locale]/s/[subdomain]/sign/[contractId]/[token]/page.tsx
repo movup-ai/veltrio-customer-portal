@@ -2,6 +2,7 @@ import { FileDown } from "lucide-react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/Link";
 import type { Locale } from "@/i18n/routing";
 import { getCompanyProfile } from "@/modules/company/company.repository";
 import { CompanyBadge } from "@/modules/company/components/CompanyBadge";
@@ -89,11 +90,11 @@ export default async function SignPage({ params }: PageProps) {
           body={t("loadFailedBody", names)}
           action={
             <Button asChild variant="dark">
-              <a
+              <Link
                 href={`/sign/${encodeURIComponent(link.contractId)}/${encodeURIComponent(link.token)}`}
               >
                 {t("tryAgain")}
-              </a>
+              </Link>
             </Button>
           }
         />
