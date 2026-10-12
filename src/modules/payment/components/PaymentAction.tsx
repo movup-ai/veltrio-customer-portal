@@ -2,6 +2,7 @@
 
 import { Link } from "@/i18n/Link";
 import { FileText, ReceiptText } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { Button } from "@/shared/ui/atoms/Button";
@@ -39,6 +40,7 @@ export function PaymentAction({
   addendumHref,
   cancellationTerms,
 }: PaymentActionProps) {
+  const t = useTranslations("payment");
   const router = useRouter();
   const step = paymentStep(link);
   // A hold the bank turned down after the payment went through, shown on the deposit form.
@@ -62,7 +64,7 @@ export function PaymentAction({
   );
 
   if (step.kind === "checkout") {
-    const copy = checkoutCopy(step.mode, link);
+    const copy = checkoutCopy(step.mode, link, t);
     return (
       <PaymentCheckout
         stripeAccountId={step.stripeAccountId}
@@ -99,13 +101,13 @@ export function PaymentAction({
     return (
       <StatusNotice
         tone="waiting"
-        title="Payment processing"
-        body="Your bank is still confirming the payment. This page updates on its own."
+        title={t("action.processingTitle")}
+        body={t("action.processingBody")}
       />
     );
   }
 
-  const copy = outcomeCopy(step.outcome, link);
+  const copy = outcomeCopy(step.outcome, link, t);
   return (
     <StatusNotice
       {...copy}
@@ -117,7 +119,7 @@ export function PaymentAction({
               <Button asChild variant="outline">
                 <Link href={receiptHref}>
                   <ReceiptText aria-hidden className="size-4" />
-                  View receipt
+                  {t("action.viewReceipt")}
                 </Link>
               </Button>
             )}
@@ -125,7 +127,7 @@ export function PaymentAction({
               <Button asChild variant="outline">
                 <Link href={addendumHref}>
                   <FileText aria-hidden className="size-4" />
-                  Download addendum
+                  {t("action.downloadAddendum")}
                 </Link>
               </Button>
             )}

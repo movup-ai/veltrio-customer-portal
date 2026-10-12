@@ -1,4 +1,6 @@
+import { createTranslator } from "next-intl";
 import { describe, expect, it } from "vitest";
+import { english } from "@/test/messages";
 import { toPaymentLink, type PaymentLinkDto } from "./payment.api";
 import {
   checkoutCopy,
@@ -39,6 +41,12 @@ const link = (
   deposit: PaymentPart | null,
   overrides: Partial<PaymentLinkDto> = {},
 ) => ({ ...toPaymentLink({ ...dto, ...overrides }), charge, deposit });
+
+const t = createTranslator({
+  locale: "en",
+  messages: english,
+  namespace: "payment",
+});
 
 describe("toPaymentLink", () => {
   it("treats a status it does not know as nothing left to do", () => {
@@ -117,34 +125,35 @@ describe("paymentStep", () => {
 describe("copy", () => {
   it("names the amounts on the button and asks consent only for a hold", () => {
     const both = link(part("open", 22000), part("open", 200000));
-    expect(checkoutCopy("payment", both)).toEqual({
+    expect(checkoutCopy("payment", both, t)).toEqual({
       submit: "Pay $220",
       consent: null,
     });
-    expect(checkoutCopy("payment_and_deposit", both).submit).toBe(
+    expect(checkoutCopy("payment_and_deposit", both, t).submit).toBe(
       "Pay $220 & hold $2,000",
     );
     // Under a "Security deposit" label, so neither repeats what it is a hold for.
     const hold =
       "It is only charged if your rental agreement calls for it, and is released after the return.";
-    expect(checkoutCopy("payment_and_deposit", both).consent).toBe(
+    expect(checkoutCopy("payment_and_deposit", both, t).consent).toBe(
       `By paying, you authorise Thewheeldeal to hold $2,000 on this card. ${hold}`,
     );
-    expect(checkoutCopy("deposit", both).consent).toBe(
+    expect(checkoutCopy("deposit", both, t).consent).toBe(
       `Thewheeldeal holds $2,000 on this card. ${hold}`,
     );
   });
 
   it("tells the renter what the company now has", () => {
     const done = link(part("paid", 22000), part("held", 200000));
-    expect(outcomeCopy("paid_and_held", done).body).toBe(
+    expect(outcomeCopy("paid_and_held", done, t).body).toBe(
       "Thewheeldeal has your payment of $220 and holds $2,000 as your deposit for booking BK-10001. You can close this page.",
     );
     // A deposit the link never asked for is named from the booking.
     expect(
-      outcomeCopy("paid_deposit_later", link(part("paid", 22000), null)).body,
+      outcomeCopy("paid_deposit_later", link(part("paid", 22000), null), t)
+        .body,
     ).toContain("$2,000 security deposit");
-    expect(outcomeCopy("closed", done).tone).toBe("warning");
+    expect(outcomeCopy("closed", done, t).tone).toBe("warning");
   });
 });
 
@@ -186,7 +195,7 @@ describe("a link for a later return", () => {
       clientSecret: "secret_ext",
       depositSecret: null,
     });
-    expect(checkoutCopy("extension", agreed)).toEqual({
+    expect(checkoutCopy("extension", agreed, t)).toEqual({
       submit: "Pay $117.70",
       consent: null,
     });
@@ -198,7 +207,7 @@ describe("a link for a later return", () => {
     );
     const paid = extended({ status: "paid", accepted: true, applied: true });
     expect(paymentStep(paid)).toEqual({ kind: "outcome", outcome: "extended" });
-    expect(outcomeCopy("extended", paid).body).toContain(
+    expect(outcomeCopy("extended", paid, t).body).toContain(
       "Thewheeldeal has your payment of $117.70",
     );
   });
@@ -209,7 +218,7 @@ describe("a link for a later return", () => {
       kind: "outcome",
       outcome: "extension_late",
     });
-    const copy = outcomeCopy("extension_late", late);
+    const copy = outcomeCopy("extension_late", late, t);
     expect(copy.tone).toBe("warning");
     expect(copy.body).toContain("will refund it");
   });

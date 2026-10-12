@@ -1,4 +1,6 @@
+import { createTranslator } from "next-intl";
 import { describe, expect, it } from "vitest";
+import { english } from "@/test/messages";
 import { cancellationTerms, policyLines } from "./cancellation-policy";
 
 const tier = (daysBefore: number, refundPercent: number) => ({
@@ -70,6 +72,12 @@ describe("cancellationTerms", () => {
       policy,
       pickupAt,
       timeZone: "America/New_York",
+      t: createTranslator({
+        locale: "en",
+        messages: english,
+        namespace: "payment.terms",
+      }),
+      locale: "en-US",
       now: Date.parse(now),
     });
 

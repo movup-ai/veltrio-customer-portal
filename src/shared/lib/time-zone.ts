@@ -60,9 +60,15 @@ export function zonedInstant(date: string, time: string, zone: string) {
 }
 
 /** A moment as the clock in `zone` shows it, e.g. "Thu, Oct 22, 9:30 AM". */
-export function formatInZone(instant: string | number | Date, zone: string) {
-  return new Intl.DateTimeFormat("en-US", {
+export function formatInZone(
+  instant: string | number | Date,
+  zone: string,
+  locale = "en-US",
+) {
+  return new Intl.DateTimeFormat(locale, {
     timeZone: zone,
+    // Twelve-hour in every language, as times read everywhere else on the site.
+    hour12: true,
     weekday: "short",
     month: "short",
     day: "numeric",

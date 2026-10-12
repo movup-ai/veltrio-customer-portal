@@ -3,6 +3,7 @@ import type common from "../../messages/en/common.json";
 import type companies from "../../messages/en/companies.json";
 import type company from "../../messages/en/company.json";
 import type landing from "../../messages/en/landing.json";
+import type payment from "../../messages/en/payment.json";
 import type search from "../../messages/en/search.json";
 import type vehicle from "../../messages/en/vehicle.json";
 import type { routing } from "./routing";
@@ -17,6 +18,7 @@ declare module "next-intl" {
       companies: typeof companies;
       company: typeof company;
       landing: typeof landing;
+      payment: typeof payment;
       search: typeof search;
       vehicle: typeof vehicle;
     };

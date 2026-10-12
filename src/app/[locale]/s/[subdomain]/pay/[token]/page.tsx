@@ -1,6 +1,9 @@
 import { Link } from "@/i18n/Link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
+import type { Locale } from "@/i18n/routing";
 import {
   getCompanyProfile,
   listCompanyLocations,
@@ -21,17 +24,22 @@ import { StatusNotice } from "@/shared/ui/molecules/StatusNotice";
 import { RenterPanel } from "@/shared/ui/organisms/RenterPanel";
 
 interface PageProps {
-  params: Promise<{ subdomain: string; token: string }>;
+  params: Promise<{ locale: Locale; subdomain: string; token: string }>;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
-  const { subdomain } = await params;
+  const { locale, subdomain } = await params;
   const company = await getCompanyProfile(subdomain);
+  const t = await getTranslations({ locale, namespace: "payment.payPage" });
   return {
-    title: { absolute: company ? `Pay ${company.name}` : "Payment" },
+    title: {
+      absolute: company
+        ? t("metaTitle", { company: company.name })
+        : t("metaTitlePlain"),
+    },
     // The address is the renter's key to the page: keep it out of indexes and Referer headers.
     robots: { index: false, follow: false },
     referrer: "no-referrer",
@@ -39,15 +47,14 @@ export async function generateMetadata({
 }
 
 function Panel({ children }: { children: React.ReactNode }) {
-  return (
-    <RenterPanel footnote="Secure payment by Stripe. Card details go straight to Stripe.">
-      {children}
-    </RenterPanel>
-  );
+  const t = useTranslations("payment.payPage");
+  return <RenterPanel footnote={t("footnote")}>{children}</RenterPanel>;
 }
 
 export default async function PayPage({ params, searchParams }: PageProps) {
-  const { subdomain, token } = await params;
+  const { locale, subdomain, token } = await params;
+  const t = await getTranslations("payment.payPage");
+  const terms = await getTranslations("payment.terms");
   // Set by Stripe when the renter comes back from paying on another site.
   const returned = await searchParams;
   const returnedSecret = returned.payment_intent_client_secret;
@@ -64,12 +71,14 @@ export default async function PayPage({ params, searchParams }: PageProps) {
       <Panel>
         <StatusNotice
           tone="waiting"
-          title="We couldn't load your payment"
+          title={t("loadFailedTitle")}
           // Says nothing about money: a failed read cannot tell whether a payment went through.
-          body={`We can't show where this payment stands right now. If you have already paid, you don't need to pay again. Try again in a moment, or contact ${company.name} if it keeps happening.`}
+          body={t("loadFailedBody", { company: company.name })}
           action={
             <Button asChild variant="dark">
-              <Link href={`/pay/${encodeURIComponent(token)}`}>Try again</Link>
+              <Link href={`/pay/${encodeURIComponent(token)}`}>
+                {t("tryAgain")}
+              </Link>
             </Button>
           }
         />
@@ -83,8 +92,8 @@ export default async function PayPage({ params, searchParams }: PageProps) {
       <Panel>
         <StatusNotice
           tone="warning"
-          title="This payment link isn't valid"
-          body={`It may have been replaced by a newer one. Ask ${company.name} for a new link.`}
+          title={t("invalidTitle")}
+          body={t("invalidBody", { company: company.name })}
         />
       </Panel>
     );
@@ -103,25 +112,21 @@ export default async function PayPage({ params, searchParams }: PageProps) {
         <CompanyBadge
           name={company.name}
           logoUrl={company.logoUrl}
-          caption={`Booking ${link.reference}`}
+          caption={t("caption", { reference: link.reference })}
         />
         <div>
           <h1 className="font-display text-h3">
             {extension
-              ? "Extend your rental"
+              ? t("titleExtension")
               : depositOnly
-                ? "Security deposit"
-                : "Pay for your rental"}
+                ? t("titleDeposit")
+                : t("titlePay")}
           </h1>
           <p className="mt-1 text-sm text-muted">
-            Hi {link.renterName.split(/\s+/)[0]}, check the details below before
-            you{" "}
-            {extension
-              ? "agree and pay"
-              : depositOnly
-                ? "authorise the hold"
-                : "pay"}
-            .
+            {t("intro", {
+              name: link.renterName.split(/\s+/)[0] ?? "",
+              action: extension ? "extension" : depositOnly ? "deposit" : "pay",
+            })}
           </p>
         </div>
       </header>
@@ -153,6 +158,8 @@ export default async function PayPage({ params, searchParams }: PageProps) {
                 policy: link.cancellationPolicy,
                 pickupAt: link.pickupAt,
                 timeZone: company.timeZone,
+                t: terms,
+                locale,
               })
             : null
         }

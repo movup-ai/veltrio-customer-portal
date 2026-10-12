@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 import { cn } from "@/shared/lib/cn";
 import { formatMoney } from "@/shared/lib/format";
@@ -57,6 +58,7 @@ function Row({ label, note, amount, lead, aside }: RowProps) {
 export function PaymentAmounts({ link }: PaymentAmountsProps) {
   const { charge, deposit, extension, currency, depositCents, companyName } =
     link;
+  const t = useTranslations("payment.amounts");
   const money = (cents: number) => formatMoney(cents, currency);
   const rows: ReactNode[] = [];
 
@@ -65,8 +67,8 @@ export function PaymentAmounts({ link }: PaymentAmountsProps) {
       <Row
         key="extension"
         lead
-        label="Extension"
-        note="Charged to your card once you agree to the new return time"
+        label={t("extension")}
+        note={t("extensionNote")}
         amount={money(extension.amountCents)}
       />,
     );
@@ -76,12 +78,8 @@ export function PaymentAmounts({ link }: PaymentAmountsProps) {
       <Row
         key="charge"
         lead
-        label="Amount due"
-        note={
-          deposit
-            ? "Charged to your card now. Does not include the deposit."
-            : "Charged to your card now"
-        }
+        label={t("due")}
+        note={deposit ? t("dueNoteDeposit") : t("dueNote")}
         amount={money(charge.amountCents)}
       />,
     );
@@ -91,8 +89,8 @@ export function PaymentAmounts({ link }: PaymentAmountsProps) {
       <Row
         key="deposit"
         lead={!charge}
-        label="Security deposit hold"
-        note="Held on your card, not charged. Released after the return."
+        label={t("hold")}
+        note={t("holdNote")}
         amount={money(deposit.amountCents)}
       />,
     );
@@ -101,8 +99,8 @@ export function PaymentAmounts({ link }: PaymentAmountsProps) {
       <Row
         key="deposit-later"
         aside
-        label="Security deposit"
-        note={`Not part of this payment. ${companyName} arranges it before pick-up.`}
+        label={t("deposit")}
+        note={t("depositLater", { company: companyName })}
         amount={money(depositCents)}
       />,
     );

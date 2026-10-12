@@ -1,3 +1,5 @@
+import type { useTranslations } from "next-intl";
+
 /** One step of a company's cancellation policy. Mirrors the API's CancellationTier. */
 export interface CancellationTier {
   /** Whole 24-hour periods before the pick-up time; 0 is any time up to it. */
@@ -86,22 +88,16 @@ export function policyLines(
 
 const DAY_MS = 86_400_000;
 
-/** A deadline as a sentence can carry it, e.g. "Oct 8 at 9:30 AM". */
-function deadline(instant: number, zone: string) {
-  const part = (options: Intl.DateTimeFormatOptions) =>
-    new Intl.DateTimeFormat("en-US", { timeZone: zone, ...options })
-      .format(instant)
-      // Intl puts a narrow no-break space before AM/PM.
-      .replace(/ /g, " ");
-  return `${part({ month: "short", day: "numeric" })} at ${part({ hour: "numeric", minute: "2-digit" })}`;
-}
-
 interface CancellationTermsInput {
   policy: CancellationPolicy;
   /** The booking's pick-up, an ISO instant: every deadline is counted back from it. */
   pickupAt: string;
   /** The company's IANA zone, whose clock the deadlines are read on. */
   timeZone: string;
+  /** Words the terms; bound to the `payment.terms` messages. */
+  t: ReturnType<typeof useTranslations<"payment.terms">>;
+  /** The reader's language, for the deadlines' dates and times. */
+  locale: string;
   now?: number;
 }
 
@@ -113,12 +109,12 @@ export function cancellationTerms({
   policy,
   pickupAt,
   timeZone,
+  t,
+  locale,
   now = Date.now(),
 }: CancellationTermsInput): string {
   const shortest = policy.at(-1);
-  if (!shortest) {
-    return "Non-refundable: if you cancel after paying, nothing is refunded.";
-  }
+  if (!shortest) return t("nonRefundable");
   const pickup = Date.parse(pickupAt);
   // Whole 24-hour periods back from pick-up, which is how the API measures notice.
   const open = policy.filter(
@@ -127,28 +123,44 @@ export function cancellationTerms({
   if (open.length === 0) {
     // Often a booking made this close to pick-up, with no deadline ever ahead of the renter:
     // so it says where refunds end, not that a time has passed.
-    const ended =
+    const when =
       shortest.daysBefore > 0
-        ? `${days(shortest.daysBefore)} before pick-up`
-        : "at pick-up";
-    return `Refunds end ${ended}, so nothing is refunded if you cancel after paying.`;
+        ? t("endedDays", { count: shortest.daysBefore })
+        : t("endedAtPickup");
+    return t("ended", { when });
   }
+  const part = (instant: number, options: Intl.DateTimeFormatOptions) =>
+    new Intl.DateTimeFormat(locale, { timeZone, ...options })
+      .format(instant)
+      // Intl puts no-break spaces around AM/PM.
+      .replace(/[\u00a0\u202f]/g, " ");
   const clauses = open.map(({ daysBefore, refundPercent }, index) => {
+    const instant = pickup - daysBefore * DAY_MS;
+    // A deadline as a sentence can carry it, e.g. "Oct 8 at 9:30 AM".
     const when =
       daysBefore === 0
-        ? "any time before pick-up"
-        : `by ${deadline(pickup - daysBefore * DAY_MS, timeZone)}`;
+        ? t("anyTime")
+        : t("by", {
+            deadline: t("deadline", {
+              date: part(instant, { month: "short", day: "numeric" }),
+              time: part(instant, {
+                hour: "numeric",
+                minute: "2-digit",
+                hour12: true,
+              }),
+            }),
+          });
     const refund =
       index > 0
-        ? `${refundPercent}%`
-        : `a ${refundPercent === 100 ? "full" : `${refundPercent}%`} refund`;
-    return `${when} for ${refund}`;
+        ? t("laterRefund", { percent: refundPercent })
+        : refundPercent === 100
+          ? t("fullRefund")
+          : t("partialRefund", { percent: refundPercent });
+    return t("clause", { when, refund });
   });
-  const last = clauses.pop();
+  const last = clauses.pop()!;
   const series =
-    clauses.length > 0 ? `${clauses.join(", ")}, or ${last}` : last;
+    clauses.length > 0 ? t("series", { list: clauses.join(", "), last }) : last;
   // A last tier of 0 days already runs up to the pick-up time, so nothing comes after it.
-  const after =
-    shortest.daysBefore > 0 ? " After that, nothing is refunded." : "";
-  return `Cancel ${series}.${after}`;
+  return t("cancel", { series }) + (shortest.daysBefore > 0 ? t("after") : "");
 }

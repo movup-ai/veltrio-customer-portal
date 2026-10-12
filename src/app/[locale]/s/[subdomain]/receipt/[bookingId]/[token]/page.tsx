@@ -2,6 +2,8 @@ import { Link } from "@/i18n/Link";
 import { FileDown } from "lucide-react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
+import type { Locale } from "@/i18n/routing";
 import {
   getCompanyProfile,
   listCompanyLocations,
@@ -20,16 +22,26 @@ import { StatusNotice } from "@/shared/ui/molecules/StatusNotice";
 import { RenterPanel } from "@/shared/ui/organisms/RenterPanel";
 
 interface PageProps {
-  params: Promise<{ subdomain: string; bookingId: string; token: string }>;
+  params: Promise<{
+    locale: Locale;
+    subdomain: string;
+    bookingId: string;
+    token: string;
+  }>;
 }
 
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
-  const { subdomain } = await params;
+  const { locale, subdomain } = await params;
   const company = await getCompanyProfile(subdomain);
+  const t = await getTranslations({ locale, namespace: "payment.receipt" });
   return {
-    title: { absolute: company ? `Receipt · ${company.name}` : "Receipt" },
+    title: {
+      absolute: company
+        ? t("metaTitle", { company: company.name })
+        : t("metaTitlePlain"),
+    },
     // The address is the renter's key to the page: keep it out of indexes and Referer headers.
     robots: { index: false, follow: false },
     referrer: "no-referrer",
@@ -41,6 +53,8 @@ export default async function ReceiptPage({ params }: PageProps) {
   const { subdomain } = link;
   const company = await getCompanyProfile(subdomain);
   if (!company) notFound();
+  const t = await getTranslations("payment.receipt");
+  const names = { company: company.name };
 
   // Null when the API cannot be reached.
   const result = await getReceipt(link).then(
@@ -52,11 +66,11 @@ export default async function ReceiptPage({ params }: PageProps) {
       <RenterPanel>
         <StatusNotice
           tone="waiting"
-          title="We couldn't load your receipt"
-          body={`Try again in a moment, or contact ${company.name} if it keeps happening.`}
+          title={t("loadFailedTitle")}
+          body={t("loadFailedBody", names)}
           action={
             <Button asChild variant="dark">
-              <Link href={receiptHref(link)}>Try again</Link>
+              <Link href={receiptHref(link)}>{t("tryAgain")}</Link>
             </Button>
           }
         />
@@ -70,8 +84,8 @@ export default async function ReceiptPage({ params }: PageProps) {
       <RenterPanel>
         <StatusNotice
           tone="warning"
-          title="This receipt link isn't valid"
-          body={`Ask ${company.name} for a new link.`}
+          title={t("invalidTitle")}
+          body={t("invalidBody", names)}
         />
       </RenterPanel>
     );
@@ -81,8 +95,8 @@ export default async function ReceiptPage({ params }: PageProps) {
       <RenterPanel>
         <StatusNotice
           tone="waiting"
-          title="No payment yet"
-          body={`Nothing has been paid on this booking so far. Your receipt appears here once ${company.name} takes a payment.`}
+          title={t("unpaidTitle")}
+          body={t("unpaidBody", names)}
         />
       </RenterPanel>
     );
@@ -98,10 +112,10 @@ export default async function ReceiptPage({ params }: PageProps) {
         <CompanyBadge
           name={company.name}
           logoUrl={company.logoUrl}
-          caption={`Booking ${receipt.reference}`}
+          caption={t("caption", { reference: receipt.reference })}
         />
         <div>
-          <h1 className="font-display text-h3">Receipt</h1>
+          <h1 className="font-display text-h3">{t("title")}</h1>
           <p className="mt-1 font-mono text-caption text-muted">
             {receipt.number} · {receipt.renterName}
           </p>
@@ -116,7 +130,7 @@ export default async function ReceiptPage({ params }: PageProps) {
       <Button asChild variant="outline" className="w-full">
         <Link href={receiptPdfUrl(link)}>
           <FileDown aria-hidden className="size-4" />
-          Download PDF
+          {t("downloadPdf")}
         </Link>
       </Button>
     </RenterPanel>

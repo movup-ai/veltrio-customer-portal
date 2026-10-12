@@ -9,6 +9,7 @@ const NAMESPACES = [
   "companies",
   "company",
   "landing",
+  "payment",
   "search",
   "vehicle",
 ] as const;

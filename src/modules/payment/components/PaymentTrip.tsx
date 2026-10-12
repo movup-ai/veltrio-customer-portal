@@ -1,5 +1,5 @@
 import { CarFront } from "lucide-react";
-import { VEHICLE_TYPE_META } from "@/modules/vehicle/vehicle-types";
+import { useLocale, useTranslations } from "next-intl";
 import { formatInZone } from "@/shared/lib/time-zone";
 import type { PaymentLink } from "../types";
 
@@ -21,9 +21,6 @@ interface PaymentTripProps {
   newReturnAt?: string | null;
 }
 
-const label = (value: string) =>
-  value.charAt(0).toUpperCase() + value.slice(1).replaceAll("_", " ");
-
 /** The car and when it changes hands: what the renter is paying for, or paid for. */
 export function PaymentTrip({
   link,
@@ -31,6 +28,10 @@ export function PaymentTrip({
   pickupAddress,
   newReturnAt,
 }: PaymentTripProps) {
+  const t = useTranslations("payment.trip");
+  const vehicle = useTranslations("vehicle");
+  const locale = useLocale();
+  const when = (instant: string) => formatInZone(instant, timeZone, locale);
   const specs = link.vehicleSpecs;
   return (
     <div className="rounded-lg border border-border bg-surface-muted">
@@ -53,34 +54,31 @@ export function PaymentTrip({
             <p className="mt-0.5 text-meta text-muted">
               {[
                 specs.year,
-                VEHICLE_TYPE_META[specs.vehicleType]?.label ??
-                  label(specs.vehicleType),
-                label(specs.transmission),
-                `${specs.seats} seats`,
-                label(specs.fuelType),
+                vehicle(`types.${specs.vehicleType}`),
+                vehicle(`transmission.${specs.transmission}`),
+                vehicle("card.seats", { count: specs.seats }),
+                vehicle(`fuel.${specs.fuelType}`),
               ].join(" · ")}
             </p>
           )}
         </div>
       </div>
       <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 border-t border-border p-4 text-sm">
-        <dt className="text-muted">Pick-up</dt>
-        <dd className="font-medium">{formatInZone(link.pickupAt, timeZone)}</dd>
-        <dt className="text-muted">Where</dt>
+        <dt className="text-muted">{t("pickup")}</dt>
+        <dd className="font-medium">{when(link.pickupAt)}</dd>
+        <dt className="text-muted">{t("where")}</dt>
         <dd>
           <span className="font-medium">{link.pickupLocation}</span>
           {pickupAddress && (
             <span className="block text-muted">{pickupAddress}</span>
           )}
         </dd>
-        <dt className="text-muted">Return</dt>
-        <dd className="font-medium">{formatInZone(link.returnAt, timeZone)}</dd>
+        <dt className="text-muted">{t("return")}</dt>
+        <dd className="font-medium">{when(link.returnAt)}</dd>
         {newReturnAt && (
           <>
-            <dt className="text-muted">New return</dt>
-            <dd className="font-semibold">
-              {formatInZone(newReturnAt, timeZone)}
-            </dd>
+            <dt className="text-muted">{t("newReturn")}</dt>
+            <dd className="font-semibold">{when(newReturnAt)}</dd>
           </>
         )}
       </dl>

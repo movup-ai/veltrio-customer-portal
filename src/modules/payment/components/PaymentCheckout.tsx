@@ -8,6 +8,7 @@ import {
 } from "@stripe/react-stripe-js";
 import { loadStripe, type Appearance, type Stripe } from "@stripe/stripe-js";
 import { Lock } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { Button } from "@/shared/ui/atoms/Button";
 import { Skeleton } from "@/shared/ui/atoms/Skeleton";
@@ -76,6 +77,7 @@ export function PaymentCheckout({
   paidSecret,
   ...form
 }: PaymentCheckoutProps) {
+  const t = useTranslations("payment.checkout");
   const stripe = useMemo(
     () =>
       PUBLISHABLE_KEY
@@ -87,8 +89,7 @@ export function PaymentCheckout({
   if (!stripe) {
     return (
       <p role="alert" className="text-sm font-medium text-primary-hover">
-        Card payments aren&apos;t available right now. Please contact the rental
-        company.
+        {t("unavailable")}
       </p>
     );
   }
@@ -113,16 +114,17 @@ export function PaymentCheckout({
   );
 }
 
-const FAILED =
-  "The payment didn't go through. Check your connection and try again.";
-
-const HOLD_FAILED = "The deposit hold didn't go through.";
-
 /**
  * Places a deposit hold on a method that has just paid; returns why it could not, or null.
+ * `failed` is what to say when the bank gives no reason of its own.
  * Never throws: by now the payment has gone through, and that must not be reported as failed.
  */
-async function placeHold(stripe: Stripe, holdSecret: string, methodId: string) {
+async function placeHold(
+  stripe: Stripe,
+  holdSecret: string,
+  methodId: string,
+  failed: string,
+) {
   try {
     const hold = await stripe.confirmPayment({
       clientSecret: holdSecret,
@@ -132,9 +134,9 @@ async function placeHold(stripe: Stripe, holdSecret: string, methodId: string) {
       },
       redirect: "if_required",
     });
-    return hold.error ? (hold.error.message ?? HOLD_FAILED) : null;
+    return hold.error ? (hold.error.message ?? failed) : null;
   } catch {
-    return HOLD_FAILED;
+    return failed;
   }
 }
 
@@ -155,6 +157,7 @@ function CheckoutForm({
   initialError,
   onSettled,
 }: CheckoutFormProps) {
+  const t = useTranslations("payment.checkout");
   const stripe = useStripe();
   const elements = useElements();
   // Stripe's frame takes a moment to draw its fields.
@@ -174,20 +177,21 @@ function CheckoutForm({
         const method = paymentIntent?.payment_method;
         const methodId = typeof method === "string" ? method : method?.id;
         if (paymentIntent?.status === "succeeded" && methodId) {
-          const failure = await placeHold(stripe, resume.holdSecret, methodId);
+          const failure = await placeHold(
+            stripe,
+            resume.holdSecret,
+            methodId,
+            t("holdFailed"),
+          );
           if (!failure) {
             onSettled(null);
             return;
           }
         }
         // Not every method that can pay can also hold a deposit.
-        setError(
-          "Your payment went through, but the deposit could not be held on the same payment method. Enter a card for the hold.",
-        );
+        setError(t("resumeHoldFailed"));
       } catch {
-        setError(
-          "Your payment went through. Enter a card for the deposit hold.",
-        );
+        setError(t("resumeEnterCard"));
       } finally {
         // Drop Stripe's return parameters so a reload does not try again.
         window.history.replaceState(null, "", window.location.pathname);
@@ -195,7 +199,7 @@ function CheckoutForm({
       }
     };
     void finishHold();
-  }, [stripe, resume, onSettled]);
+  }, [stripe, resume, onSettled, t]);
 
   const pay = async (event: FormEvent) => {
     event.preventDefault();
@@ -211,10 +215,10 @@ function CheckoutForm({
         redirect: "if_required",
       })
       // Stripe could not be reached at all.
-      .catch(() => ({ error: { message: FAILED } }) as const);
+      .catch(() => ({ error: { message: t("failed") } }) as const);
     if (result.error) {
       setSubmitting(false);
-      setError(result.error.message ?? "The payment didn't go through.");
+      setError(result.error.message ?? t("failedShort"));
       return;
     }
     // Paid from here on: whatever happens to the hold, the page re-reads the link.
@@ -222,7 +226,7 @@ function CheckoutForm({
     const methodId = typeof method === "string" ? method : method?.id;
     const holdError =
       depositSecret && methodId
-        ? await placeHold(stripe, depositSecret, methodId)
+        ? await placeHold(stripe, depositSecret, methodId, t("holdFailed"))
         : null;
     setSubmitting(false);
     onSettled(holdError);
@@ -244,7 +248,7 @@ function CheckoutForm({
           {cancellation && (
             <li>
               <span className="font-semibold text-carbon">
-                Cancellation policy:
+                {t("cancellationLabel")}
               </span>{" "}
               {cancellation}
             </li>
@@ -252,7 +256,7 @@ function CheckoutForm({
           {consent && (
             <li>
               <span className="font-semibold text-carbon">
-                Security deposit:
+                {t("depositLabel")}
               </span>{" "}
               {consent}
             </li>
@@ -266,7 +270,7 @@ function CheckoutForm({
         className="w-full"
       >
         <Lock aria-hidden className="size-4" />
-        {submitting ? "Confirming…" : submitLabel}
+        {submitting ? t("confirming") : submitLabel}
       </Button>
     </form>
   );

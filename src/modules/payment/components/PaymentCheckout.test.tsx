@@ -1,4 +1,5 @@
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, screen } from "@testing-library/react";
+import { renderInEnglish } from "@/test/render";
 import type { ReactNode } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -43,7 +44,7 @@ afterEach(cleanup);
 
 describe("PaymentCheckout", () => {
   it("states the cancellation terms and the deposit hold as two labelled lines", () => {
-    render(
+    renderInEnglish(
       <PaymentCheckout
         {...props}
         cancellation="Cancel by Oct 8 at 9:30 AM for a full refund."
@@ -64,11 +65,15 @@ describe("PaymentCheckout", () => {
     const lines = () =>
       screen.getAllByRole("listitem").map((line) => line.textContent);
 
-    render(<PaymentCheckout {...props} cancellation="Cancel any time." />);
+    renderInEnglish(
+      <PaymentCheckout {...props} cancellation="Cancel any time." />,
+    );
     expect(lines()).toEqual(["Cancellation policy: Cancel any time."]);
     cleanup();
 
-    render(<PaymentCheckout {...props} consent="Sky Rental holds $500." />);
+    renderInEnglish(
+      <PaymentCheckout {...props} consent="Sky Rental holds $500." />,
+    );
     expect(lines()).toEqual(["Security deposit: Sky Rental holds $500."]);
   });
 
@@ -76,7 +81,9 @@ describe("PaymentCheckout", () => {
     confirmPayment
       .mockResolvedValueOnce({ paymentIntent: { payment_method: "pm_1" } })
       .mockResolvedValueOnce({});
-    render(<PaymentCheckout {...props} depositSecret="pi_deposit_secret" />);
+    renderInEnglish(
+      <PaymentCheckout {...props} depositSecret="pi_deposit_secret" />,
+    );
     submit();
 
     await vi.waitFor(() => expect(onSettled).toHaveBeenCalledWith(null));
@@ -90,7 +97,7 @@ describe("PaymentCheckout", () => {
 
   it("lets the renter try again when Stripe cannot be reached", async () => {
     confirmPayment.mockRejectedValueOnce(new TypeError("Failed to fetch"));
-    render(<PaymentCheckout {...props} />);
+    renderInEnglish(<PaymentCheckout {...props} />);
     submit();
 
     expect((await screen.findByRole("alert")).textContent).toContain(
@@ -105,7 +112,9 @@ describe("PaymentCheckout", () => {
     confirmPayment
       .mockResolvedValueOnce({ paymentIntent: { payment_method: "pm_1" } })
       .mockRejectedValueOnce(new TypeError("Failed to fetch"));
-    render(<PaymentCheckout {...props} depositSecret="pi_deposit_secret" />);
+    renderInEnglish(
+      <PaymentCheckout {...props} depositSecret="pi_deposit_secret" />,
+    );
     submit();
 
     // The page re-reads the link, with the hold's failure and nothing about the payment.
@@ -122,7 +131,7 @@ describe("PaymentCheckout", () => {
       paymentIntent: { status: "succeeded", payment_method: "pm_bank" },
     });
     confirmPayment.mockResolvedValueOnce({});
-    render(
+    renderInEnglish(
       <PaymentCheckout
         {...props}
         clientSecret="pi_deposit_secret"
@@ -147,7 +156,7 @@ describe("PaymentCheckout", () => {
     confirmPayment.mockResolvedValueOnce({
       error: { message: "Not supported" },
     });
-    render(
+    renderInEnglish(
       <PaymentCheckout
         {...props}
         clientSecret="pi_deposit_secret"

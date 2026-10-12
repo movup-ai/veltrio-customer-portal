@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowRight } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { formatMoney } from "@/shared/lib/format";
@@ -30,6 +31,9 @@ export function ExtensionConsent({
   currency,
   timeZone,
 }: ExtensionConsentProps) {
+  const t = useTranslations("payment.extension");
+  const locale = useLocale();
+  const when = (instant: string) => formatInZone(instant, timeZone, locale);
   const router = useRouter();
   const [name, setName] = useState(defaultName);
   const [consent, setConsent] = useState(false);
@@ -39,8 +43,8 @@ export function ExtensionConsent({
 
   const problems = attempted ? extensionConsentProblems(name, consent) : {};
   const agreement = extension.agreementNumber
-    ? `rental agreement ${extension.agreementNumber}`
-    : "my rental agreement";
+    ? t("agreementNumbered", { number: extension.agreementNumber })
+    : t("agreementMine");
 
   const submit = async (event: FormEvent) => {
     event.preventDefault();
@@ -65,45 +69,44 @@ export function ExtensionConsent({
 
   return (
     <form noValidate onSubmit={submit} className="grid gap-5">
-      <h2 className="text-h4 font-semibold">Agree to the new return time</h2>
+      <h2 className="text-h4 font-semibold">{t("title")}</h2>
 
       <TextField
-        label="Full name"
-        placeholder="As it appears on your licence"
+        label={t("name")}
+        placeholder={t("namePlaceholder")}
         autoComplete="name"
         maxLength={ACCEPTED_NAME_MAX}
         value={name}
         onChange={(event) => setName(event.target.value)}
-        error={problems.name}
+        error={problems.name && t(problems.name)}
       />
 
       <Checkbox
         checked={consent}
         onChange={(event) => setConsent(event.target.checked)}
-        error={problems.consent}
+        error={problems.consent && t(problems.consent)}
       >
-        I agree to return the vehicle by{" "}
-        {formatInZone(extension.newReturnAt, timeZone)} and to pay{" "}
-        {formatMoney(extension.amountCents, currency)} for the extension. Every
-        other term of {agreement} continues to apply.
+        {t("agree", {
+          when: when(extension.newReturnAt),
+          amount: formatMoney(extension.amountCents, currency),
+          agreement,
+        })}
       </Checkbox>
 
       {extension.expiresAt && (
         <p className="text-meta text-pretty text-muted">
-          The new return time is kept for you until{" "}
-          {formatInZone(extension.expiresAt, timeZone)}. It only takes effect
-          once you have paid.
+          {t("kept", { when: when(extension.expiresAt) })}
         </p>
       )}
 
       {failed && (
         <p role="alert" className="text-sm font-medium text-primary-hover">
-          We couldn&apos;t record that. Check your connection and try again.
+          {t("failed")}
         </p>
       )}
 
       <Button type="submit" size="lg" disabled={submitting} className="w-full">
-        {submitting ? "Saving…" : "Agree and continue to payment"}
+        {submitting ? t("saving") : t("submit")}
         <ArrowRight aria-hidden className="size-4" />
       </Button>
     </form>
