@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 import { cn } from "@/shared/lib/cn";
 
@@ -22,10 +23,13 @@ export function FieldCaption({
   children: ReactNode;
   optional?: boolean;
 }) {
+  const t = useTranslations("common");
   return (
     <>
       {children}
-      {optional && <span className="font-normal text-muted"> (optional)</span>}
+      {optional && (
+        <span className="font-normal text-muted">{t("optional")}</span>
+      )}
     </>
   );
 }

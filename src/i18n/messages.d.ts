@@ -1,3 +1,4 @@
+import type booking from "../../messages/en/booking.json";
 import type common from "../../messages/en/common.json";
 import type companies from "../../messages/en/companies.json";
 import type company from "../../messages/en/company.json";
@@ -11,6 +12,7 @@ declare module "next-intl" {
   interface AppConfig {
     Locale: (typeof routing.locales)[number];
     Messages: {
+      booking: typeof booking;
       common: typeof common;
       companies: typeof companies;
       company: typeof company;

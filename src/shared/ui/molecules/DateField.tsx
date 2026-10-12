@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { useId, useRef, type FocusEvent } from "react";
 import { cn } from "@/shared/lib/cn";
 import type { DateParts } from "@/shared/lib/date";
@@ -26,7 +27,6 @@ interface DateFieldProps {
 const PARTS = [
   {
     key: "month",
-    label: "Month",
     placeholder: "MM",
     length: 2,
     width: "w-8",
@@ -34,7 +34,6 @@ const PARTS = [
   },
   {
     key: "day",
-    label: "Day",
     placeholder: "DD",
     length: 2,
     width: "w-8",
@@ -42,7 +41,6 @@ const PARTS = [
   },
   {
     key: "year",
-    label: "Year",
     placeholder: "YYYY",
     length: 4,
     width: "w-12",
@@ -66,6 +64,7 @@ export function DateField({
   birthday,
   className,
 }: DateFieldProps) {
+  const t = useTranslations("common.dateField");
   const id = useId();
   const hintId = hint ? `${id}-hint` : undefined;
   const errorId = error ? `${id}-error` : undefined;
@@ -103,7 +102,7 @@ export function DateField({
               ref={(element) => {
                 inputs.current[index] = element;
               }}
-              aria-label={part.label}
+              aria-label={t(part.key)}
               value={value[part.key]}
               onChange={(event) => {
                 const next = event.target.value.replace(/\D/g, "");

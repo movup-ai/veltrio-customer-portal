@@ -1,0 +1,173 @@
+{
+  "bookPage": {
+    "metaTitle": "Reservar el {name} · {company}",
+    "summaryLabel": "Tu alquiler",
+    "changeDates": "Cambiar fechas"
+  },
+  "form": {
+    "title": "Solicitar reserva",
+    "intro": "Dile a {company} quién conduce y cómo prefieres pagar. Revisan tu solicitud antes de que se cobre nada.",
+    "returnTitle": "Lugar de devolución",
+    "returnDescription": "Recoges el auto en {location}. Devuélvelo ahí o en otra sucursal de {company}.",
+    "returnTo": "Devolver en",
+    "notesTitle": "¿Algo más?",
+    "notesLabel": "Nota para la empresa",
+    "notesHint": "Número de vuelo, una silla infantil, una recogida tarde o cualquier cosa que deban saber.",
+    "needAttention": "{count, plural, =1 {Un campo de arriba necesita tu atención.} other {# campos de arriba necesitan tu atención.}}",
+    "sending": "Enviando solicitud…",
+    "submit": "Solicitar reserva",
+    "notCharged": "Todavía no se te cobrará nada."
+  },
+  "failures": {
+    "unavailable": "Este vehículo ya no está disponible en esas fechas. Cambia las fechas e inténtalo de nuevo.",
+    "pickup_in_past": "Esa hora de recogida ya pasó. Cambia las fechas e inténtalo de nuevo.",
+    "location_unavailable": "La empresa no está entregando vehículos en esta sucursal por ahora. Contáctala para coordinar la recogida.",
+    "rejected": "El sistema de la empresa no aceptó estos datos. Revísalos e inténtalo de nuevo.",
+    "failed": "No se pudo enviar la solicitud. Revisa tu conexión e inténtalo de nuevo."
+  },
+  "driver": {
+    "title": "Tus datos",
+    "description": "Los datos del conductor principal, que se usan para el contrato de alquiler.",
+    "name": "Nombre completo",
+    "nameHint": "Tal como aparece en tu licencia de conducir.",
+    "email": "Correo electrónico",
+    "phone": "Teléfono",
+    "gender": "Género",
+    "genders": {
+      "female": "Femenino",
+      "male": "Masculino",
+      "non_binary": "No binario",
+      "undisclosed": "Prefiero no decirlo"
+    },
+    "birth": "Fecha de nacimiento",
+    "address": "Dirección de domicilio"
+  },
+  "documents": {
+    "title": "Licencia y seguro",
+    "description": "Con fotos nítidas, la empresa puede revisar tus documentos antes de que llegues. JPG, PNG, WebP o HEIC, de hasta 10 MB cada una.",
+    "licenceNumber": "Número de licencia",
+    "licenceExpiry": "Fecha de vencimiento de la licencia",
+    "licencePhoto": "Foto de la licencia de conducir",
+    "licencePhotoHint": "El frente de la tarjeta.",
+    "insurancePhoto": "Foto de la tarjeta de seguro",
+    "insurancePhotoHint": "Tu póliza de auto vigente."
+  },
+  "payment": {
+    "title": "Preferencia de pago",
+    "description": "No se te cobra al enviar esta solicitud.",
+    "legend": "¿Cómo prefieres pagar?",
+    "timingLegend": "¿Cuándo se debe garantizar el depósito?",
+    "theRental": "el alquiler",
+    "depositOf": "depósito de {amount}",
+    "securityDeposit": "depósito de garantía",
+    "online": {
+      "title": "Pagar en línea",
+      "description": "{company} te envía por correo un enlace de pago seguro cuando acepta tu solicitud."
+    },
+    "cash": {
+      "title": "Pagar en efectivo",
+      "description": "Pagas {rental} al recoger el auto. {company} te indicará cómo se cobra el depósito."
+    },
+    "rentalFirst": {
+      "title": "Alquiler ahora, depósito en la recogida",
+      "description": "Pagas {rental} en línea. El {deposit} se garantiza con tu tarjeta al recoger el auto."
+    },
+    "allAtOnce": {
+      "title": "Alquiler y depósito juntos",
+      "description": "Pagas {rental} y garantizas el {deposit} en un solo pago en línea. No queda nada pendiente en la recogida."
+    }
+  },
+  "errors": {
+    "nameRequired": "Escribe tu nombre completo.",
+    "nameTooLong": "Usa 80 caracteres o menos.",
+    "nameDigits": "Un nombre no puede contener números.",
+    "emailRequired": "Escribe tu correo electrónico.",
+    "emailInvalid": "Escribe un correo como nombre@ejemplo.com.",
+    "phoneRequired": "Escribe tu número de teléfono.",
+    "phoneCharacters": "Usa solo dígitos, espacios y + ( ) - en el número de teléfono.",
+    "phoneLength": "Escribe un número de teléfono de 7 a 15 dígitos.",
+    "genderRequired": "Selecciona una opción.",
+    "birthRequired": "Escribe tu fecha de nacimiento.",
+    "birthInvalid": "Escribe una fecha real, como 04 27 1990.",
+    "birthFuture": "Tu fecha de nacimiento debe estar en el pasado.",
+    "birthTooYoung": "Debes tener al menos {minAge} años para alquilar.",
+    "birthYear": "Revisa el año de tu fecha de nacimiento.",
+    "addressRequired": "Escribe la dirección de tu domicilio.",
+    "addressShort": "Escribe la dirección completa de tu domicilio.",
+    "addressTooLong": "Usa 160 caracteres o menos.",
+    "licenceRequired": "Escribe tu número de licencia.",
+    "licenceCharacters": "Usa solo letras, números, espacios y guiones.",
+    "licenceLength": "Escribe un número de licencia de 3 a 30 caracteres.",
+    "expiryRequired": "Escribe la fecha de vencimiento de tu licencia.",
+    "expiryInvalid": "Escribe una fecha real, como 08 15 2029.",
+    "expiryBeforeReturn": "Tu licencia debe estar vigente hasta que devuelvas el auto.",
+    "licencePhotoRequired": "Añade una foto de tu licencia de conducir.",
+    "insurancePhotoRequired": "Añade una foto de tu tarjeta de seguro.",
+    "photoType": "Sube una foto JPG, PNG, WebP o HEIC.",
+    "photoSize": "Sube una foto de 10 MB o menos.",
+    "paymentMethodRequired": "Elige cómo prefieres pagar.",
+    "paymentTimingRequired": "Elige cuándo pagar el depósito.",
+    "notesTooLong": "Usa {maxNotes} caracteres o menos."
+  },
+  "summary": {
+    "pickup": "Recogida",
+    "return": "Devolución",
+    "pickupLocation": "Lugar de recogida",
+    "returnLocation": "Lugar de devolución",
+    "when": "{date} a las {time}",
+    "line": "{label}: {price} × {count}",
+    "cappedHours": "Un día se cobra como {hours} horas.",
+    "discount": "Descuento ({percent}% menos)",
+    "taxes": "Impuestos ({percent}%)",
+    "total": "Total",
+    "deposit": "Un depósito de garantía reembolsable de {amount} se libera al devolver el auto.",
+    "noRate": "{company} no ha fijado una tarifa para este vehículo y te confirmará el precio."
+  },
+  "confirmed": {
+    "title": "Solicitud enviada",
+    "body": "{company} ya tiene tu solicitud de reserva. Tu referencia es <ref>{reference}</ref>.",
+    "uploading": "Enviando tus documentos… Mantén esta página abierta hasta que terminen.",
+    "uploadFailed": {
+      "licence": "La foto de tu licencia de conducir no se subió.",
+      "insurance": "La foto de tu tarjeta de seguro no se subió.",
+      "both": "Las fotos de tu licencia de conducir y de tu tarjeta de seguro no se subieron."
+    },
+    "notArrived": {
+      "licence": "La foto de tu licencia de conducir no ha llegado.",
+      "insurance": "La foto de tu tarjeta de seguro no ha llegado.",
+      "both": "Las fotos de tu licencia de conducir y de tu tarjeta de seguro no han llegado."
+    },
+    "retryOrBring": "Tu solicitud ya está con {company} de todos modos. Inténtalo de nuevo ahora o lleva {count, plural, =1 {el documento} other {los documentos}} a la recogida.",
+    "bring": "Tu solicitud ya está con {company} de todos modos. Lleva {count, plural, =1 {el documento} other {los documentos}} a la recogida.",
+    "tryAgain": "Intentar de nuevo",
+    "nextTitle": "Qué pasa ahora",
+    "steps": {
+      "review": "{company} revisa las fechas, tus datos y tus documentos.",
+      "cashConfirm": "Te confirman la reserva por correo a {email}.",
+      "cashPay": "Pagas en efectivo al recoger el auto.",
+      "onlineLink": "Te envían un enlace de pago seguro a {email}.",
+      "allAtOnce": "Pagas el alquiler y garantizas el depósito a la vez, y la reserva queda confirmada.",
+      "rentalFirst": "Pagas el alquiler y la reserva queda confirmada. El depósito se garantiza en la recogida."
+    },
+    "notCharged": "No se ha cobrado nada. Tus fechas quedan apartadas mientras la empresa revisa la solicitud.",
+    "more": "Más de {company}"
+  },
+  "statusPage": {
+    "metaTitle": "Reserva {reference} · {company}",
+    "metaTitlePlain": "Reserva {reference}",
+    "caption": "Reserva {reference}",
+    "loading": "Cargando tu reserva",
+    "loadFailedTitle": "No pudimos cargar tu reserva",
+    "loadFailedBody": "Inténtalo de nuevo en un momento, o contacta a {company} si sigue ocurriendo.",
+    "tryAgain": "Intentar de nuevo",
+    "invalidTitle": "Este enlace de reserva no es válido",
+    "invalidBody": "Revisa el enlace o contacta a {company} con tu referencia de reserva.",
+    "confirmedTitle": "Tu reserva está confirmada",
+    "confirmedBody": "{company} aceptó la solicitud {reference}. Revisa tu correo para ver los siguientes pasos.",
+    "cancelledTitle": "Esta reserva fue cancelada",
+    "cancelledBody": "La solicitud {reference} ya no está activa. Contacta a {company} si no lo esperabas.",
+    "otherBody": "Este alquiler está en curso o ya terminó. Contacta a {company} si tienes alguna duda.",
+    "quotedTotal": "Total cotizado",
+    "deposit": "Depósito reembolsable"
+  }
+}

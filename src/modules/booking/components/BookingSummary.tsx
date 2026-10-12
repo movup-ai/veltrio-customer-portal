@@ -1,8 +1,8 @@
-import { format } from "date-fns";
+import { useLocale, useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 import type { Vehicle } from "@/modules/vehicle/types";
 import { vehicleName } from "@/modules/vehicle/vehicle.utils";
-import { fromIsoDate } from "@/shared/lib/date";
+import { formatLongDay } from "@/shared/lib/date";
 import { formatMoney } from "@/shared/lib/format";
 import { formatTime } from "@/shared/lib/time";
 import { ResponsiveImage } from "@/shared/ui/atoms/ResponsiveImage";
@@ -20,11 +20,6 @@ interface BookingSummaryProps {
   action?: ReactNode;
 }
 
-function when(date: string, time: string) {
-  const day = fromIsoDate(date);
-  return `${day ? format(day, "EEE, MMM d, yyyy") : date} at ${formatTime(time)}`;
-}
-
 /** The vehicle, the rental window and what it costs. */
 export function BookingSummary({
   vehicle,
@@ -34,6 +29,10 @@ export function BookingSummary({
   returnLocation,
   action,
 }: BookingSummaryProps) {
+  const t = useTranslations("booking.summary");
+  const locale = useLocale();
+  const when = (date: string, time: string) =>
+    t("when", { date: formatLongDay(date, locale), time: formatTime(time) });
   const photo = vehicle.photos[0];
   return (
     <div className="rounded-xl border border-border bg-surface p-6 shadow-1">
@@ -59,23 +58,23 @@ export function BookingSummary({
 
       <dl className="mt-5 grid gap-4 border-t border-border pt-5 text-sm">
         <div>
-          <dt className="type-label text-muted">Pick-up</dt>
+          <dt className="type-label text-muted">{t("pickup")}</dt>
           <dd className="mt-1 font-medium">
             {when(dates.pickup, dates.pickupTime)}
           </dd>
         </div>
         <div>
-          <dt className="type-label text-muted">Return</dt>
+          <dt className="type-label text-muted">{t("return")}</dt>
           <dd className="mt-1 font-medium">
             {when(dates.return, dates.returnTime)}
           </dd>
         </div>
         <div>
-          <dt className="type-label text-muted">Pick-up location</dt>
+          <dt className="type-label text-muted">{t("pickupLocation")}</dt>
           <dd className="mt-1 font-medium">{pickupLocation}</dd>
         </div>
         <div>
-          <dt className="type-label text-muted">Return location</dt>
+          <dt className="type-label text-muted">{t("returnLocation")}</dt>
           <dd className="mt-1 font-medium">{returnLocation}</dd>
         </div>
       </dl>
@@ -91,10 +90,14 @@ export function BookingSummary({
                   className="flex justify-between gap-4"
                 >
                   <dt>
-                    {line.label}: {formatMoney(line.unitCents)} × {line.count}
+                    {t("line", {
+                      label: line.label,
+                      price: formatMoney(line.unitCents),
+                      count: line.count,
+                    })}
                     {line.cappedHours !== null && (
                       <span className="block text-meta text-muted">
-                        A day is billed as {line.cappedHours} hours.
+                        {t("cappedHours", { hours: line.cappedHours })}
                       </span>
                     )}
                   </dt>
@@ -103,33 +106,32 @@ export function BookingSummary({
               ))}
               {quote.discount && (
                 <div className="flex justify-between gap-4 text-success">
-                  <dt>Discount ({quote.discount.percentOff}% off)</dt>
+                  <dt>
+                    {t("discount", { percent: quote.discount.percentOff })}
+                  </dt>
                   <dd>−{formatMoney(quote.discount.amountCents)}</dd>
                 </div>
               )}
               {quote.taxRatePct > 0 && (
                 <div className="flex justify-between gap-4">
-                  <dt>Taxes ({quote.taxRatePct}%)</dt>
+                  <dt>{t("taxes", { percent: quote.taxRatePct })}</dt>
                   <dd>{formatMoney(quote.taxCents)}</dd>
                 </div>
               )}
               <div className="flex justify-between gap-4 border-t border-border pt-3 text-ui font-bold">
-                <dt>Total</dt>
+                <dt>{t("total")}</dt>
                 <dd>{formatMoney(quote.totalCents)}</dd>
               </div>
             </dl>
             {quote.depositCents !== null && (
               <p className="mt-4 rounded-md bg-surface-muted p-3 text-meta text-muted">
-                A refundable security deposit of{" "}
-                {formatMoney(quote.depositCents)} is released when the car comes
-                back.
+                {t("deposit", { amount: formatMoney(quote.depositCents) })}
               </p>
             )}
           </>
         ) : (
           <p className="text-muted">
-            {vehicle.company.name} has not set a rate for this vehicle and will
-            confirm the price with you.
+            {t("noRate", { company: vehicle.company.name })}
           </p>
         )}
       </div>

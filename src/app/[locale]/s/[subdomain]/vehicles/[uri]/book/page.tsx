@@ -1,3 +1,5 @@
+import { getTranslations } from "next-intl/server";
+import type { Locale } from "@/i18n/routing";
 import { localizeHref } from "@/i18n/href";
 import type { Metadata } from "next";
 import { Link } from "@/i18n/Link";
@@ -25,19 +27,23 @@ import { CancellationPolicy } from "@/shared/ui/molecules/CancellationPolicy";
 import { SiteHeader } from "@/shared/ui/organisms/SiteHeader";
 
 interface PageProps {
-  params: Promise<{ locale: string; subdomain: string; uri: string }>;
+  params: Promise<{ locale: Locale; subdomain: string; uri: string }>;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
-  const { subdomain, uri } = await params;
+  const { locale, subdomain, uri } = await params;
   const vehicle = await getVehicle(subdomain, uri);
   if (!vehicle) return {};
+  const t = await getTranslations({ locale, namespace: "booking.bookPage" });
   return {
     title: {
-      absolute: `Book the ${vehicleName(vehicle)} · ${vehicle.company.name}`,
+      absolute: t("metaTitle", {
+        name: vehicleName(vehicle),
+        company: vehicle.company.name,
+      }),
     },
     // A step in a flow, tied to chosen dates: nothing for a search engine here.
     robots: { index: false, follow: false },
@@ -60,6 +66,7 @@ export default async function BookVehiclePage({
   // No usable dates: back to the vehicle page to choose them.
   if (!dates) redirect(localizeHref(vehicleHref(vehicle), locale));
 
+  const t = await getTranslations("booking.bookPage");
   const quote = quoteBooking(vehicle, dates, vehicle.company.timeZone);
   // Without the branch list the car simply comes back where it was picked up.
   const branches = (await settle(listCompanyLocations(subdomain))) ?? [];
@@ -84,7 +91,7 @@ export default async function BookVehiclePage({
               companyName={vehicle.company.name}
               companyHref={companyHref(vehicle.company)}
             />
-            <aside aria-label="Your rental" className="lg:order-last">
+            <aside aria-label={t("summaryLabel")} className="lg:order-last">
               <div className="lg:sticky lg:top-24">
                 <BookingSummary
                   vehicle={vehicle}
@@ -106,7 +113,7 @@ export default async function BookVehiclePage({
                       // Hidden once the request has been sent.
                       className="text-sm font-semibold underline underline-offset-4 group-has-[[data-booking-sent]]/booking:hidden"
                     >
-                      Change dates
+                      {t("changeDates")}
                     </Link>
                   }
                 />

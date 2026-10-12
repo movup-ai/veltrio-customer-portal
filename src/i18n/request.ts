@@ -4,6 +4,7 @@ import { routing } from "./routing";
 
 /** One file of messages per area of the site, under messages/<locale>/. */
 const NAMESPACES = [
+  "booking",
   "common",
   "companies",
   "company",

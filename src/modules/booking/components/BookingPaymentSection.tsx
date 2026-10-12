@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { formatMoney } from "@/shared/lib/format";
 import {
   RadioCardGroup,
@@ -20,36 +21,37 @@ export function BookingPaymentSection({
   companyName,
   quote,
 }: BookingPaymentSectionProps) {
+  const t = useTranslations("booking.payment");
   const { values, errors, set, touch } = form;
-  const rental = quote ? formatMoney(quote.totalCents) : "the rental";
+  const rental = quote ? formatMoney(quote.totalCents) : t("theRental");
   const deposit =
     quote?.depositCents != null
-      ? `${formatMoney(quote.depositCents)} deposit`
-      : "security deposit";
+      ? t("depositOf", { amount: formatMoney(quote.depositCents) })
+      : t("securityDeposit");
 
   const timings: RadioCardOption<PaymentTiming>[] = [
     {
       value: "rental_first",
-      title: "Rental now, deposit at pick-up",
-      description: `Pay ${rental} online. The ${deposit} is secured on your card when you collect the car.`,
+      title: t("rentalFirst.title"),
+      description: t("rentalFirst.description", { rental, deposit }),
     },
     {
       value: "all_at_once",
-      title: "Rental and deposit together",
-      description: `Pay ${rental} and secure the ${deposit} in one online payment. Nothing left to do at pick-up.`,
+      title: t("allAtOnce.title"),
+      description: t("allAtOnce.description", { rental, deposit }),
     },
   ];
 
   const methods: RadioCardOption<PaymentMethod>[] = [
     {
       value: "online",
-      title: "Pay online",
-      description: `${companyName} emails you a secure payment link once they accept your request.`,
+      title: t("online.title"),
+      description: t("online.description", { company: companyName }),
       detail: (
         <div data-field="paymentTiming">
           <RadioCardGroup
             nested
-            legend="When should the deposit be secured?"
+            legend={t("timingLegend")}
             options={timings}
             value={values.paymentTiming}
             onChange={(timing) => {
@@ -63,19 +65,16 @@ export function BookingPaymentSection({
     },
     {
       value: "cash",
-      title: "Pay in cash",
-      description: `Pay ${rental} when you collect the car. ${companyName} will tell you how the deposit is taken.`,
+      title: t("cash.title"),
+      description: t("cash.description", { rental, company: companyName }),
     },
   ];
 
   return (
-    <BookingSection
-      title="Payment preference"
-      description="You are not charged when you send this request."
-    >
+    <BookingSection title={t("title")} description={t("description")}>
       <div data-field="paymentMethod">
         <RadioCardGroup
-          legend="How would you like to pay?"
+          legend={t("legend")}
           options={methods}
           value={values.paymentMethod}
           onChange={(method) => {

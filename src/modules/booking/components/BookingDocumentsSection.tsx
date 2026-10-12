@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { DateField } from "@/shared/ui/molecules/DateField";
 import { ImageUploadField } from "@/shared/ui/molecules/ImageUploadField";
 import { TextField } from "@/shared/ui/molecules/TextField";
@@ -7,16 +8,14 @@ import { BookingSection } from "./BookingSection";
 
 /** The driving licence and proof of insurance. */
 export function BookingDocumentsSection({ form }: { form: BookingFormApi }) {
+  const t = useTranslations("booking.documents");
   const { values, errors, set, touch, isValid } = form;
   return (
-    <BookingSection
-      title="Licence and insurance"
-      description="Clear photos let the company check your documents before you arrive. JPG, PNG, WebP or HEIC, up to 10 MB each."
-    >
+    <BookingSection title={t("title")} description={t("description")}>
       <div className="grid gap-4 sm:grid-cols-2">
         <div data-field="licenceNumber">
           <TextField
-            label="Licence number"
+            label={t("licenceNumber")}
             autoComplete="off"
             value={values.licenceNumber}
             onChange={(event) => set("licenceNumber", event.target.value)}
@@ -27,7 +26,7 @@ export function BookingDocumentsSection({ form }: { form: BookingFormApi }) {
         </div>
         <div data-field="licenceExpiry">
           <DateField
-            legend="Licence expiry date"
+            legend={t("licenceExpiry")}
             value={values.licenceExpiry}
             onChange={(date) => set("licenceExpiry", date)}
             onBlur={() => touch("licenceExpiry")}
@@ -38,8 +37,8 @@ export function BookingDocumentsSection({ form }: { form: BookingFormApi }) {
       <div className="grid gap-4 sm:grid-cols-2">
         <div data-field="licencePhoto">
           <ImageUploadField
-            label="Driving licence photo"
-            hint="The front of the card."
+            label={t("licencePhoto")}
+            hint={t("licencePhotoHint")}
             accept={DOCUMENT_TYPES}
             value={values.licencePhoto}
             onChange={(file) => {
@@ -51,8 +50,8 @@ export function BookingDocumentsSection({ form }: { form: BookingFormApi }) {
         </div>
         <div data-field="insurancePhoto">
           <ImageUploadField
-            label="Insurance card photo"
-            hint="Your current auto policy."
+            label={t("insurancePhoto")}
+            hint={t("insurancePhotoHint")}
             accept={DOCUMENT_TYPES}
             value={values.insurancePhoto}
             onChange={(file) => {

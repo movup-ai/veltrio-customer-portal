@@ -67,12 +67,8 @@ describe("validateBooking", () => {
   });
 
   it("checks the characters and length of a phone number", () => {
-    expect(errorsFor({ phone: "call me" }).phone).toBe(
-      "Use only digits, spaces and + ( ) - in a phone number.",
-    );
-    expect(errorsFor({ phone: "12345" }).phone).toBe(
-      "Enter a phone number with 7 to 15 digits.",
-    );
+    expect(errorsFor({ phone: "call me" }).phone).toBe("phoneCharacters");
+    expect(errorsFor({ phone: "12345" }).phone).toBe("phoneLength");
     expect(errorsFor({ phone: "305.555.0142" }).phone).toBeUndefined();
   });
 
@@ -80,18 +76,18 @@ describe("validateBooking", () => {
     expect(
       errorsFor({ dateOfBirth: { month: "2", day: "31", year: "1990" } })
         .dateOfBirth,
-    ).toBe("Enter a real date, like 04 27 1990.");
+    ).toBe("birthInvalid");
     const year = String(new Date().getFullYear() - 10);
     expect(
       errorsFor({ dateOfBirth: { month: "1", day: "1", year } }).dateOfBirth,
-    ).toBe("You must be at least 18 to rent.");
+    ).toBe("birthTooYoung");
   });
 
   it("requires the licence to outlast the rental", () => {
     expect(
       errorsFor({ licenceExpiry: { month: "10", day: "12", year: "2026" } })
         .licenceExpiry,
-    ).toBe("Your licence must be valid until you return the car.");
+    ).toBe("expiryBeforeReturn");
     expect(
       errorsFor({ licenceExpiry: { month: "10", day: "13", year: "2026" } })
         .licenceExpiry,
@@ -101,13 +97,13 @@ describe("validateBooking", () => {
   it("checks uploaded photos for type and size", () => {
     expect(
       errorsFor({ licencePhoto: photo("application/pdf") }).licencePhoto,
-    ).toBe("Upload a JPG, PNG, WebP or HEIC photo.");
+    ).toBe("photoType");
     expect(
       errorsFor({ insurancePhoto: photo("image/png", 11 * 1024 * 1024) })
         .insurancePhoto,
-    ).toBe("Upload a photo of 10 MB or less.");
+    ).toBe("photoSize");
     expect(errorsFor({ insurancePhoto: null }).insurancePhoto).toBe(
-      "Add a photo of your insurance card.",
+      "insurancePhotoRequired",
     );
   });
 

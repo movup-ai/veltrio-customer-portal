@@ -24,6 +24,17 @@ export function formatDay(iso: string, locale: string) {
   }).format(new Date(`${iso}T00:00:00Z`));
 }
 
+/** An ISO date in full in the reader's language: "Tue, Oct 20, 2026". */
+export function formatLongDay(iso: string, locale: string) {
+  return new Intl.DateTimeFormat(locale, {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(new Date(`${iso}T00:00:00Z`));
+}
+
 /** A date as typed into separate month, day and year boxes. */
 export interface DateParts {
   month: string;

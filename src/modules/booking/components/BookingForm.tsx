@@ -1,6 +1,6 @@
 "use client";
 
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { localizeHref } from "@/i18n/href";
 import { track } from "@/shared/lib/analytics";
@@ -33,18 +33,6 @@ import { BookingDriverSection } from "./BookingDriverSection";
 import { BookingPaymentSection } from "./BookingPaymentSection";
 import { useBookingReturn } from "./BookingReturn";
 import { BookingSection } from "./BookingSection";
-
-const FAILURE_MESSAGES: Record<BookingFailure, string> = {
-  unavailable:
-    "This vehicle is no longer available for those dates. Change your dates and try again.",
-  pickup_in_past:
-    "That pick-up time has already passed. Change your dates and try again.",
-  location_unavailable:
-    "The company is not handing over vehicles at this branch right now. Contact them to arrange a pick-up.",
-  rejected:
-    "The company's system did not accept these details. Check them and try again.",
-  failed: "The request could not be sent. Check your connection and try again.",
-};
 
 interface BookingFormProps {
   vehicleId: string;
@@ -91,6 +79,7 @@ export function BookingForm({
   companyName,
   companyHref,
 }: BookingFormProps) {
+  const t = useTranslations("booking");
   const locale = useLocale();
   const { form, submit, errorCount } = useBookingForm(dates.return, uri);
   const [status, setStatus] = useState<Status>({
@@ -228,20 +217,22 @@ export function BookingForm({
 
   return (
     <div ref={rootRef}>
-      <h1 className="font-display text-h2 md:text-h1">Request to book</h1>
+      <h1 className="font-display text-h2 md:text-h1">{t("form.title")}</h1>
       <p className="mt-3 max-w-prose text-foreground-secondary">
-        Tell {companyName} who is driving and how you would like to pay. They
-        review your request before anything is charged.
+        {t("form.intro", { company: companyName })}
       </p>
 
       <form noValidate onSubmit={onSubmit} className="mt-8 grid gap-5">
         {canReturnElsewhere && (
           <BookingSection
-            title="Return location"
-            description={`You pick the car up at ${location}. Bring it back there, or to another ${companyName} branch.`}
+            title={t("form.returnTitle")}
+            description={t("form.returnDescription", {
+              location,
+              company: companyName,
+            })}
           >
             <Select
-              label="Return to"
+              label={t("form.returnTo")}
               options={branches.map((branch) => ({
                 value: branch,
                 label: branch,
@@ -259,11 +250,11 @@ export function BookingForm({
           companyName={companyName}
           quote={quote}
         />
-        <BookingSection title="Anything else?">
+        <BookingSection title={t("form.notesTitle")}>
           <div data-field="notes">
             <TextAreaField
-              label="Note for the company"
-              hint="Flight number, a child seat, a late pick-up, or anything they should know."
+              label={t("form.notesLabel")}
+              hint={t("form.notesHint")}
               optional
               maxLength={NOTES_MAX_LENGTH}
               value={form.values.notes}
@@ -280,9 +271,7 @@ export function BookingForm({
               role="alert"
               className="mb-4 text-sm font-medium text-primary-hover"
             >
-              {errorCount === 1
-                ? "One field above needs your attention."
-                : `${errorCount} fields above need your attention.`}
+              {t("form.needAttention", { count: errorCount })}
             </p>
           )}
           {status.failure && (
@@ -290,7 +279,7 @@ export function BookingForm({
               role="alert"
               className="mb-4 text-sm font-medium text-primary-hover"
             >
-              {FAILURE_MESSAGES[status.failure]}
+              {t(`failures.${status.failure}`)}
             </p>
           )}
           <Button
@@ -299,11 +288,9 @@ export function BookingForm({
             disabled={status.sending}
             className="w-full sm:w-auto"
           >
-            {status.sending ? "Sending request…" : "Request to book"}
+            {status.sending ? t("form.sending") : t("form.submit")}
           </Button>
-          <p className="mt-3 text-meta text-muted">
-            You won&apos;t be charged yet.
-          </p>
+          <p className="mt-3 text-meta text-muted">{t("form.notCharged")}</p>
         </div>
       </form>
     </div>

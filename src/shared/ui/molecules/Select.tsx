@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { ChevronDown } from "lucide-react";
 import { useId, useState } from "react";
 import { cn } from "@/shared/lib/cn";
@@ -38,12 +39,13 @@ export function Select<T extends string>({
   value,
   onChange,
   onBlur,
-  placeholder = "Select",
+  placeholder,
   hint,
   error,
   optional,
   className,
 }: SelectProps<T>) {
+  const t = useTranslations("common");
   const [open, setOpen] = useState(false);
   const id = useId();
   const labelId = `${id}-label`;
@@ -89,7 +91,7 @@ export function Select<T extends string>({
                 !selected && "text-placeholder",
               )}
             >
-              {selected?.label ?? placeholder}
+              {selected?.label ?? placeholder ?? t("select")}
               {selected?.detail && (
                 <span className="text-muted">
                   {" · "}

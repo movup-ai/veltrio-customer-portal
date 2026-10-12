@@ -51,5 +51,28 @@
     "pickup": "Pick-up",
     "return": "Return",
     "timeOf": "{label} time"
+  },
+  "optional": " (optional)",
+  "select": "Select",
+  "dateField": {
+    "month": "Month",
+    "day": "Day",
+    "year": "Year"
+  },
+  "upload": {
+    "choose": "Choose a photo",
+    "orDrop": " or drop it here",
+    "remove": "Remove {name}"
+  },
+  "policy": {
+    "title": "Cancellation policy",
+    "anyTime": "Any time before pick-up",
+    "atLeast": "At least {count, plural, =1 {1 day} other {# days}} before pick-up",
+    "lessThan": "Less than {count, plural, =1 {1 day} other {# days}} before pick-up",
+    "exactly": "{count, plural, =1 {1 day} other {# days}} before pick-up",
+    "between": "{from} to {to} days before pick-up",
+    "noRefund": "No refund",
+    "refund": "{percent}% refund",
+    "footnote": "Counted back from your pick-up time. To cancel, contact {company}."
   }
 }

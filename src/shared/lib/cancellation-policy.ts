@@ -30,23 +30,43 @@ function days(count: number) {
   return `${count} ${count === 1 ? "day" : "days"}`;
 }
 
-function notice(from: number, to: number | undefined) {
+/** The words of a policy line, in the reader's language. */
+export interface PolicyWords {
+  anyTime: string;
+  atLeast: (days: number) => string;
+  lessThan: (days: number) => string;
+  exactly: (days: number) => string;
+  between: (from: number, to: number) => string;
+  noRefund: string;
+  refund: (percent: number) => string;
+}
+
+const ENGLISH: PolicyWords = {
+  anyTime: "Any time before pick-up",
+  atLeast: (count) => `At least ${days(count)} before pick-up`,
+  lessThan: (count) => `Less than ${days(count)} before pick-up`,
+  exactly: (count) => `${days(count)} before pick-up`,
+  between: (from, to) => `${from} to ${to} days before pick-up`,
+  noRefund: "No refund",
+  refund: (percent) => `${percent}% refund`,
+};
+
+function notice(from: number, to: number | undefined, words: PolicyWords) {
   if (to === undefined) {
-    return from === 0
-      ? "Any time before pick-up"
-      : `At least ${days(from)} before pick-up`;
+    return from === 0 ? words.anyTime : words.atLeast(from);
   }
-  if (from === 0) return `Less than ${days(to + 1)} before pick-up`;
-  return from === to
-    ? `${days(from)} before pick-up`
-    : `${from} to ${to} days before pick-up`;
+  if (from === 0) return words.lessThan(to + 1);
+  return from === to ? words.exactly(from) : words.between(from, to);
 }
 
 /**
  * The policy as sentences a renter can check their own dates against, including the line the
  * tiers leave unsaid: closer to pick-up than the last tier, nothing is refunded.
  */
-export function policyLines(policy: CancellationPolicy): PolicyLine[] {
+export function policyLines(
+  policy: CancellationPolicy,
+  words: PolicyWords = ENGLISH,
+): PolicyLine[] {
   const spans: { from: number; to?: number; refundPercent: number }[] = [];
   let above: number | undefined;
   for (const { daysBefore, refundPercent } of policy) {
@@ -58,8 +78,8 @@ export function policyLines(policy: CancellationPolicy): PolicyLine[] {
   if (above === undefined) spans.push({ from: 0, refundPercent: 0 });
   else if (above > 0) spans.push({ from: 0, to: above - 1, refundPercent: 0 });
   return spans.map(({ from, to, refundPercent }) => ({
-    notice: notice(from, to),
-    refund: refundPercent === 0 ? "No refund" : `${refundPercent}% refund`,
+    notice: notice(from, to, words),
+    refund: refundPercent === 0 ? words.noRefund : words.refund(refundPercent),
     refundPercent,
   }));
 }

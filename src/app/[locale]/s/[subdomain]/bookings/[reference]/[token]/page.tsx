@@ -1,10 +1,11 @@
 import { Link } from "@/i18n/Link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
+import type { Locale } from "@/i18n/routing";
 import {
   bookingPagePath,
   getBookingPage,
-  type BookingPage,
 } from "@/modules/booking/booking.status";
 import { BookingConfirmed } from "@/modules/booking/components/BookingConfirmed";
 import type { DocumentKind } from "@/modules/booking/types";
@@ -22,19 +23,25 @@ import { StatusNotice } from "@/shared/ui/molecules/StatusNotice";
 import { RenterPanel } from "@/shared/ui/organisms/RenterPanel";
 
 interface PageProps {
-  params: Promise<{ subdomain: string; reference: string; token: string }>;
+  params: Promise<{
+    locale: Locale;
+    subdomain: string;
+    reference: string;
+    token: string;
+  }>;
 }
 
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
-  const { subdomain, reference } = await params;
+  const { locale, subdomain, reference } = await params;
   const company = await getCompanyProfile(subdomain);
+  const t = await getTranslations({ locale, namespace: "booking.statusPage" });
   return {
     title: {
       absolute: company
-        ? `Booking ${reference} · ${company.name}`
-        : `Booking ${reference}`,
+        ? t("metaTitle", { reference, company: company.name })
+        : t("metaTitlePlain", { reference }),
     },
     // The address is the renter's key to the page: keep it out of indexes and Referer headers.
     robots: { index: false, follow: false },
@@ -44,33 +51,12 @@ export async function generateMetadata({
 
 const DOCUMENTS: DocumentKind[] = ["licence", "insurance"];
 
-/** What to tell a renter whose request is past waiting for an answer. */
-function outcome({ status, reference }: BookingPage, companyName: string) {
-  if (status === "confirmed") {
-    return {
-      tone: "success",
-      title: "Your booking is confirmed",
-      body: `${companyName} accepted request ${reference}. Check your email for what comes next.`,
-    } as const;
-  }
-  if (status === "cancelled") {
-    return {
-      tone: "warning",
-      title: "This booking was cancelled",
-      body: `Request ${reference} is no longer active. Contact ${companyName} if you did not expect this.`,
-    } as const;
-  }
-  return {
-    tone: "success",
-    title: `Booking ${reference}`,
-    body: `This rental is under way or finished. Contact ${companyName} with any question.`,
-  } as const;
-}
-
 export default async function BookingStatusPage({ params }: PageProps) {
   const link = await params;
   const company = await getCompanyProfile(link.subdomain);
   if (!company) notFound();
+  const t = await getTranslations("booking.statusPage");
+  const names = { company: company.name };
 
   // Null, and reported, when the API cannot be reached.
   const result = await settle(
@@ -81,11 +67,11 @@ export default async function BookingStatusPage({ params }: PageProps) {
       <RenterPanel>
         <StatusNotice
           tone="waiting"
-          title="We couldn't load your booking"
-          body={`Try again in a moment, or contact ${company.name} if it keeps happening.`}
+          title={t("loadFailedTitle")}
+          body={t("loadFailedBody", names)}
           action={
             <Button asChild variant="dark">
-              <Link href={bookingPagePath(link)}>Try again</Link>
+              <Link href={bookingPagePath(link)}>{t("tryAgain")}</Link>
             </Button>
           }
         />
@@ -98,8 +84,8 @@ export default async function BookingStatusPage({ params }: PageProps) {
       <RenterPanel>
         <StatusNotice
           tone="warning"
-          title="This booking link isn't valid"
-          body={`Check the link, or contact ${company.name} with your booking reference.`}
+          title={t("invalidTitle")}
+          body={t("invalidBody", names)}
         />
       </RenterPanel>
     );
@@ -114,7 +100,7 @@ export default async function BookingStatusPage({ params }: PageProps) {
       <CompanyBadge
         name={company.name}
         logoUrl={company.logoUrl}
-        caption={`Booking ${booking.reference}`}
+        caption={t("caption", { reference: booking.reference })}
       />
       {booking.status === "pending" ? (
         <BookingConfirmed
@@ -129,7 +115,26 @@ export default async function BookingStatusPage({ params }: PageProps) {
           uploading={false}
         />
       ) : (
-        <StatusNotice {...outcome(booking, company.name)} />
+        <StatusNotice
+          tone={booking.status === "cancelled" ? "warning" : "success"}
+          title={
+            booking.status === "confirmed"
+              ? t("confirmedTitle")
+              : booking.status === "cancelled"
+                ? t("cancelledTitle")
+                : t("caption", { reference: booking.reference })
+          }
+          body={
+            booking.status === "confirmed"
+              ? t("confirmedBody", { ...names, reference: booking.reference })
+              : booking.status === "cancelled"
+                ? t("cancelledBody", {
+                    ...names,
+                    reference: booking.reference,
+                  })
+                : t("otherBody", names)
+          }
+        />
       )}
       <PaymentTrip
         link={{ ...booking, vehicleSpecs: null }}
@@ -138,12 +143,12 @@ export default async function BookingStatusPage({ params }: PageProps) {
       />
       <dl className="grid gap-2 text-sm">
         <div className="flex justify-between gap-4">
-          <dt className="text-muted">Quoted total</dt>
+          <dt className="text-muted">{t("quotedTotal")}</dt>
           <dd className="font-semibold">{formatMoney(booking.totalCents)}</dd>
         </div>
         {booking.depositCents > 0 && (
           <div className="flex justify-between gap-4">
-            <dt className="text-muted">Refundable deposit</dt>
+            <dt className="text-muted">{t("deposit")}</dt>
             <dd className="font-semibold">
               {formatMoney(booking.depositCents)}
             </dd>
