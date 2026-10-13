@@ -13,6 +13,8 @@ Sentry.init({
   // A renter's link carries a secret in its address; it is cut out of everything sent.
   beforeSend: (event) => scrubPrivate(event),
   beforeSendTransaction: (event) => scrubPrivate(event),
+  // Spans can also be sent on their own, outside a transaction.
+  beforeSendSpan: (span) => scrubPrivate(span),
 
   // Turns off collection of data that could identify users. Adjust per category:
   // https://docs.sentry.io/platforms/javascript/configuration/options/#dataCollection

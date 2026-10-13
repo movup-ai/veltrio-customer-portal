@@ -177,6 +177,10 @@ function CheckoutForm({
         );
         const method = paymentIntent?.payment_method;
         const methodId = typeof method === "string" ? method : method?.id;
+        // Paid on another page, so this is the first the marketplace hears of it.
+        if (paymentIntent?.status === "succeeded") {
+          track("payment_completed", {});
+        }
         if (paymentIntent?.status === "succeeded" && methodId) {
           const failure = await placeHold(
             stripe,
@@ -223,6 +227,7 @@ function CheckoutForm({
       return;
     }
     // Paid from here on: whatever happens to the hold, the page re-reads the link.
+    // A deposit hold is authorised, never "succeeded", so it is not counted as a payment.
     if (result.paymentIntent.status === "succeeded") {
       track("payment_completed", {});
     }

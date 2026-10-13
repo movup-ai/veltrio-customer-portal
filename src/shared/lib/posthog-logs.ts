@@ -5,6 +5,7 @@ import {
   BatchLogRecordProcessor,
   LoggerProvider,
 } from "@opentelemetry/sdk-logs";
+import * as Sentry from "@sentry/nextjs";
 import { after } from "next/server";
 
 const key = process.env.NEXT_PUBLIC_POSTHOG_KEY;
@@ -37,12 +38,16 @@ const logger = provider?.getLogger("veltrio-marketplace-posthog");
 export function logMarketplaceOutcome(body: string) {
   if (!logger || !provider) return;
 
-  logger.emit({
-    body,
-    severityNumber: SeverityNumber.INFO,
-    attributes: { service_area: "marketplace" },
-  });
-
-  // Sent once the response has gone, so the renter does not wait on it.
-  after(() => provider.forceFlush());
+  // By now the renter's signature or consent is saved; a logging fault must not undo that.
+  try {
+    logger.emit({
+      body,
+      severityNumber: SeverityNumber.INFO,
+      attributes: { service_area: "marketplace" },
+    });
+    // Sent once the response has gone, so the renter does not wait on it.
+    after(() => provider.forceFlush().catch(Sentry.captureException));
+  } catch (error) {
+    Sentry.captureException(error);
+  }
 }

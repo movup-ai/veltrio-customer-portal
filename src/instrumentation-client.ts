@@ -8,6 +8,8 @@ Sentry.init({
   tracesSampleRate: 0.1,
   beforeSend: (event) => scrubPrivate(event),
   beforeSendTransaction: (event) => scrubPrivate(event),
+  // Spans can also be sent on their own, outside a transaction.
+  beforeSendSpan: (span) => scrubPrivate(span),
 });
 
 if (process.env.NEXT_PUBLIC_POSTHOG_KEY) {
