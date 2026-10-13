@@ -8,6 +8,7 @@ import { Button } from "@/shared/ui/atoms/Button";
 import { Checkbox } from "@/shared/ui/atoms/Checkbox";
 import { FieldError } from "@/shared/ui/atoms/Field";
 import { TextField } from "@/shared/ui/molecules/TextField";
+import { track } from "@/shared/lib/analytics";
 import { signAgreement } from "../contract.actions";
 import {
   SIGNER_NAME_MAX,
@@ -66,6 +67,7 @@ export function SignAgreementForm({
       signerName: draft.name.trim(),
       signature: draft.typed ? null : draft.drawing,
     }).catch(() => ({ ok: false, reason: "failed" }) as const);
+    if (result.ok) track("agreement_signed", {});
     if (result.ok || result.reason === "stale") {
       // The server reads the agreement back: signed now, or however else it stands.
       router.refresh();

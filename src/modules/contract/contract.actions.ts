@@ -2,6 +2,7 @@
 
 import { headers } from "next/headers";
 import { apiPost } from "@/shared/api/client";
+import { logMarketplaceOutcome } from "@/shared/lib/posthog-logs";
 import { toSignFailure } from "./contract.api";
 import { agreementPath } from "./contract.repository";
 import type { AgreementLink, SignatureInput, SignResult } from "./types";
@@ -33,6 +34,7 @@ export async function signAgreement(
       },
       forwarded,
     );
+    logMarketplaceOutcome("agreement_signature_recorded");
     return { ok: true };
   } catch (error) {
     return { ok: false, reason: toSignFailure(error) };
