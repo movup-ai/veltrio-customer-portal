@@ -2,6 +2,7 @@
 
 import { headers } from "next/headers";
 import { ApiError, apiPost } from "@/shared/api/client";
+import { logMarketplaceOutcome } from "@/shared/lib/posthog-logs";
 import { paymentPath } from "./payment.repository";
 
 /** "stale" when the request is no longer open: paid, withdrawn or out of time. */
@@ -31,6 +32,7 @@ export async function acceptExtension(
       { signerName, consent: true },
       forwarded,
     );
+    logMarketplaceOutcome("extension_consent_recorded");
     return { ok: true };
   } catch (error) {
     const stale =

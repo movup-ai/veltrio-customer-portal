@@ -84,6 +84,6 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  // Skip Next internals and files with an extension.
-  matcher: "/((?!_next/|.*\\..*).*)",
+  // Skip Next internals, Sentry's tunnel (next.config.ts) and files with an extension.
+  matcher: "/((?!_next/|monitoring|.*\\..*).*)",
 };

@@ -5,6 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { formatMoney } from "@/shared/lib/format";
+import { track } from "@/shared/lib/analytics";
 import { formatInZone } from "@/shared/lib/time-zone";
 import { Button } from "@/shared/ui/atoms/Button";
 import { Checkbox } from "@/shared/ui/atoms/Checkbox";
@@ -58,6 +59,7 @@ export function ExtensionConsent({
       address.token,
       name.trim(),
     ).catch(() => ({ ok: false, reason: "failed" }) as const);
+    if (result.ok) track("extension_consent_accepted", {});
     if (result.ok || result.reason === "stale") {
       // The server reads the link back: ready to pay now, or however else it stands.
       router.refresh();

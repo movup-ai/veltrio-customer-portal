@@ -1,7 +1,7 @@
 // @vitest-environment node
 import { NextRequest } from "next/server";
 import { describe, expect, it } from "vitest";
-import { proxy } from "./proxy";
+import { config, proxy } from "./proxy";
 
 const SITE = "http://localhost:3000";
 const COMPANY = "http://movup.localhost:3000";
@@ -69,5 +69,19 @@ describe("proxy", () => {
     expect(route(`${COMPANY}/es/search?type=suv`)).toEqual({
       redirect: `${SITE}/es/search?type=suv`,
     });
+  });
+});
+
+describe("the paths the proxy handles", () => {
+  const handled = (path: string) =>
+    new RegExp(`^${config.matcher}$`).test(path);
+
+  it("takes pages and leaves Sentry's tunnel and files alone", () => {
+    expect(handled("/es/search")).toBe(true);
+    expect(handled("/vehicles/bmw-m4")).toBe(true);
+    // The tunnel is a rewrite in next.config.ts; rewritten as a page it would 404.
+    expect(handled("/monitoring")).toBe(false);
+    expect(handled("/_next/static/chunk.js")).toBe(false);
+    expect(handled("/images/flags/es.svg")).toBe(false);
   });
 });

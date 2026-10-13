@@ -18,6 +18,9 @@ vi.mock("@stripe/react-stripe-js", () => ({
   useElements: () => ({}),
 }));
 
+const track = vi.fn();
+vi.mock("@/shared/lib/analytics", () => ({ track }));
+
 vi.stubEnv("NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY", "pk_test_platform");
 const { PaymentCheckout } = await import("./PaymentCheckout");
 
@@ -95,6 +98,34 @@ describe("PaymentCheckout", () => {
     );
   });
 
+  it("counts a payment once, and never the hold that follows it", async () => {
+    confirmPayment
+      .mockResolvedValueOnce({
+        paymentIntent: { status: "succeeded", payment_method: "pm_1" },
+      })
+      .mockResolvedValueOnce({
+        paymentIntent: { status: "requires_capture" },
+      });
+    renderInEnglish(
+      <PaymentCheckout {...props} depositSecret="pi_deposit_secret" />,
+    );
+    submit();
+
+    await vi.waitFor(() => expect(onSettled).toHaveBeenCalledWith(null));
+    expect(track.mock.calls).toEqual([["payment_completed", {}]]);
+  });
+
+  it("does not count a deposit hold on its own as a payment", async () => {
+    confirmPayment.mockResolvedValueOnce({
+      paymentIntent: { status: "requires_capture", payment_method: "pm_1" },
+    });
+    renderInEnglish(<PaymentCheckout {...props} />);
+    submit();
+
+    await vi.waitFor(() => expect(onSettled).toHaveBeenCalledWith(null));
+    expect(track).not.toHaveBeenCalled();
+  });
+
   it("lets the renter try again when Stripe cannot be reached", async () => {
     confirmPayment.mockRejectedValueOnce(new TypeError("Failed to fetch"));
     renderInEnglish(<PaymentCheckout {...props} />);
@@ -141,6 +172,8 @@ describe("PaymentCheckout", () => {
 
     await vi.waitFor(() => expect(onSettled).toHaveBeenCalledWith(null));
     expect(retrievePaymentIntent).toHaveBeenCalledWith("pi_rental_secret");
+    // Paid on another page, so it is counted here, and the hold is not.
+    expect(track.mock.calls).toEqual([["payment_completed", {}]]);
     expect(confirmPayment).toHaveBeenCalledWith(
       expect.objectContaining({
         clientSecret: "pi_deposit_secret",

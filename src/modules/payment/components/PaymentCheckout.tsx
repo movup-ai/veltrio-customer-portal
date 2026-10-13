@@ -10,6 +10,7 @@ import { loadStripe, type Appearance, type Stripe } from "@stripe/stripe-js";
 import { Lock } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
+import { track } from "@/shared/lib/analytics";
 import { Button } from "@/shared/ui/atoms/Button";
 import { Skeleton } from "@/shared/ui/atoms/Skeleton";
 
@@ -176,6 +177,10 @@ function CheckoutForm({
         );
         const method = paymentIntent?.payment_method;
         const methodId = typeof method === "string" ? method : method?.id;
+        // Paid on another page, so this is the first the marketplace hears of it.
+        if (paymentIntent?.status === "succeeded") {
+          track("payment_completed", {});
+        }
         if (paymentIntent?.status === "succeeded" && methodId) {
           const failure = await placeHold(
             stripe,
@@ -222,6 +227,10 @@ function CheckoutForm({
       return;
     }
     // Paid from here on: whatever happens to the hold, the page re-reads the link.
+    // A deposit hold is authorised, never "succeeded", so it is not counted as a payment.
+    if (result.paymentIntent.status === "succeeded") {
+      track("payment_completed", {});
+    }
     const method = result.paymentIntent.payment_method;
     const methodId = typeof method === "string" ? method : method?.id;
     const holdError =
