@@ -7,7 +7,7 @@ import type { DateRange } from "react-day-picker";
 import { formatDay, fromIsoDate, toIsoDate } from "@/shared/lib/date";
 import { formatMoney } from "@/shared/lib/format";
 import { DEFAULT_TIME, formatTime, parseTime } from "@/shared/lib/time";
-import { todayIn } from "@/shared/lib/time-zone";
+import { existsInZone, todayIn, zoneNameAt } from "@/shared/lib/time-zone";
 import { Button } from "@/shared/ui/atoms/Button";
 import {
   DateRangePicker,
@@ -86,17 +86,27 @@ export function BookingPanel({
 
   const quote =
     from && to
-      ? quoteBooking(
-          pricing,
-          {
-            pickup: toIsoDate(from),
-            pickupTime: times.pickup,
-            return: toIsoDate(to),
-            returnTime: times.return,
-          },
-          timeZone,
-        )
+      ? quoteBooking(pricing, {
+          pickup: toIsoDate(from),
+          pickupTime: times.pickup,
+          return: toIsoDate(to),
+          returnTime: times.return,
+        })
       : null;
+
+  // Named on the company's clock; the two differ only across a clock change.
+  const pickupZone =
+    from && zoneNameAt(toIsoDate(from), times.pickup, timeZone);
+  const returnZone = to && zoneNameAt(toIsoDate(to), times.return, timeZone);
+
+  // The API refuses an hour the clocks skip, so it is caught before the form is filled in.
+  const skipped =
+    from &&
+    to &&
+    !(
+      existsInZone(toIsoDate(from), times.pickup, timeZone) &&
+      existsInZone(toIsoDate(to), times.return, timeZone)
+    );
 
   return (
     <div className="rounded-xl border border-border bg-surface p-6 shadow-2">
@@ -129,11 +139,17 @@ export function BookingPanel({
       </div>
 
       <p aria-live="polite" className="mt-4 min-h-6 text-sm">
-        {from && to ? (
+        {skipped ? (
+          <span className="font-medium text-primary-hover">
+            {t("booking.skippedTime")}
+          </span>
+        ) : from && to ? (
           <>
             <span className="font-semibold">
-              {formatDay(toIsoDate(from), locale)}, {formatTime(times.pickup)} –{" "}
-              {formatDay(toIsoDate(to), locale)}, {formatTime(times.return)}
+              {formatDay(toIsoDate(from), locale)}, {formatTime(times.pickup)}
+              {pickupZone !== returnZone && ` ${pickupZone}`} –{" "}
+              {formatDay(toIsoDate(to), locale)}, {formatTime(times.return)}{" "}
+              {returnZone}
             </span>
             {quote && (
               <span className="text-muted">
@@ -160,7 +176,7 @@ export function BookingPanel({
         )}
       </p>
 
-      {from && to ? (
+      {from && to && !skipped ? (
         <Button asChild size="lg" className="mt-4 w-full">
           <Link
             href={bookingHref(uri, {

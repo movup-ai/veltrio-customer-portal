@@ -1,4 +1,5 @@
 import type { useTranslations } from "next-intl";
+import { zoneName } from "./time-zone";
 
 /** One step of a company's cancellation policy. Mirrors the API's CancellationTier. */
 export interface CancellationTier {
@@ -136,18 +137,18 @@ export function cancellationTerms({
       .replace(/[\u00a0\u202f]/g, " ");
   const clauses = open.map(({ daysBefore, refundPercent }, index) => {
     const instant = pickup - daysBefore * DAY_MS;
-    // A deadline as a sentence can carry it, e.g. "Oct 8 at 9:30 AM".
+    // A deadline as a sentence can carry it, e.g. "Oct 8 at 9:30 AM EDT".
     const when =
       daysBefore === 0
         ? t("anyTime")
         : t("by", {
             deadline: t("deadline", {
               date: part(instant, { month: "short", day: "numeric" }),
-              time: part(instant, {
+              time: `${part(instant, {
                 hour: "numeric",
                 minute: "2-digit",
                 hour12: true,
-              }),
+              })} ${zoneName(timeZone, instant)}`,
             }),
           });
     const refund =

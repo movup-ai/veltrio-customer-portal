@@ -1,5 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { isTimeZone, todayIn, zonedInstant } from "./time-zone";
+import {
+  existsInZone,
+  formatInZone,
+  isTimeZone,
+  todayIn,
+  zonedInstant,
+  zoneName,
+  zoneNameAt,
+} from "./time-zone";
 
 const NEW_YORK = "America/New_York";
 const iso = (instant: number) => new Date(instant).toISOString();
@@ -50,5 +58,43 @@ describe("todayIn", () => {
     expect(todayIn("UTC", now)).toBe("2026-10-11");
     expect(todayIn(NEW_YORK, now)).toBe("2026-10-10");
     expect(todayIn("Pacific/Auckland", now)).toBe("2026-10-11");
+  });
+});
+
+describe("existsInZone", () => {
+  it("knows the hour the clocks skip from the ones around it", () => {
+    // New York clocks go from 02:00 straight to 03:00 on 2026-03-08.
+    expect(existsInZone("2026-03-08", "02:00", NEW_YORK)).toBe(false);
+    expect(existsInZone("2026-03-08", "02:30", NEW_YORK)).toBe(false);
+    expect(existsInZone("2026-03-08", "01:00", NEW_YORK)).toBe(true);
+    expect(existsInZone("2026-03-08", "03:00", NEW_YORK)).toBe(true);
+    // The repeated hour in autumn exists, twice; Arizona never skips one.
+    expect(existsInZone("2026-11-01", "01:30", NEW_YORK)).toBe(true);
+    expect(existsInZone("2026-03-08", "02:00", "America/Phoenix")).toBe(true);
+  });
+});
+
+describe("zoneName", () => {
+  it("follows the clocks through the year", () => {
+    expect(zoneName(NEW_YORK, "2026-07-01T12:00:00Z")).toBe("EDT");
+    expect(zoneName(NEW_YORK, "2026-12-01T12:00:00Z")).toBe("EST");
+    // Arizona never changes its clocks.
+    expect(zoneName("America/Phoenix", "2026-07-01T12:00:00Z")).toBe("MST");
+  });
+
+  it("names each side of the night the clocks go back", () => {
+    expect(zoneNameAt("2026-10-31", "10:00", NEW_YORK)).toBe("EDT");
+    expect(zoneNameAt("2026-11-01", "10:00", NEW_YORK)).toBe("EST");
+  });
+});
+
+describe("formatInZone", () => {
+  it("shows the company's clock and names it, in either language", () => {
+    const instant = "2026-10-22T13:30:00Z";
+    expect(formatInZone(instant, NEW_YORK)).toBe("Thu, Oct 22, 9:30 AM EDT");
+    expect(formatInZone(instant, NEW_YORK, "es")).toMatch(/9:30.*EDT$/);
+    expect(formatInZone(instant, "America/Los_Angeles")).toBe(
+      "Thu, Oct 22, 6:30 AM PDT",
+    );
   });
 });

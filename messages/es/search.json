@@ -22,6 +22,7 @@
     "returnTime": "Hora de devolución",
     "addTime": "Añadir hora",
     "reset": "Restablecer",
+    "localTimes": "Las fechas y horas son las del lugar donde recoges el auto.",
     "save": "Guardar",
     "search": "Buscar"
   },

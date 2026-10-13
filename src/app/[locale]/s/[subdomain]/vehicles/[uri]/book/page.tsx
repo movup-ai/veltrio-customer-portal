@@ -22,7 +22,7 @@ import {
   vehicleName,
 } from "@/modules/vehicle/vehicle.utils";
 import { settle } from "@/shared/lib/settle";
-import { todayIn } from "@/shared/lib/time-zone";
+import { existsInZone, todayIn } from "@/shared/lib/time-zone";
 import { CancellationPolicy } from "@/shared/ui/molecules/CancellationPolicy";
 import { SiteHeader } from "@/shared/ui/organisms/SiteHeader";
 import { ClientMessages } from "@/i18n/ClientMessages";
@@ -64,11 +64,18 @@ export default async function BookVehiclePage({
     through: vehicle.occupancy.through,
     today: todayIn(vehicle.company.timeZone),
   });
-  // No usable dates: back to the vehicle page to choose them.
-  if (!dates) redirect(localizeHref(vehicleHref(vehicle), locale));
+  const zone = vehicle.company.timeZone;
+  // No usable dates, or an hour the clocks skip: back to the vehicle page to choose them.
+  if (
+    !dates ||
+    !existsInZone(dates.pickup, dates.pickupTime, zone) ||
+    !existsInZone(dates.return, dates.returnTime, zone)
+  ) {
+    redirect(localizeHref(vehicleHref(vehicle), locale));
+  }
 
   const t = await getTranslations("booking.bookPage");
-  const quote = quoteBooking(vehicle, dates, vehicle.company.timeZone);
+  const quote = quoteBooking(vehicle, dates);
   // Without the branch list the car simply comes back where it was picked up.
   const branches = (await settle(listCompanyLocations(subdomain))) ?? [];
   const addresses = Object.fromEntries(

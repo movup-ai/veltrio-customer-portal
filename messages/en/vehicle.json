@@ -88,6 +88,7 @@
     "onRequest": "Price on request",
     "choosePickup": "Choose a pick-up date.",
     "chooseReturn": "Now choose a return date.",
+    "skippedTime": "The clocks go forward then, so that time does not exist. Choose another time.",
     "includingTaxes": "including taxes",
     "total": "total",
     "continue": "Continue to book",
