@@ -1,7 +1,7 @@
 {
   "intro": {
-    "title": "Alquila con empresas de alquiler de autos independientes",
-    "imageAlt": "Chevrolet Camaro blanco en un taller oscuro, con más autos en elevadores al fondo"
+    "title": "Alquiler de autos para el día a día, directo de empresas locales",
+    "imageAlt": "Audi R8 gris estacionado en una carretera de montaña al atardecer"
   },
   "trust": {
     "label": "Por qué reservar en Veltrio",
@@ -18,17 +18,29 @@
       "description": "Nunca un particular."
     }
   },
-  "cities": {
-    "title": "Buscar por ciudad",
-    "description": "Recoge tu auto donde están las empresas de alquiler."
-  },
-  "types": {
-    "title": "Buscar por tipo de vehículo",
-    "description": "Desde autos urbanos hasta siete plazas: lo que tu viaje necesite."
-  },
-  "makes": {
-    "title": "Buscar por marca",
-    "description": "¿Ya sabes qué quieres conducir? Empieza por la marca."
+  "collections": {
+    "title": "Explora por categoría",
+    "viewAll": "Ver todos los autos",
+    "explore": "Explorar",
+    "count": "{count, plural, =1 {1 vehículo} other {# vehículos}}",
+    "items": {
+      "exotic": {
+        "description": "Mucha potencia para un fin de semana inolvidable",
+        "alt": "Lamborghini Huracán amarillo estacionado en una calle arbolada"
+      },
+      "electric": {
+        "description": "Silenciosos, rápidos y sin emisiones por el escape",
+        "alt": "Tesla Roadster blanco en una sala de exposición"
+      },
+      "economy": {
+        "description": "Hasta ${price} al día",
+        "alt": "Fiat 500 azul claro estacionado junto a una casa de piedra"
+      },
+      "family": {
+        "description": "Espacio para todos y para el equipaje",
+        "alt": "Ford Expedition blanca en una carretera del desierto"
+      }
+    }
   },
   "companies": {
     "title": "Conoce a las empresas de alquiler",
@@ -118,7 +130,7 @@
     "metaDescription": "Cómo funciona alquilar con Veltrio: solicita un auto a una empresa de alquiler independiente, paga cuando confirme y resuelve las dudas más comunes.",
     "heroTitle": "Alquilar con empresas independientes, <em>así de simple.</em>",
     "heroDescription": "Solicita un auto a una empresa de alquiler profesional en minutos. No se cobra nada hasta que la empresa confirme tu reserva.",
-    "heroImageAlt": "Audi R8 gris estacionado en una carretera de montaña al atardecer",
+    "heroImageAlt": "Chevrolet Camaro blanco en un taller oscuro, con más autos en elevadores al fondo",
     "stepsEyebrow": "Los pasos",
     "whyEyebrow": "Por qué Veltrio",
     "whyTitle": "El precio de la empresa es <em>el precio que pagas.</em>",

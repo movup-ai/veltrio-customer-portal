@@ -4,17 +4,30 @@ import { HeroSection } from "@/modules/marketing/components/HeroSection";
 import { HostCtaSection } from "@/modules/marketing/components/HostCtaSection";
 import { ValuePropsSection } from "@/modules/marketing/components/ValuePropsSection";
 import {
-  collections,
+  collectionCards,
   hero,
   landingContent,
 } from "@/modules/marketing/landing.content";
+import { buildSearchUrl } from "@/modules/search/search-params";
+import { COLLECTIONS } from "@/modules/search/collections";
 import { Specimen } from "./Specimen";
 import { StyleSection } from "./StyleSection";
 
 const FRAME = "overflow-hidden p-0 md:p-0";
 
 export function SectionsSection() {
-  const { hostCta, valueProps } = landingContent(useTranslations("landing"));
+  const t = useTranslations("landing");
+  const names = useTranslations("search.collections");
+  const { hostCta, valueProps } = landingContent(t);
+  const collections = collectionCards(
+    t,
+    (id) => names(id),
+    COLLECTIONS.map((collection, index) => ({
+      collection,
+      count: 12 * (index + 1),
+      href: buildSearchUrl({ collection }),
+    })),
+  );
   return (
     <StyleSection
       id="sections"
@@ -35,8 +48,8 @@ export function SectionsSection() {
         tone="background"
       >
         <CollectionsSection
-          eyebrow="Collections"
-          title="Curated for the drive, not the errand."
+          title="Browse by category"
+          exploreLabel="Explore"
           collections={collections}
         />
       </Specimen>

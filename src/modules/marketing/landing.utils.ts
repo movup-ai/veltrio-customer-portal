@@ -1,72 +1,26 @@
-import { MapPin, type LucideIcon } from "lucide-react";
-import { cityLabel, citySlug, type City } from "@/modules/search/cities";
+import {
+  COLLECTIONS,
+  IN_COLLECTION,
+  type CollectionId,
+} from "@/modules/search/collections";
 import { buildSearchUrl } from "@/modules/search/search-params";
 import { filterVehicles, sortVehicles } from "@/modules/search/search.filter";
-import type { Vehicle, VehicleType } from "@/modules/vehicle/types";
-import { VEHICLE_TYPE_META } from "@/modules/vehicle/vehicle-types";
-import { makeSlug } from "@/modules/vehicle/vehicle.utils";
+import type { Vehicle } from "@/modules/vehicle/types";
 
-/** One tile of a "browse by" grid: a group of listed vehicles and where to see them. */
-export interface BrowseItem {
-  label: string;
-  /** How many listed vehicles are in the group. */
+/** A collection tile: how many listed vehicles are in it and where to see them. */
+export interface CollectionTile {
+  collection: CollectionId;
   count: number;
   href: string;
-  icon?: LucideIcon;
 }
 
-type Group = Omit<BrowseItem, "count"> & { key: string };
-
-/** Counts vehicles per group, biggest group first; ties keep the order they were met in. */
-function tally(
-  vehicles: Vehicle[],
-  group: (vehicle: Vehicle) => Group,
-): BrowseItem[] {
-  const items = new Map<string, BrowseItem>();
-  for (const vehicle of vehicles) {
-    const { key, ...item } = group(vehicle);
-    const known = items.get(key);
-    if (known) known.count += 1;
-    else items.set(key, { ...item, count: 1 });
-  }
-  return [...items.values()].sort((a, b) => b.count - a.count);
-}
-
-/** The cities with vehicles to rent, in the API's order: the fullest first. */
-export function browseByCity(cities: City[]): BrowseItem[] {
-  return cities.map((city) => ({
-    label: cityLabel(city),
-    count: city.vehicleCount,
-    href: buildSearchUrl({ location: citySlug(city) }),
-    icon: MapPin,
+/** Every collection in its set order, even an empty one. */
+export function collectionTiles(vehicles: Vehicle[]): CollectionTile[] {
+  return COLLECTIONS.map((collection) => ({
+    collection,
+    count: vehicles.filter(IN_COLLECTION[collection]).length,
+    href: buildSearchUrl({ collection }),
   }));
-}
-
-/** The vehicle types that have at least one vehicle listed. */
-export function browseByType(
-  vehicles: Vehicle[],
-  /** Names a type in the reader's language. */
-  label: (type: VehicleType) => string = (type) =>
-    VEHICLE_TYPE_META[type].label,
-) {
-  return tally(vehicles, ({ vehicleType }) => ({
-    key: vehicleType,
-    icon: VEHICLE_TYPE_META[vehicleType].icon,
-    label: label(vehicleType),
-    href: buildSearchUrl({ type: vehicleType }),
-  }));
-}
-
-/** The makes that have at least one vehicle listed. */
-export function browseByMake(vehicles: Vehicle[]) {
-  return tally(vehicles, ({ make }) => {
-    const slug = makeSlug(make);
-    return {
-      key: slug,
-      label: make.trim(),
-      href: buildSearchUrl({ make: slug }),
-    };
-  });
 }
 
 /** The first row, shown even when nothing is listed yet. */

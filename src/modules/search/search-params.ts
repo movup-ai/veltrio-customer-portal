@@ -5,6 +5,7 @@ import {
   type VehicleType,
 } from "@/modules/vehicle/types";
 import { parseTime } from "@/shared/lib/time";
+import { COLLECTIONS, type CollectionId } from "./collections";
 
 export const SEARCH_SORTS = ["price-asc", "price-desc"] as const;
 export type SearchSort = (typeof SEARCH_SORTS)[number];
@@ -44,6 +45,7 @@ export interface SearchQuery {
   /** Pick-up and return times, HH:mm. Only kept alongside their dates. */
   pickupTime?: string;
   returnTime?: string;
+  collection?: CollectionId;
   type?: VehicleType;
   /** Make slug, e.g. "land-rover". */
   make?: string;
@@ -70,6 +72,7 @@ const KEYS = [
   "pickupTime",
   "return",
   "returnTime",
+  "collection",
   "type",
   "make",
   "maxPrice",
@@ -156,6 +159,7 @@ export function parseSearchParams(raw: RawParams): SearchQuery {
     return: validRange ? returnDate : undefined,
     pickupTime: validRange ? parseTime(first("pickupTime")) : undefined,
     returnTime: validRange ? parseTime(first("returnTime")) : undefined,
+    collection: oneOf("collection", COLLECTIONS),
     type: oneOf("type", VEHICLE_TYPES),
     make: first("make")?.toLowerCase() || undefined,
     maxPrice: wholeNumber("maxPrice"),

@@ -6,23 +6,29 @@ import type { Locale } from "@/i18n/routing";
 import { em } from "@/i18n/rich";
 import { listCompanies } from "@/modules/company/company.repository";
 import { CompanyCard } from "@/modules/company/components/CompanyCard";
-import { BrowseSection } from "@/modules/marketing/components/BrowseSection";
+import {
+  CollectionsSection,
+  CollectionsSkeleton,
+} from "@/modules/marketing/components/CollectionsSection";
 import { FaqSection } from "@/modules/marketing/components/FaqSection";
 import { HostCtaSection } from "@/modules/marketing/components/HostCtaSection";
 import { HowItWorksSection } from "@/modules/marketing/components/HowItWorksSection";
 import { SearchBanner } from "@/modules/marketing/components/SearchBanner";
 import { TrustStrip } from "@/modules/marketing/components/TrustStrip";
-import { landingContent } from "@/modules/marketing/landing.content";
 import {
-  browseByCity,
-  browseByMake,
-  browseByType,
+  collectionCards,
+  landingContent,
+} from "@/modules/marketing/landing.content";
+import {
   BUDGET,
+  collectionTiles,
   NEW_VEHICLES,
   vehicleRows,
 } from "@/modules/marketing/landing.utils";
 import { RecentSearchVehicles } from "@/modules/search/components/RecentSearchVehicles";
 import { SearchCapsule } from "@/modules/search/components/SearchCapsule";
+import { COLLECTIONS } from "@/modules/search/collections";
+import { buildSearchUrl } from "@/modules/search/search-params";
 import { listCities } from "@/modules/search/search.repository";
 import { VehicleCard } from "@/modules/vehicle/components/VehicleCard";
 import { VehicleCardSkeleton } from "@/modules/vehicle/components/VehicleCardSkeleton";
@@ -90,27 +96,26 @@ async function VehicleRows() {
   ));
 }
 
-/** Ways into the listed vehicles, built from what is actually listed. */
-async function BrowseSections() {
+/** Hand-picked groups of the listed vehicles, shown whether or not any are listed yet. */
+async function Collections() {
   const t = await getTranslations("landing");
-  const types = await getTranslations("vehicle.types");
+  const names = await getTranslations("search.collections");
   const vehicles = await settle(listVehicles());
-  if (!vehicles || vehicles.length === 0) return null;
+  const tiles = collectionTiles(vehicles ?? []);
   return (
-    <>
-      <BrowseSection
-        id="types"
-        title={t("types.title")}
-        description={t("types.description")}
-        items={browseByType(vehicles, (type) => types(type))}
-      />
-      <BrowseSection
-        id="makes"
-        title={t("makes.title")}
-        description={t("makes.description")}
-        items={browseByMake(vehicles)}
-      />
-    </>
+    <CollectionsSection
+      title={t("collections.title")}
+      exploreLabel={t("collections.explore")}
+      collections={collectionCards(t, (id) => names(id), tiles)}
+      action={
+        <Link
+          href={buildSearchUrl()}
+          className="text-sm font-semibold underline underline-offset-4"
+        >
+          {t("collections.viewAll")}
+        </Link>
+      }
+    />
   );
 }
 
@@ -155,25 +160,24 @@ export default async function HomePage({ params }: PageProps) {
           url: siteConfig.url,
         }}
       />
-      <SiteHeader variant="overlay" />
+      <SiteHeader />
       <main id="main">
-        <SearchBanner {...intro} imageClassName="object-[center_62%]">
+        <SearchBanner
+          title={intro.title}
+          note={<TrustStrip label={t("trust.label")} points={trustPoints} />}
+          footer={
+            <Suspense
+              fallback={<CollectionsSkeleton count={COLLECTIONS.length} />}
+            >
+              <Collections />
+            </Suspense>
+          }
+        >
           <SearchCapsule cities={cities} />
         </SearchBanner>
 
         <div className="container-page space-y-16 pt-10 md:pt-12">
-          <TrustStrip label={t("trust.label")} points={trustPoints} />
-
           <RecentSearchVehicles cities={cities} />
-
-          {cities.length > 0 && (
-            <BrowseSection
-              id="cities"
-              title={t("cities.title")}
-              description={t("cities.description")}
-              items={browseByCity(cities)}
-            />
-          )}
 
           <Suspense
             fallback={
@@ -189,10 +193,6 @@ export default async function HomePage({ params }: PageProps) {
             }
           >
             <VehicleRows />
-          </Suspense>
-
-          <Suspense fallback={null}>
-            <BrowseSections />
           </Suspense>
 
           <Suspense fallback={null}>

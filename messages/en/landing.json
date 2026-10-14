@@ -1,7 +1,7 @@
 {
   "intro": {
-    "title": "Rent from independent car rental companies",
-    "imageAlt": "White Chevrolet Camaro in a dark garage, with more cars on lifts behind it"
+    "title": "Everyday car rental, straight from local companies",
+    "imageAlt": "Grey Audi R8 parked on a mountain road at sunset"
   },
   "trust": {
     "label": "Why book on Veltrio",
@@ -18,17 +18,29 @@
       "description": "Never a private owner."
     }
   },
-  "cities": {
-    "title": "Browse by city",
-    "description": "Pick up where the rental companies are."
-  },
-  "types": {
-    "title": "Browse by vehicle type",
-    "description": "From city cars to seven-seaters, whatever the trip needs."
-  },
-  "makes": {
-    "title": "Browse by make",
-    "description": "Know what you want to drive? Start with the badge."
+  "collections": {
+    "title": "Browse by category",
+    "viewAll": "View all cars",
+    "explore": "Explore",
+    "count": "{count, plural, =1 {1 vehicle} other {# vehicles}}",
+    "items": {
+      "exotic": {
+        "description": "Big horsepower for a weekend to remember",
+        "alt": "Yellow Lamborghini Huracán parked on a tree-lined street"
+      },
+      "electric": {
+        "description": "Quiet, quick and nothing from the tailpipe",
+        "alt": "White Tesla Roadster in a showroom"
+      },
+      "economy": {
+        "description": "Up to ${price} a day",
+        "alt": "Pale blue Fiat 500 parked by a stone house"
+      },
+      "family": {
+        "description": "Room for everyone and the luggage",
+        "alt": "White Ford Expedition on a desert road"
+      }
+    }
   },
   "companies": {
     "title": "Meet the rental companies",
@@ -118,7 +130,7 @@
     "metaDescription": "How renting through Veltrio works: request a car from an independent rental company, pay once they confirm, and get answers to common questions.",
     "heroTitle": "Renting from independent companies, <em>made simple.</em>",
     "heroDescription": "Request a car from a professional rental company in minutes. Nothing is charged until the company confirms your booking.",
-    "heroImageAlt": "Grey Audi R8 parked on a mountain road at sunset",
+    "heroImageAlt": "White Chevrolet Camaro in a dark garage, with more cars on lifts behind it",
     "stepsEyebrow": "The steps",
     "whyEyebrow": "Why Veltrio",
     "whyTitle": "The company's price is <em>the price you pay.</em>",

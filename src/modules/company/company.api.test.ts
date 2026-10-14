@@ -25,10 +25,12 @@ const dto: CompanyDto = {
     bannerUrl: "banner.webp",
   },
   vehicleCount: 5,
+  locationCount: 3,
+  cities: ["Miami", "Miami Beach"],
 };
 
 describe("toCompany", () => {
-  it("keeps the logo with the listing fields", () => {
+  it("keeps what a directory card shows", () => {
     expect(toCompany(dto)).toEqual({
       id: "c1",
       name: "Coastline Exotics",
@@ -37,7 +39,20 @@ describe("toCompany", () => {
       country: "US",
       logoUrl: "logo.webp",
       vehicleCount: 5,
+      description: "Family-run since 2014.",
+      locationCount: 3,
+      cities: ["Miami", "Miami Beach"],
+      brand: {
+        primaryColor: "#0F4C5C",
+        headline: null,
+        bannerUrl: "banner.webp",
+      },
     });
+  });
+
+  it("reads an older API build without branches as none known", () => {
+    const older = { ...dto, locationCount: undefined, cities: undefined };
+    expect(toCompany(older)).toMatchObject({ locationCount: 0, cities: [] });
   });
 });
 

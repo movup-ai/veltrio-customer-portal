@@ -33,16 +33,15 @@ export function LanguageSwitch({ className }: { className?: string }) {
           aria-controls={listId}
           aria-label={`${t("label")}: ${t(locale)}`}
           className={cn(
-            "group flex h-10 items-center gap-2 rounded-full px-2.5 text-sm font-semibold whitespace-nowrap hover:bg-current/10 sm:px-4",
+            "group flex h-10 items-center gap-2 rounded-full px-2.5 text-sm font-semibold whitespace-nowrap hover:bg-current/10 sm:px-3",
             className,
           )}
         >
           <Flag country={FLAG[locale]} />
-          {/* A phone has room for the code only. */}
-          <span aria-hidden className="uppercase sm:hidden">
+          {/* The code is enough here; the list names each language in full. */}
+          <span aria-hidden className="uppercase">
             {locale}
           </span>
-          <span className="max-sm:hidden">{t(locale)}</span>
           <ChevronDown
             aria-hidden
             className="size-4 transition-transform group-data-[state=open]:rotate-180 motion-reduce:transition-none"

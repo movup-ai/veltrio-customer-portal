@@ -47,6 +47,8 @@
     "newest": "Newest first",
     "priceAsc": "Price: low to high",
     "priceDesc": "Price: high to low",
+    "collection": "Collection",
+    "anyCollection": "Any collection",
     "price": "Price",
     "anyPrice": "Any price",
     "upTo": "Up to ${price} a day",
@@ -92,5 +94,11 @@
     "previous": "Previous car",
     "next": "Next car",
     "position": "{index} of {total} cars here"
+  },
+  "collections": {
+    "exotic": "Exotic & supercars",
+    "electric": "Electric",
+    "economy": "Economical",
+    "family": "Family & 7-seaters"
   }
 }

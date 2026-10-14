@@ -1,6 +1,7 @@
 import type { Vehicle, VehicleType } from "@/modules/vehicle/types";
 import { VEHICLE_TYPE_ORDER } from "@/modules/vehicle/vehicle-types";
 import { makeSlug } from "@/modules/vehicle/vehicle.utils";
+import { IN_COLLECTION } from "./collections";
 import type { SearchQuery, SearchSort } from "./search-params";
 
 /**
@@ -8,7 +9,11 @@ import type { SearchQuery, SearchSort } from "./search-params";
  * and dates. Fine while a search returns hundreds of vehicles, not thousands.
  */
 export function filterVehicles(vehicles: Vehicle[], query: SearchQuery) {
-  return vehicles.filter(({ vehicleType, make, specs, dailyRateCents }) => {
+  return vehicles.filter((vehicle) => {
+    const { vehicleType, make, specs, dailyRateCents } = vehicle;
+    if (query.collection && !IN_COLLECTION[query.collection](vehicle)) {
+      return false;
+    }
     if (query.type && vehicleType !== query.type) return false;
     if (query.make && makeSlug(make) !== query.make) return false;
     if (query.seats && specs.seats < query.seats) return false;

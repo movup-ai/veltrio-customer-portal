@@ -8,6 +8,7 @@ import type {
   Transmission,
   VehicleType,
 } from "@/modules/vehicle/types";
+import { COLLECTIONS } from "../collections";
 import { buildSearchUrl, type SearchQuery } from "../search-params";
 import { FilterMenu } from "./FilterMenu";
 
@@ -21,6 +22,7 @@ const TRANSMISSIONS: Transmission[] = ["automatic", "manual"];
 
 /** The filters that narrow results, as opposed to where, when and in what order. */
 const FACETS = [
+  "collection",
   "type",
   "make",
   "maxPrice",
@@ -40,6 +42,7 @@ interface SearchFiltersProps {
 export function SearchFilters({ query, types, makes }: SearchFiltersProps) {
   const t = useTranslations("search.filters");
   const vehicle = useTranslations("vehicle");
+  const collections = useTranslations("search.collections");
   const router = useRouter();
   const set = (change: Partial<SearchQuery>) =>
     router.replace(buildSearchUrl({ ...query, ...change }), { scroll: false });
@@ -60,6 +63,16 @@ export function SearchFilters({ query, types, makes }: SearchFiltersProps) {
         ]}
         value={query.sort}
         onChange={(sort) => set({ sort })}
+      />
+      <FilterMenu
+        label={t("collection")}
+        anyLabel={t("anyCollection")}
+        options={COLLECTIONS.map((collection) => ({
+          value: collection,
+          label: collections(collection),
+        }))}
+        value={query.collection}
+        onChange={(collection) => set({ collection })}
       />
       <FilterMenu
         label={t("price")}

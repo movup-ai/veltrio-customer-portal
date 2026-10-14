@@ -6,7 +6,10 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import type { useTranslations } from "next-intl";
-import { buildSearchUrl } from "@/modules/search/search-params";
+import {
+  ECONOMY_MAX_PRICE,
+  type CollectionId,
+} from "@/modules/search/collections";
 import { siteConfig } from "@/shared/config/site";
 import { unsplash } from "@/shared/lib/unsplash";
 import type { FooterColumn } from "@/shared/ui/organisms/SiteFooter";
@@ -15,6 +18,7 @@ import type { Faq } from "./components/FaqSection";
 import type { HowItWorksStep } from "./components/HowItWorksSection";
 import type { TrustPoint } from "./components/TrustStrip";
 import type { Feature } from "./components/FeatureCard";
+import type { CollectionTile } from "./landing.utils";
 
 /**
  * The landing and how-it-works pages' content in one place: its structure, links and imagery
@@ -38,35 +42,34 @@ export const hero = {
   },
 };
 
-export const collections: Collection[] = [
-  {
-    title: "Weekend sports cars",
-    description: "Low, loud and built for the long way round",
-    href: buildSearchUrl({ type: "sport" }),
+/** Each collection's photo; its words are in the landing and search messages. */
+const COLLECTION_PHOTOS: Record<CollectionId, string> = {
+  exotic: "1511919884226-fd3cad34687c",
+  electric: "1617788138017-80ad40651399",
+  economy: "1549317661-bd32c8ce0db2",
+  family: "1533473359331-0135ef1b58bf",
+};
+
+/** The landing page's collection tiles, in the reader's language. */
+export function collectionCards(
+  t: Translator<"landing">,
+  /** Names a collection, as the search filter does. */
+  name: (collection: CollectionId) => string,
+  tiles: CollectionTile[],
+): Collection[] {
+  return tiles.map(({ collection, count, href }) => ({
+    title: name(collection),
+    description: t(`collections.items.${collection}.description`, {
+      price: ECONOMY_MAX_PRICE,
+    }),
+    href,
+    eyebrow: t("collections.count", { count }),
     image: {
-      variants: unsplash("1511919884226-fd3cad34687c", [600, 1200], 4 / 3),
-      alt: "Yellow Lamborghini Huracán parked on a tree-lined street",
+      variants: unsplash(COLLECTION_PHOTOS[collection], [600, 1200], 3 / 4),
+      alt: t(`collections.items.${collection}.alt`),
     },
-  },
-  {
-    title: "Room for everyone",
-    description: "SUVs for families, friends and luggage",
-    href: buildSearchUrl({ type: "suv" }),
-    image: {
-      variants: unsplash("1533473359331-0135ef1b58bf", [600, 1200], 4 / 3),
-      alt: "White Ford Expedition on a desert road",
-    },
-  },
-  {
-    title: "Top down",
-    description: "Convertibles for coast roads",
-    href: buildSearchUrl({ type: "convertible" }),
-    image: {
-      variants: unsplash("1616788494707-ec28f08d05a1", [600, 1200], 4 / 3),
-      alt: "Silver Mercedes-AMG GT with a city skyline behind it",
-    },
-  },
-];
+  }));
+}
 
 /** The page that explains Veltrio to rental companies. */
 export const COMPANIES_PATH = "/for-rental-companies";
@@ -92,7 +95,7 @@ export function landingContent(t: Translator<"landing">) {
   const intro = {
     title: t("intro.title"),
     image: {
-      variants: [{ url: "/images/landing.jpg", width: 5357, height: 3164 }],
+      variants: [{ url: "/images/landing.jpg", width: 2000, height: 1335 }],
       alt: t("intro.imageAlt"),
     },
   };
@@ -142,7 +145,7 @@ export function landingContent(t: Translator<"landing">) {
       description: t("howItWorksPage.heroDescription"),
       image: {
         variants: [
-          { url: "/images/how-it-works.jpg", width: 2000, height: 1335 },
+          { url: "/images/how-it-works.jpg", width: 5357, height: 3164 },
         ],
         alt: t("howItWorksPage.heroImageAlt"),
       },
@@ -175,7 +178,7 @@ export function footerContent(t: Translator<"common">) {
       title: t("footer.explore.title"),
       links: [
         { href: "/search", label: t("footer.explore.vehicles") },
-        { href: "/#cities", label: t("footer.explore.cities") },
+        { href: "/#collections", label: t("footer.explore.collections") },
         { href: "/#companies", label: t("footer.explore.companies") },
       ],
     },

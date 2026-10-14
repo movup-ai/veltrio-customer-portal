@@ -1,15 +1,19 @@
 import type { Company } from "@/modules/company/types";
-import { collections } from "@/modules/marketing/landing.content";
 import type { City } from "@/modules/search/cities";
 import type { Vehicle, VehiclePhoto } from "@/modules/vehicle/types";
+import { unsplash } from "@/shared/lib/unsplash";
 
 /** Sample content for the /design page only. Never shown to renters. */
 
-const PHOTOS: VehiclePhoto[] = collections.map(({ image }, index) => ({
+const PHOTOS: VehiclePhoto[] = [
+  "1511919884226-fd3cad34687c",
+  "1533473359331-0135ef1b58bf",
+  "1616788494707-ec28f08d05a1",
+].map((id, index) => ({
   id: `sample-photo-${index}`,
   name: "sample.jpg",
   label: null,
-  variants: image.variants.map((variant, i) => ({
+  variants: unsplash(id, [600, 1200], 4 / 3).map((variant, i) => ({
     ...variant,
     size: i === 0 ? "medium" : "large",
   })),
@@ -123,6 +127,11 @@ export const SAMPLE_COMPANIES: Company[] = [
     country: "US",
     logoUrl: null,
     vehicleCount: 28,
+    description:
+      "Exotics and grand tourers with complimentary valet delivery across Miami-Dade.",
+    locationCount: 2,
+    cities: ["Miami", "Miami Beach"],
+    brand: { primaryColor: "#1F6B4F", headline: null, bannerUrl: null },
   },
   {
     id: "sample-c2",
@@ -132,6 +141,11 @@ export const SAMPLE_COMPANIES: Company[] = [
     country: "US",
     logoUrl: null,
     vehicleCount: 55,
+    description:
+      "Family SUVs and road-trip rigs, roof boxes and car seats on request.",
+    locationCount: 3,
+    cities: ["Doral", "Miami", "Orlando"],
+    brand: { primaryColor: "#6B3FA0", headline: null, bannerUrl: null },
   },
   {
     id: "sample-c3",
@@ -141,6 +155,11 @@ export const SAMPLE_COMPANIES: Company[] = [
     country: "US",
     logoUrl: null,
     vehicleCount: 42,
+    description:
+      "Enthusiast-owned performance fleet. Every car is detailed and track-inspected between trips.",
+    locationCount: 1,
+    cities: ["Miami Beach"],
+    brand: { primaryColor: "#0F1012", headline: null, bannerUrl: null },
   },
   {
     id: "sample-c4",
@@ -150,5 +169,10 @@ export const SAMPLE_COMPANIES: Company[] = [
     country: "US",
     logoUrl: null,
     vehicleCount: 64,
+    description:
+      "All-electric fleet, delivered fully charged with a home-charging adapter in the trunk.",
+    locationCount: 4,
+    cities: ["Coral Gables", "Miami", "Tampa", "West Palm Beach"],
+    brand: { primaryColor: "#2F4DB8", headline: null, bannerUrl: null },
   },
 ];
