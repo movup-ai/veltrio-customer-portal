@@ -95,7 +95,7 @@ export function landingContent(t: Translator<"landing">) {
   const intro = {
     title: t("intro.title"),
     image: {
-      variants: [{ url: "/images/landing.jpg", width: 5357, height: 3164 }],
+      variants: [{ url: "/images/landing.jpg", width: 2000, height: 1335 }],
       alt: t("intro.imageAlt"),
     },
   };
@@ -145,7 +145,7 @@ export function landingContent(t: Translator<"landing">) {
       description: t("howItWorksPage.heroDescription"),
       image: {
         variants: [
-          { url: "/images/how-it-works.jpg", width: 2000, height: 1335 },
+          { url: "/images/how-it-works.jpg", width: 5357, height: 3164 },
         ],
         alt: t("howItWorksPage.heroImageAlt"),
       },
