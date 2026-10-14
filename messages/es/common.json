@@ -30,7 +30,7 @@
     "explore": {
       "title": "Explorar",
       "vehicles": "Ver vehículos",
-      "cities": "Buscar por ciudad",
+      "collections": "Colecciones",
       "companies": "Empresas de alquiler"
     },
     "forCompanies": {
@@ -47,6 +47,7 @@
     "contact": "Contacto"
   },
   "vehicleCount": "{count, plural, =1 {vehículo} other {vehículos}}",
+  "locationCount": "{count, plural, =1 {sede} other {sedes}}",
   "calendar": {
     "pickup": "Recogida",
     "return": "Devolución",

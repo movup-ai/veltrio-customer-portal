@@ -99,7 +99,8 @@ export function ListboxContent<T extends string>({
             aria-selected={option.value === value}
             lang={option.lang}
             onClick={() => onSelect(option.value)}
-            className="flex h-10 w-full items-center justify-between gap-3 rounded-sm px-3 text-left text-sm text-carbon hover:bg-sand aria-selected:bg-sand aria-selected:font-semibold"
+            // The check alone marks the choice, so a hovered row is never confused with it.
+            className="flex h-10 w-full items-center justify-between gap-3 rounded-sm px-3 text-left text-sm text-carbon hover:bg-sand"
           >
             {option.icon}
             <span className="min-w-0 flex-1 truncate">
@@ -112,7 +113,7 @@ export function ListboxContent<T extends string>({
               )}
             </span>
             {option.value === value && (
-              <Check aria-hidden className="size-4 shrink-0" />
+              <Check aria-hidden className="size-4 shrink-0 text-success" />
             )}
           </button>
         ))}

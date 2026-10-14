@@ -262,7 +262,7 @@ export function SearchCapsule({
         <PopoverAnchor asChild>
           <div
             ref={whereField}
-            className="relative flex min-w-0 flex-1 rounded-lg bg-background transition-colors hover:bg-surface-muted has-[input:focus]:bg-surface has-[input:focus]:shadow-2 md:bg-transparent"
+            className="relative flex min-w-0 flex-1 rounded-lg bg-background md:bg-transparent"
           >
             <label className="flex min-w-0 flex-1 cursor-text flex-col justify-center py-1.5 pr-10 pl-4">
               <span className="type-label text-muted">{t("where")}</span>

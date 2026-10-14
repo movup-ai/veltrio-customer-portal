@@ -10,6 +10,12 @@ export interface Company {
   logoUrl: string | null;
   /** Vehicles the company currently has on the marketplace. */
   vehicleCount: number;
+  description: string | null;
+  /** Open branches renters can pick up from. */
+  locationCount: number;
+  /** The cities those branches are in, alphabetical. */
+  cities: string[];
+  brand: Pick<CompanyBrand, "primaryColor" | "headline" | "bannerUrl">;
 }
 
 /** A company's own look. Colours are "#rrggbb". */
@@ -35,7 +41,6 @@ export interface CompanySocials {
 
 /** Everything a company's storefront shows. Mirrors the API's MarketplaceCompanyRead. */
 export interface CompanyProfile extends Company {
-  description: string | null;
   /** ISO 4217 code of the company's prices, e.g. "USD". */
   currency: string;
   /** IANA zone its branches keep, e.g. "America/New_York". */

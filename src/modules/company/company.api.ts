@@ -28,6 +28,9 @@ export interface CompanyDto {
     bannerUrl: string | null;
   };
   vehicleCount: number;
+  // Missing from older API builds.
+  locationCount?: number;
+  cities?: string[];
 }
 
 export function toCompany(dto: CompanyDto): Company {
@@ -39,13 +42,20 @@ export function toCompany(dto: CompanyDto): Company {
     country: dto.country,
     logoUrl: dto.brand.logoUrl,
     vehicleCount: dto.vehicleCount,
+    description: dto.description,
+    locationCount: dto.locationCount ?? 0,
+    cities: dto.cities ?? [],
+    brand: {
+      primaryColor: dto.brand.primaryColor,
+      headline: dto.brand.headline,
+      bannerUrl: dto.brand.bannerUrl,
+    },
   };
 }
 
 export function toCompanyProfile(dto: CompanyDto): CompanyProfile {
   return {
     ...toCompany(dto),
-    description: dto.description,
     currency: dto.currency,
     timeZone: isTimeZone(dto.timezone) ? dto.timezone : "UTC",
     email: dto.contactEmail,

@@ -47,6 +47,7 @@ describe("parseSearchParams", () => {
       pickupTime: "09:00",
       return: "2026-10-13",
       returnTime: "18:00",
+      collection: "family",
       type: "suv",
       make: "land-rover",
     } as const;
@@ -60,6 +61,7 @@ describe("parseSearchParams", () => {
     expect(
       parseSearchParams({
         type: "spaceship",
+        collection: "luxury",
         pickup: "tomorrow",
         return: "2026-10-13",
       }),

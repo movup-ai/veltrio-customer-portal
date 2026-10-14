@@ -54,6 +54,13 @@ describe("filterVehicles", () => {
     expect(ids(filterVehicles(all, { maxPrice: 100 }))).toEqual(["audi"]);
   });
 
+  it("narrows to a collection, which can span types", () => {
+    expect(ids(filterVehicles(all, { collection: "family" }))).toEqual(["bmw"]);
+    expect(ids(filterVehicles(all, { collection: "electric" }))).toEqual([
+      "audi",
+    ]);
+  });
+
   it("combines filters", () => {
     expect(ids(filterVehicles(all, { type: "suv", seats: 7 }))).toEqual([
       "bmw",

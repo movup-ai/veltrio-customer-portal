@@ -47,6 +47,8 @@
     "newest": "Más recientes primero",
     "priceAsc": "Precio: de menor a mayor",
     "priceDesc": "Precio: de mayor a menor",
+    "collection": "Colección",
+    "anyCollection": "Cualquier colección",
     "price": "Precio",
     "anyPrice": "Cualquier precio",
     "upTo": "Hasta ${price} al día",
@@ -92,5 +94,11 @@
     "previous": "Auto anterior",
     "next": "Auto siguiente",
     "position": "{index} de {total} autos aquí"
+  },
+  "collections": {
+    "exotic": "Exóticos y superdeportivos",
+    "electric": "Eléctricos",
+    "economy": "Económicos",
+    "family": "Familiares y 7 plazas"
   }
 }
