@@ -115,6 +115,18 @@
       "return": {
         "question": "¿Puedo devolver el auto en otro lugar?",
         "answer": "Sí, cuando la empresa tiene más de una sucursal. Eliges la sucursal de devolución al reservar; la recogida siempre es en la sucursal donde está el auto."
+      },
+      "drivers": {
+        "question": "¿Puede conducir otra persona?",
+        "answer": "Sí, si figura en el contrato de alquiler. Añádela como conductor adicional al reservar; la empresa fija su precio por conductor y día, que se muestra antes de enviar la solicitud. Cada conductor debe cumplir los requisitos de edad y de licencia de la empresa y mostrar su licencia al recoger el auto."
+      },
+      "cancel": {
+        "question": "¿Y si necesito cancelar?",
+        "answer": "Cada empresa fija su propia política de cancelación, que se muestra en la página del vehículo y otra vez antes de pagar. Cualquier reembolso sigue esa política y lo paga la empresa. No se cobra nada mientras la empresa revisa tu solicitud."
+      },
+      "pickup": {
+        "question": "¿Qué pasa al recoger el auto?",
+        "answer": "Lleva tu licencia de conducir, y cada conductor adicional la suya: la empresa revisa cada licencia antes de entregar las llaves. El alquiler y cualquier depósito deben estar pagados, y el contrato firmado, antes de que el auto salga."
       }
     }
   },

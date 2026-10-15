@@ -10,6 +10,7 @@ import {
   ECONOMY_MAX_PRICE,
   type CollectionId,
 } from "@/modules/search/collections";
+import { PRIVACY_PATH, TERMS_PATH } from "@/modules/legal/legal";
 import { siteConfig } from "@/shared/config/site";
 import { unsplash } from "@/shared/lib/unsplash";
 import type { FooterColumn } from "@/shared/ui/organisms/SiteFooter";
@@ -83,6 +84,9 @@ const FAQS = [
   "need",
   "deposit",
   "return",
+  "drivers",
+  "cancel",
+  "pickup",
 ] as const;
 /** How many questions the landing page repeats; the rest are on the how-it-works page. */
 const TOP_FAQS = 5;
@@ -208,14 +212,18 @@ export function footerContent(t: Translator<"common">) {
       ],
     },
   ];
-  /** Beside the copyright line. Privacy and Terms join it once their text exists. */
-  const legalLinks = siteConfig.supportEmail
-    ? [
-        {
-          href: `mailto:${siteConfig.supportEmail}`,
-          label: t("footer.contact"),
-        },
-      ]
-    : [];
+  /** Beside the copyright line. */
+  const legalLinks = [
+    { href: TERMS_PATH, label: t("footer.terms") },
+    { href: PRIVACY_PATH, label: t("footer.privacy") },
+    ...(siteConfig.supportEmail
+      ? [
+          {
+            href: `mailto:${siteConfig.supportEmail}`,
+            label: t("footer.contact"),
+          },
+        ]
+      : []),
+  ];
   return { columns, legalLinks };
 }

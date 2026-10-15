@@ -1,0 +1,188 @@
+{
+  "contents": "En esta página",
+  "updated": "Última actualización: {date}",
+  "updatedDate": "15 de octubre de 2026",
+  "contact": {
+    "title": "Contáctanos",
+    "body": "¿Tienes preguntas sobre esta página? Escríbenos a <email>{address}</email>."
+  },
+  "terms": {
+    "metaTitle": "Términos del servicio",
+    "metaDescription": "Las reglas para usar Veltrio y encontrar y solicitar autos de alquiler a empresas de alquiler independientes.",
+    "title": "Términos del servicio",
+    "intro": "Estos términos cubren tu uso de Veltrio, el sitio web donde encuentras y solicitas autos de alquiler a empresas de alquiler independientes. Al usar Veltrio o enviar una solicitud de reserva, los aceptas.",
+    "sections": [
+      {
+        "title": "Qué es Veltrio",
+        "paragraphs": [
+          "Veltrio es un marketplace. Empresas de alquiler profesionales publican aquí sus vehículos, y tú puedes compararlos y enviar una solicitud de reserva a una empresa.",
+          "Veltrio no es una empresa de alquiler, un intermediario ni una aseguradora. No somos dueños, no alquilamos ni aseguramos ningún vehículo publicado en el sitio."
+        ]
+      },
+      {
+        "title": "Tu alquiler es con la empresa de alquiler",
+        "paragraphs": [
+          "Cuando una empresa acepta tu solicitud, tu contrato de alquiler es entre tú y esa empresa. Veltrio no es parte de él.",
+          "La empresa es responsable del vehículo, del contrato de alquiler, de sus requisitos de seguro y de conductores, de los depósitos, de los reembolsos y de todo lo que ocurra durante el alquiler. Si estos términos y el contrato de la empresa difieren sobre el alquiler en sí, se aplica el contrato de la empresa."
+        ]
+      },
+      {
+        "title": "Solicitudes de reserva",
+        "paragraphs": [
+          "Una solicitud de reserva no es un alquiler confirmado. Las fechas no se reservan para ti hasta que la empresa acepta la solicitud, y una empresa puede rechazarla.",
+          "Los precios mostrados se calculan con las tarifas, descuentos, cargos e impuestos de la propia empresa para las fechas que elegiste. La empresa confirma el precio final cuando acepta tu solicitud."
+        ]
+      },
+      {
+        "title": "Cargos y pagos",
+        "paragraphs": [
+          "Veltrio no cobra a los arrendatarios ningún cargo de reserva ni de servicio. Las empresas de alquiler pagan a Veltrio una suscripción por el software que usan.",
+          "Pagas a la empresa de alquiler, no a Veltrio. Los pagos en línea los procesa Stripe y van directamente a la cuenta de la empresa. Los reembolsos, la liberación de depósitos y las disputas de pago los gestiona la empresa."
+        ]
+      },
+      {
+        "title": "Cancelaciones",
+        "paragraphs": [
+          "Cada empresa fija su propia política de cancelación. Cuando una empresa tiene una, se muestra en la página del vehículo y otra vez antes de pagar.",
+          "Si cancelas, cualquier reembolso sigue la política de esa empresa, y lo emite la empresa. Si una empresa cancela tu alquiler, contacta con la empresa sobre tu reembolso. Veltrio no decide los reembolsos."
+        ]
+      },
+      {
+        "title": "Conductores y licencias",
+        "paragraphs": [
+          "Solo el arrendatario y los conductores adicionales que figuran en el contrato de alquiler pueden conducir el vehículo. Cada conductor debe cumplir los requisitos de edad y de licencia de la empresa.",
+          "Cada conductor debe tener una licencia de conducir válida durante todo el alquiler. La empresa revisa la licencia de cada conductor al recoger el auto, así que los conductores adicionales deben ir a la recogida con su licencia. Una empresa puede negarse a entregar el vehículo, o a añadir un conductor, cuando no puede revisar una licencia.",
+          "Una empresa puede cobrar por cada conductor adicional. Su precio se muestra cuando añades un conductor, y algunas leyes exigen que ciertos conductores, como el cónyuge, se añadan sin costo.",
+          "Dejar conducir a alguien que no figura en el contrato puede incumplir tu contrato de alquiler y dejarte sin la cobertura de la empresa."
+        ]
+      },
+      {
+        "title": "Tu información y tus documentos",
+        "paragraphs": [
+          "Los datos y documentos que envías deben ser exactos y tuyos. Cuando indicas un conductor adicional, confirmas que aceptó que compartas sus datos con la empresa de alquiler.",
+          "Cómo tratamos la información personal se explica en nuestra Política de privacidad."
+        ]
+      },
+      {
+        "title": "Uso correcto de Veltrio",
+        "paragraphs": ["Te comprometes a no:"],
+        "items": [
+          "enviar solicitudes que no piensas mantener, o a nombre de otra persona;",
+          "subir documentos que no son tuyos o que fueron alterados;",
+          "copiar anuncios o recopilar datos del sitio por medios automáticos sin nuestro permiso por escrito;",
+          "interferir con la seguridad o el funcionamiento del sitio."
+        ]
+      },
+      {
+        "title": "Anuncios",
+        "paragraphs": [
+          "Los anuncios, fotos, tarifas y políticas provienen de las empresas de alquiler. Ponemos un cuidado razonable al operar el sitio, pero no podemos garantizar que cada anuncio sea completo o exacto. Confirma los detalles con la empresa si algo es importante para ti."
+        ]
+      },
+      {
+        "title": "Exenciones y límites de responsabilidad",
+        "paragraphs": [
+          "Veltrio se ofrece tal como está. En la medida en que la ley lo permita, Veltrio no es responsable de ningún vehículo, alquiler, ni acto u omisión de una empresa de alquiler, y nuestra responsabilidad total contigo en relación con el sitio se limita a 100 USD.",
+          "Nada en estos términos limita un derecho que tengas por ley y que no pueda limitarse por contrato."
+        ]
+      },
+      {
+        "title": "Cambios y fin del uso",
+        "paragraphs": [
+          "Podemos actualizar estos términos. La fecha de arriba indica la versión más reciente, y se aplica a cada solicitud la versión vigente cuando la envías.",
+          "Podemos suspender el acceso a Veltrio a quien incumpla estos términos."
+        ]
+      },
+      {
+        "title": "Ley aplicable",
+        "paragraphs": [
+          "Estos términos se rigen por las leyes de los Estados Unidos y del estado en que Veltrio está establecida, salvo que la ley del lugar donde vives disponga otra cosa."
+        ]
+      }
+    ]
+  },
+  "privacy": {
+    "metaTitle": "Política de privacidad",
+    "metaDescription": "Qué información personal recopila Veltrio, para qué, con quién se comparte y qué opciones tienes.",
+    "title": "Política de privacidad",
+    "intro": "Esta política explica qué información personal recopila Veltrio cuando usas el sitio, por qué la recopilamos, con quién la compartimos y qué opciones tienes.",
+    "sections": [
+      {
+        "title": "Qué recopilamos",
+        "paragraphs": [
+          "Cuando envías una solicitud de reserva, recopilamos lo que escribes y lo enviamos a la empresa de alquiler:"
+        ],
+        "items": [
+          "tu nombre, correo electrónico, teléfono, dirección postal, fecha de nacimiento y género;",
+          "el número y la fecha de vencimiento de tu licencia de conducir, y fotos de tu licencia y de tu tarjeta de seguro;",
+          "los nombres y, si los indicas, los datos de licencia de los conductores adicionales;",
+          "el vehículo, las fechas, las sucursales, tu forma de pago preferida y cualquier nota que añadas."
+        ]
+      },
+      {
+        "title": "Qué recopilamos automáticamente",
+        "paragraphs": [
+          "Cuando navegas, recopilamos información sobre tu dispositivo y sobre cómo usas el sitio, como las páginas visitadas, tu navegador y tu región aproximada. Si eliges buscar cerca de tu ubicación actual, tu navegador nos la comparte para esa búsqueda.",
+          "Los datos de la tarjeta se introducen en el formulario seguro de Stripe y van directamente a Stripe. Veltrio nunca ve ni guarda el número de tu tarjeta."
+        ]
+      },
+      {
+        "title": "Cómo la usamos",
+        "items": [
+          "para enviar tu solicitud de reserva, tus documentos y tus mensajes a la empresa de alquiler que elegiste;",
+          "para mostrarte el estado de tu reserva y los enlaces de pago y de contrato;",
+          "para operar, proteger y mejorar el sitio, y para encontrar y corregir errores;",
+          "para entender cómo se usa el sitio, de forma agregada;",
+          "para cumplir obligaciones legales y prevenir fraudes."
+        ],
+        "paragraphs": []
+      },
+      {
+        "title": "Con quién la compartimos",
+        "paragraphs": [
+          "La empresa de alquiler a la que envías una solicitud recibe tu solicitud, tus datos y tus documentos. Los usa según su propia política de privacidad y guarda sus propios registros de tu alquiler.",
+          "También usamos proveedores de servicios que tratan información en nuestro nombre: Stripe para los pagos, PostHog para la analítica de uso, Sentry para los informes de errores, Google Maps para los mapas y la búsqueda de direcciones, y proveedores de alojamiento y de correo electrónico. Quitamos las partes privadas de los enlaces de reserva y de las ubicaciones buscadas antes de enviar datos de uso o informes de errores.",
+          "Podemos divulgar información cuando la ley lo exige. No vendemos tu información personal."
+        ]
+      },
+      {
+        "title": "Cookies y tecnologías similares",
+        "paragraphs": [
+          "El sitio guarda pequeñas cantidades de información en tu navegador, como tu idioma y un formulario de reserva a medio completar, para que el sitio funcione como esperas. Nuestro proveedor de analítica también usa el almacenamiento del navegador para distinguir las visitas.",
+          "Por ahora el sitio no responde a las señales de \"No rastrear\" (Do Not Track)."
+        ]
+      },
+      {
+        "title": "Cuánto tiempo la guardamos",
+        "paragraphs": [
+          "Guardamos la información de las reservas mientras la empresa de alquiler use Veltrio para gestionar el alquiler, y el tiempo necesario para cumplir obligaciones legales, fiscales y contables. Los datos de uso se guardan durante un periodo limitado y luego se eliminan."
+        ]
+      },
+      {
+        "title": "Cómo la protegemos",
+        "paragraphs": [
+          "La información se cifra en tránsito. Los documentos se guardan de forma privada y solo se muestran mediante enlaces que caducan. El acceso se limita a la empresa de alquiler con la que reservaste y a las personas y proveedores que lo necesitan para operar el servicio."
+        ]
+      },
+      {
+        "title": "Tus opciones y derechos",
+        "paragraphs": [
+          "Puedes pedirnos una copia de tu información personal, pedirnos que la corrijamos o que la eliminemos, salvo lo que debamos conservar por ley. Según dónde vivas, como en California, puedes tener otros derechos, y no te trataremos de forma distinta por ejercerlos.",
+          "La empresa de alquiler guarda sus propios registros de tu alquiler. Pregúntale directamente por la información que tiene."
+        ]
+      },
+      {
+        "title": "Menores",
+        "paragraphs": [
+          "Veltrio es para adultos. Debes tener al menos 18 años para enviar una solicitud de reserva, y no recopilamos a sabiendas información de menores."
+        ]
+      },
+      {
+        "title": "Cambios en esta política",
+        "paragraphs": [
+          "Podemos actualizar esta política. La fecha de arriba indica la versión más reciente. Cuando hagamos un cambio importante, lo indicaremos en el sitio."
+        ]
+      }
+    ]
+  }
+}

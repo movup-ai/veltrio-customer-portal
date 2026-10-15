@@ -1,0 +1,188 @@
+{
+  "contents": "On this page",
+  "updated": "Last updated: {date}",
+  "updatedDate": "October 15, 2026",
+  "contact": {
+    "title": "Contact us",
+    "body": "Questions about this page? Write to us at <email>{address}</email>."
+  },
+  "terms": {
+    "metaTitle": "Terms of Service",
+    "metaDescription": "The rules for using Veltrio to find and request rental cars from independent rental companies.",
+    "title": "Terms of Service",
+    "intro": "These terms cover your use of Veltrio, the website where you find and request rental cars from independent rental companies. By using Veltrio or sending a booking request, you agree to them.",
+    "sections": [
+      {
+        "title": "What Veltrio is",
+        "paragraphs": [
+          "Veltrio is a marketplace. Professional rental companies list their vehicles here, and you can compare them and send a company a booking request.",
+          "Veltrio is not a rental company, a broker or an insurer. We do not own, rent out or insure any vehicle listed on the site."
+        ]
+      },
+      {
+        "title": "Your rental is with the rental company",
+        "paragraphs": [
+          "When a company accepts your request, your rental contract is between you and that company. Veltrio is not a party to it.",
+          "The company is responsible for the vehicle, the rental agreement, its insurance and driver requirements, deposits, refunds and anything that happens during the rental. Where these terms and the company's rental agreement differ about the rental itself, the company's agreement applies."
+        ]
+      },
+      {
+        "title": "Booking requests",
+        "paragraphs": [
+          "A booking request is not a confirmed rental. The dates are not held for you until the company accepts the request, and a company may decline it.",
+          "Prices shown are worked out from the company's own rates, discounts, fees and taxes for the dates you chose. The company confirms the final price when it accepts your request."
+        ]
+      },
+      {
+        "title": "Fees and payment",
+        "paragraphs": [
+          "Veltrio charges renters no booking or service fee. Rental companies pay Veltrio a subscription for the software they use.",
+          "You pay the rental company, not Veltrio. Online payments are processed by Stripe and go directly to the company's own account. Refunds, deposit releases and payment disputes are handled by the company."
+        ]
+      },
+      {
+        "title": "Cancellations",
+        "paragraphs": [
+          "Each company sets its own cancellation policy. When a company has one, it is shown on the vehicle page and again before you pay.",
+          "If you cancel, any refund follows that company's policy, and the company issues it. If a company cancels your rental, contact the company about your refund. Veltrio does not decide refunds."
+        ]
+      },
+      {
+        "title": "Drivers and licences",
+        "paragraphs": [
+          "Only the renter and the additional drivers named on the rental agreement may drive the vehicle. Each driver must meet the company's age and licence requirements.",
+          "Every driver must hold a valid driving licence for the whole rental. The company checks each driver's licence at pick-up, so additional drivers should come to pick-up with their licence. A company may refuse to hand over the vehicle, or to add a driver, when a licence cannot be checked.",
+          "A company may charge for each additional driver. Its price is shown when you add a driver, and some laws require certain drivers, such as a spouse, to be added free of charge.",
+          "Letting someone who is not named on the agreement drive may break your rental agreement and leave you without the company's cover."
+        ]
+      },
+      {
+        "title": "Your information and documents",
+        "paragraphs": [
+          "The details and documents you send must be accurate and your own. When you name an additional driver, you confirm they have agreed to you sharing their details with the rental company.",
+          "How we handle personal information is explained in our Privacy Policy."
+        ]
+      },
+      {
+        "title": "Using Veltrio fairly",
+        "paragraphs": ["You agree not to:"],
+        "items": [
+          "send requests you do not intend to keep, or under someone else's name;",
+          "upload documents that are not yours or have been altered;",
+          "copy listings or collect data from the site by automated means without our written permission;",
+          "interfere with the site's security or operation."
+        ]
+      },
+      {
+        "title": "Listings",
+        "paragraphs": [
+          "Listings, photos, rates and policies come from the rental companies. We take reasonable care in running the site, but we cannot guarantee that every listing is complete or accurate. Check the details with the company if anything matters to you."
+        ]
+      },
+      {
+        "title": "Disclaimers and limits of liability",
+        "paragraphs": [
+          "Veltrio is provided as it is. To the extent the law allows, Veltrio is not responsible for any vehicle, rental, or act or omission of a rental company, and our total liability to you in connection with the site is limited to $100.",
+          "Nothing in these terms limits a right you have under law that cannot be limited by contract."
+        ]
+      },
+      {
+        "title": "Changes and ending your use",
+        "paragraphs": [
+          "We may update these terms. The date at the top shows the latest version, and the version in force when you send a request applies to it.",
+          "We may suspend access to Veltrio for anyone who breaks these terms."
+        ]
+      },
+      {
+        "title": "Governing law",
+        "paragraphs": [
+          "These terms are governed by the laws of the United States and of the state in which Veltrio is established, unless the law where you live says otherwise."
+        ]
+      }
+    ]
+  },
+  "privacy": {
+    "metaTitle": "Privacy Policy",
+    "metaDescription": "What personal information Veltrio collects, why, who it is shared with and the choices you have.",
+    "title": "Privacy Policy",
+    "intro": "This policy explains what personal information Veltrio collects when you use the site, why we collect it, who we share it with and the choices you have.",
+    "sections": [
+      {
+        "title": "What we collect",
+        "paragraphs": [
+          "When you send a booking request, we collect what you enter and send to the rental company:"
+        ],
+        "items": [
+          "your name, email address, phone number, postal address, date of birth and gender;",
+          "your driving licence number and expiry date, and photos of your driving licence and insurance card;",
+          "the names and, if you give them, licence details of any additional drivers;",
+          "the vehicle, dates, branches, payment preference and any note you add."
+        ]
+      },
+      {
+        "title": "What we collect automatically",
+        "paragraphs": [
+          "When you browse, we collect information about your device and how you use the site, such as pages visited, your browser and approximate region. If you choose to search near your current location, your browser shares it with us for that search.",
+          "Card details are entered into Stripe's secure form and go to Stripe directly. Veltrio never sees or stores your card number."
+        ]
+      },
+      {
+        "title": "How we use it",
+        "items": [
+          "to send your booking request, documents and messages to the rental company you chose;",
+          "to show you your booking's status and payment and agreement links;",
+          "to run, secure and improve the site, and to find and fix errors;",
+          "to understand how the site is used, in aggregate;",
+          "to meet legal obligations and prevent fraud."
+        ],
+        "paragraphs": []
+      },
+      {
+        "title": "Who we share it with",
+        "paragraphs": [
+          "The rental company you send a request to receives your request, details and documents. It uses them under its own privacy policy, and keeps its own records of your rental.",
+          "We also use service providers who handle information on our behalf: Stripe for payments, PostHog for usage analytics, Sentry for error reports, Google Maps for maps and address search, and providers for hosting and email. We remove the private parts of booking links and searched locations before sending usage data or error reports.",
+          "We may disclose information when the law requires it. We do not sell your personal information."
+        ]
+      },
+      {
+        "title": "Cookies and similar technologies",
+        "paragraphs": [
+          "The site stores small amounts of information in your browser, such as your language and a half-finished booking form, so the site works as you expect. Our analytics provider also uses browser storage to tell visits apart.",
+          "The site does not currently respond to \"Do Not Track\" signals."
+        ]
+      },
+      {
+        "title": "How long we keep it",
+        "paragraphs": [
+          "We keep booking information for as long as the rental company uses Veltrio to manage the rental, and as long as needed to meet legal, tax and accounting obligations. Usage data is kept for a limited period and then deleted."
+        ]
+      },
+      {
+        "title": "How we protect it",
+        "paragraphs": [
+          "Information is encrypted in transit. Documents are stored privately and shown only through links that expire. Access is limited to the rental company you booked with and to the people and providers who need it to run the service."
+        ]
+      },
+      {
+        "title": "Your choices and rights",
+        "paragraphs": [
+          "You can ask us for a copy of your personal information, ask us to correct it, or ask us to delete it, subject to what we must keep by law. Depending on where you live, such as California, you may have further rights, and we will not treat you differently for using them.",
+          "The rental company keeps its own records of your rental. Ask it directly about the information it holds."
+        ]
+      },
+      {
+        "title": "Children",
+        "paragraphs": [
+          "Veltrio is for adults. You must be at least 18 to send a booking request, and we do not knowingly collect information from children."
+        ]
+      },
+      {
+        "title": "Changes to this policy",
+        "paragraphs": [
+          "We may update this policy. The date at the top shows the latest version. When we make a significant change, we will say so on the site."
+        ]
+      }
+    ]
+  }
+}

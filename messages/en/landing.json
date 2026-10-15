@@ -115,6 +115,18 @@
       "return": {
         "question": "Can I return the car to a different location?",
         "answer": "Yes, when the company has more than one branch. You choose the return branch while booking; pick-up is always at the branch where the car is kept."
+      },
+      "drivers": {
+        "question": "Can someone else drive?",
+        "answer": "Yes, if they're named on the rental agreement. Add them as an additional driver when you book; the company sets its price per driver per day, shown before you send the request. Each driver must meet the company's age and licence rules and show their licence at pick-up."
+      },
+      "cancel": {
+        "question": "What if I need to cancel?",
+        "answer": "Each company sets its own cancellation policy, shown on the vehicle page and again before you pay. Any refund follows that policy and is paid by the company. Nothing is charged while the company is still reviewing your request."
+      },
+      "pickup": {
+        "question": "What happens at pick-up?",
+        "answer": "Bring your driving licence, and each additional driver brings theirs: the company checks every licence before handing over the keys. The rental and any deposit need to be paid, and the rental agreement signed, before the car leaves."
       }
     }
   },

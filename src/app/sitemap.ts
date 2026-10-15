@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { listCompanies } from "@/modules/company/company.repository";
 import { companyHref } from "@/modules/company/company.utils";
+import { PRIVACY_PATH, TERMS_PATH } from "@/modules/legal/legal";
 import { listVehicles } from "@/modules/vehicle/vehicle.repository";
 import { vehicleHref } from "@/modules/vehicle/vehicle.utils";
 import { localizeHref } from "@/i18n/href";
@@ -40,6 +41,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.5,
       alternates: translations(`${siteConfig.url}/for-rental-companies`),
     },
+    ...[TERMS_PATH, PRIVACY_PATH].map((path) => ({
+      url: `${siteConfig.url}${path}`,
+      changeFrequency: "yearly" as const,
+      priority: 0.2,
+      alternates: translations(`${siteConfig.url}${path}`),
+    })),
     ...companies.map((company) => ({
       url: companyHref(company),
       changeFrequency: "daily" as const,

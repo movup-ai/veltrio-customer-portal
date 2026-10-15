@@ -10,6 +10,7 @@ const NAMESPACES = [
   "company",
   "contract",
   "landing",
+  "legal",
   "payment",
   "search",
   "vehicle",

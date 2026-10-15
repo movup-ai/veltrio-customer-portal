@@ -44,6 +44,8 @@
       "howItWorks": "How it works",
       "faq": "FAQ"
     },
+    "terms": "Terms",
+    "privacy": "Privacy",
     "contact": "Contact"
   },
   "vehicleCount": "{count, plural, =1 {vehicle} other {vehicles}}",

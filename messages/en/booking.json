@@ -16,7 +16,8 @@
     "needAttention": "{count, plural, =1 {One field above needs your attention.} other {# fields above need your attention.}}",
     "sending": "Sending request…",
     "submit": "Request to book",
-    "notCharged": "You won't be charged yet."
+    "notCharged": "You won't be charged yet.",
+    "agreement": "By sending a request, you agree to Veltrio's <terms>Terms of Service</terms> and <privacy>Privacy Policy</privacy>. The rental itself is under the company's own agreement, which you sign before pick-up."
   },
   "failures": {
     "unavailable": "This vehicle is no longer available for those dates. Change your dates and try again.",

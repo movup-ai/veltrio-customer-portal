@@ -4,6 +4,7 @@ import type companies from "../../messages/en/companies.json";
 import type company from "../../messages/en/company.json";
 import type contract from "../../messages/en/contract.json";
 import type landing from "../../messages/en/landing.json";
+import type legal from "../../messages/en/legal.json";
 import type payment from "../../messages/en/payment.json";
 import type search from "../../messages/en/search.json";
 import type vehicle from "../../messages/en/vehicle.json";
@@ -20,6 +21,7 @@ declare module "next-intl" {
       company: typeof company;
       contract: typeof contract;
       landing: typeof landing;
+      legal: typeof legal;
       payment: typeof payment;
       search: typeof search;
       vehicle: typeof vehicle;
