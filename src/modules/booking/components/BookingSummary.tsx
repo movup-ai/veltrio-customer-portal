@@ -9,7 +9,7 @@ import { zoneNameAt } from "@/shared/lib/time-zone";
 import { ResponsiveImage } from "@/shared/ui/atoms/ResponsiveImage";
 import type { BookingDates, BookingQuote } from "../types";
 
-interface BookingSummaryProps {
+export interface BookingSummaryProps {
   vehicle: Vehicle;
   dates: BookingDates;
   /** Null when the company lists no daily rate. */
@@ -115,6 +115,20 @@ export function BookingSummary({
                     {t("discount", { percent: quote.discount.percentOff })}
                   </dt>
                   <dd>−{formatMoney(quote.discount.amountCents)}</dd>
+                </div>
+              )}
+              {quote.drivers && (
+                <div className="flex justify-between gap-4">
+                  <dt>
+                    {t("drivers", { count: quote.drivers.count })}
+                    <span className="block text-meta text-muted">
+                      {t("driversDetail", {
+                        price: formatMoney(quote.drivers.perDayCents),
+                        days: quote.drivers.days,
+                      })}
+                    </span>
+                  </dt>
+                  <dd>{formatMoney(quote.drivers.amountCents)}</dd>
                 </div>
               )}
               {quote.taxRatePct > 0 && (

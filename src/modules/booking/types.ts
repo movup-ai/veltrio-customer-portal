@@ -45,6 +45,18 @@ export interface BookingRequest {
   returnAt: string;
   payment: { method: PaymentMethod; timing: PaymentTiming | null };
   notes: string | null;
+  /** Others the renter wants on the agreement, at the company's own price. */
+  additionalDrivers: AdditionalDriver[];
+}
+
+/** Someone besides the renter who may drive, as the API's MarketplaceDriver. */
+export interface AdditionalDriver {
+  name: string;
+  // The renter may not have them to hand: the company reads the licence at pick-up.
+  licenceNumber?: string;
+  licenceState?: string;
+  /** "YYYY-MM-DD". */
+  licenceExpiry?: string;
 }
 
 /** Why a booking request was not taken. */
@@ -103,9 +115,16 @@ export interface BookingQuote {
   rentalCents: number;
   /** Length-of-rental discount, when the rental reaches one. */
   discount: { percentOff: number; amountCents: number } | null;
+  /** Drivers besides the renter, each billed per whole day; null when there are none. */
+  drivers: {
+    count: number;
+    perDayCents: number;
+    days: number;
+    amountCents: number;
+  } | null;
   /** 0 when the company charges no tax. */
   taxRatePct: number;
-  /** Charged on the rental after the discount. */
+  /** Charged on the rental after the discount, drivers included. */
   taxCents: number;
   totalCents: number;
   /** Refundable security deposit, not part of the total; null when the company sets none. */

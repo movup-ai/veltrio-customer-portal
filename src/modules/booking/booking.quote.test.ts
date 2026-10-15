@@ -28,7 +28,7 @@ function vehicle(overrides: Partial<VehiclePricing> = {}): VehiclePricing {
     rateOptions: [DAILY],
     discountTiers: [],
     billableHoursPerDay: 8,
-    fees: { taxRatePct: 0, depositCents: null },
+    fees: { taxRatePct: 0, depositCents: null, additionalDriverCents: null },
     ...overrides,
   };
 }
@@ -67,7 +67,13 @@ describe("quoteBooking", () => {
 
   it("charges tax on the rental and keeps the deposit out of the total", () => {
     const result = quote(
-      vehicle({ fees: { taxRatePct: 8, depositCents: 50000 } }),
+      vehicle({
+        fees: {
+          taxRatePct: 8,
+          depositCents: 50000,
+          additionalDriverCents: null,
+        },
+      }),
       dates("2026-10-13"),
     );
     expect(result).toMatchObject({
@@ -79,11 +85,50 @@ describe("quoteBooking", () => {
     });
   });
 
+  it("bills each driver per whole day, taxed with the rental, as the API does", () => {
+    // The same booking as the API's test_a_renter_names_a_driver_at_the_companys_own_price.
+    const result = quote(
+      vehicle({
+        rateOptions: [option("Daily", "day", 5500)],
+        discountTiers: [{ minDays: 3, percentOff: 10 }],
+        fees: {
+          taxRatePct: 7.25,
+          depositCents: null,
+          additionalDriverCents: 1500,
+        },
+      }),
+      dates("2026-10-14"),
+      1,
+    );
+    expect(result).toMatchObject({
+      drivers: { count: 1, perDayCents: 1500, days: 4, amountCents: 6000 },
+      taxCents: 1871,
+      totalCents: 27671,
+    });
+  });
+
+  it("bills a driver for a part day as a whole one, and lists no drivers when there are none", () => {
+    const priced = vehicle({
+      fees: { taxRatePct: 0, depositCents: null, additionalDriverCents: 1200 },
+    });
+    expect(quote(priced, dates("2026-10-12", "13:00"), 2)?.drivers).toEqual({
+      count: 2,
+      perDayCents: 1200,
+      days: 3,
+      amountCents: 7200,
+    });
+    expect(quote(priced, dates("2026-10-12"))?.drivers).toBeNull();
+  });
+
   it("takes the discount off before tax", () => {
     const result = quote(
       vehicle({
         discountTiers: [{ minDays: 3, percentOff: 10 }],
-        fees: { taxRatePct: 8, depositCents: null },
+        fees: {
+          taxRatePct: 8,
+          depositCents: null,
+          additionalDriverCents: null,
+        },
       }),
       dates("2026-10-14"),
     );

@@ -1,9 +1,12 @@
 import { describe, expect, it } from "vitest";
 import {
   EMPTY_BOOKING_FORM,
+  emptyDriver,
   toBookingRequestParts,
   validateBooking,
+  validateDrivers,
   type BookingFormValues,
+  type DriverValues,
 } from "./booking.validation";
 
 const RETURN_DATE = "2026-10-13";
@@ -121,6 +124,52 @@ describe("validateBooking", () => {
   });
 });
 
+describe("validateDrivers", () => {
+  const driver = (id: string, change: Partial<DriverValues> = {}) => ({
+    ...emptyDriver(id),
+    name: "Sam Lee",
+    ...change,
+  });
+
+  it("needs only a name: licence details may wait for pick-up", () => {
+    expect(validateDrivers([driver("a")], RETURN_DATE)).toEqual({});
+    expect(validateDrivers([driver("a", { name: "" })], RETURN_DATE)).toEqual({
+      a: { name: "driverNameRequired" },
+    });
+  });
+
+  it("checks the licence details that are given", () => {
+    expect(
+      validateDrivers(
+        [
+          driver("number", { licenceNumber: "D#1" }),
+          driver("state", { licenceState: "x".repeat(41) }),
+          driver("date", {
+            licenceExpiry: { month: "2", day: "31", year: "2030" },
+          }),
+          driver("expired", {
+            licenceExpiry: { month: "10", day: "12", year: "2026" },
+          }),
+        ],
+        RETURN_DATE,
+      ),
+    ).toEqual({
+      number: { licenceNumber: "licenceCharacters" },
+      state: { licenceState: "driverStateTooLong" },
+      date: { licenceExpiry: "expiryInvalid" },
+      expired: { licenceExpiry: "driverExpiryBeforeReturn" },
+    });
+  });
+
+  it("keeps the form from being sent while a driver is incomplete", () => {
+    expect(
+      errorsFor({ additionalDrivers: [driver("a", { name: "" })] })
+        .additionalDrivers,
+    ).toBe("driversIncomplete");
+    expect(errorsFor({ additionalDrivers: [driver("a")] })).toEqual({});
+  });
+});
+
 describe("toBookingRequestParts", () => {
   it("builds the request from a valid form", () => {
     const parts = toBookingRequestParts(
@@ -134,6 +183,31 @@ describe("toBookingRequestParts", () => {
     expect(parts.customer.licenceExpiry).toBe("2029-08-15");
     expect(parts.payment).toEqual({ method: "online", timing: "rental_first" });
     expect(parts.notes).toBe("Late flight");
+    expect(parts.additionalDrivers).toEqual([]);
+  });
+
+  it("sends each driver trimmed, leaving out the licence details not given", () => {
+    const parts = toBookingRequestParts(
+      values({
+        additionalDrivers: [
+          {
+            ...emptyDriver("row-1"),
+            name: " Sam Lee ",
+            licenceNumber: " D1234567 ",
+            licenceExpiry: { month: "8", day: "15", year: "2029" },
+          },
+          { ...emptyDriver("row-2"), name: "Ann Lee" },
+        ],
+      }),
+    );
+    expect(parts.additionalDrivers).toEqual([
+      {
+        name: "Sam Lee",
+        licenceNumber: "D1234567",
+        licenceExpiry: "2029-08-15",
+      },
+      { name: "Ann Lee" },
+    ]);
   });
 
   it("drops the deposit timing for cash and an empty note", () => {

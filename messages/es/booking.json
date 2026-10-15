@@ -52,6 +52,20 @@
     "insurancePhoto": "Foto de la tarjeta de seguro",
     "insurancePhotoHint": "Tu póliza de auto vigente."
   },
+  "drivers": {
+    "title": "Conductores adicionales",
+    "description": "Cualquier otra persona que vaya a conducir debe figurar en el contrato. {company} cobra {price} por conductor y día.",
+    "descriptionFree": "Cualquier otra persona que vaya a conducir debe figurar en el contrato. {company} los añade sin costo.",
+    "driverN": "Conductor {number}",
+    "name": "Nombre completo",
+    "licence": "Número de licencia",
+    "state": "Estado de emisión",
+    "expiry": "Vencimiento de la licencia",
+    "remove": "Quitar conductor {number}",
+    "add": "Añadir conductor",
+    "max": "Puedes indicar hasta {count} conductores aquí. Pregunta a {company} si necesitas más.",
+    "licenceAtPickup": "Los datos de la licencia pueden esperar. Cada conductor muestra su licencia al recoger el auto, donde la empresa la registra, y debe cumplir sus requisitos de edad."
+  },
   "payment": {
     "title": "Preferencia de pago",
     "description": "No se te cobra al enviar esta solicitud.",
@@ -107,7 +121,12 @@
     "photoSize": "Sube una foto de 10 MB o menos.",
     "paymentMethodRequired": "Elige cómo prefieres pagar.",
     "paymentTimingRequired": "Elige cuándo pagar el depósito.",
-    "notesTooLong": "Usa {maxNotes} caracteres o menos."
+    "notesTooLong": "Usa {maxNotes} caracteres o menos.",
+    "driverNameRequired": "Escribe el nombre completo del conductor.",
+    "driverNameTooLong": "Usa 60 caracteres o menos.",
+    "driverStateTooLong": "Usa 40 caracteres o menos.",
+    "driverExpiryBeforeReturn": "Esta licencia vence antes de devolver el auto, así que este conductor no puede conducirlo.",
+    "driversIncomplete": "Completa los datos de cada conductor adicional o quítalo."
   },
   "summary": {
     "pickup": "Recogida",
@@ -121,7 +140,9 @@
     "taxes": "Impuestos ({percent}%)",
     "total": "Total",
     "deposit": "Un depósito de garantía reembolsable de {amount} se libera al devolver el auto.",
-    "noRate": "{company} no ha fijado una tarifa para este vehículo y te confirmará el precio."
+    "noRate": "{company} no ha fijado una tarifa para este vehículo y te confirmará el precio.",
+    "drivers": "{count, plural, =1 {Conductor adicional} other {# conductores adicionales}}",
+    "driversDetail": "{price} al día cada uno, {days, plural, =1 {1 día} other {# días}}"
   },
   "confirmed": {
     "title": "Solicitud enviada",

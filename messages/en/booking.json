@@ -52,6 +52,20 @@
     "insurancePhoto": "Insurance card photo",
     "insurancePhotoHint": "Your current auto policy."
   },
+  "drivers": {
+    "title": "Additional drivers",
+    "description": "Anyone else who will drive must be named on the agreement. {company} charges {price} per driver per day.",
+    "descriptionFree": "Anyone else who will drive must be named on the agreement. {company} adds them for free.",
+    "driverN": "Driver {number}",
+    "name": "Full name",
+    "licence": "Licence number",
+    "state": "Issuing state",
+    "expiry": "Licence expiry",
+    "remove": "Remove driver {number}",
+    "add": "Add a driver",
+    "max": "You can name up to {count} drivers here. Ask {company} if you need more.",
+    "licenceAtPickup": "Licence details can wait. Each driver shows their licence at pick-up, where the company records it, and must meet its age rules."
+  },
   "payment": {
     "title": "Payment preference",
     "description": "You are not charged when you send this request.",
@@ -107,7 +121,12 @@
     "photoSize": "Upload a photo of 10 MB or less.",
     "paymentMethodRequired": "Choose how you would like to pay.",
     "paymentTimingRequired": "Choose when to pay the deposit.",
-    "notesTooLong": "Use {maxNotes} characters or fewer."
+    "notesTooLong": "Use {maxNotes} characters or fewer.",
+    "driverNameRequired": "Enter the driver's full name.",
+    "driverNameTooLong": "Use 60 characters or fewer.",
+    "driverStateTooLong": "Use 40 characters or fewer.",
+    "driverExpiryBeforeReturn": "This licence expires before the car comes back, so this driver can't drive it.",
+    "driversIncomplete": "Complete each additional driver's details, or remove the driver."
   },
   "summary": {
     "pickup": "Pick-up",
@@ -121,7 +140,9 @@
     "taxes": "Taxes ({percent}%)",
     "total": "Total",
     "deposit": "A refundable security deposit of {amount} is released when the car comes back.",
-    "noRate": "{company} has not set a rate for this vehicle and will confirm the price with you."
+    "noRate": "{company} has not set a rate for this vehicle and will confirm the price with you.",
+    "drivers": "{count, plural, =1 {Additional driver} other {# additional drivers}}",
+    "driversDetail": "{price} a day each, {days, plural, =1 {1 day} other {# days}}"
   },
   "confirmed": {
     "title": "Request sent",

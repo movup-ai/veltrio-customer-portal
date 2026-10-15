@@ -23,13 +23,16 @@ function durationHours(dates: BookingDates) {
  * What a rental costs, by the same rules the API charges with (see rate-plan.ts);
  * null when the vehicle has no rates or the window cannot be priced.
  *
- * Tax is charged on the rental after any discount. The deposit is held, not
- * charged, so it is reported beside the total and never taxed.
+ * Drivers are billed per whole day, and tax is charged on the rental after any
+ * discount plus the drivers. The deposit is held, not charged, so it is reported
+ * beside the total and never taxed.
  */
 export function quoteBooking(
   vehicle: VehiclePricing,
   /** Times on the company's clock. */
   dates: BookingDates,
+  /** Drivers besides the renter, each billed per whole day. */
+  drivers = 0,
 ): BookingQuote | null {
   const hours = durationHours(dates);
   if (hours === 0) return null;
@@ -42,8 +45,10 @@ export function quoteBooking(
   if (!plan) return null;
 
   const discountCents = plan.discount?.amountCents ?? 0;
-  const subtotalCents = plan.subtotalCents - discountCents;
-  const { taxRatePct, depositCents } = vehicle.fees;
+  const { taxRatePct, depositCents, additionalDriverCents } = vehicle.fees;
+  const days = Math.max(1, Math.ceil(hours / 24));
+  const driversCents = drivers * (additionalDriverCents ?? 0) * days;
+  const subtotalCents = plan.subtotalCents - discountCents + driversCents;
   const taxCents = percentOfCents(subtotalCents, taxRatePct);
 
   return {
@@ -59,6 +64,15 @@ export function quoteBooking(
     discount: plan.discount
       ? { percentOff: plan.discount.percentOff, amountCents: discountCents }
       : null,
+    drivers:
+      drivers > 0
+        ? {
+            count: drivers,
+            perDayCents: additionalDriverCents ?? 0,
+            days,
+            amountCents: driversCents,
+          }
+        : null,
     taxRatePct,
     taxCents,
     totalCents: subtotalCents + taxCents,
