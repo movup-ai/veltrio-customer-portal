@@ -21,7 +21,6 @@ import {
 import type {
   BookingDates,
   BookingFailure,
-  BookingQuote,
   BookingUploadTarget,
   DocumentKind,
   PaymentMethod,
@@ -29,9 +28,14 @@ import type {
 } from "../types";
 import { BookingConfirmed } from "./BookingConfirmed";
 import { BookingDocumentsSection } from "./BookingDocumentsSection";
+import {
+  useBookingDrivers,
+  useBookingQuote,
+  useBookingReturn,
+} from "./BookingChoices";
 import { BookingDriverSection } from "./BookingDriverSection";
+import { BookingDriversSection } from "./BookingDriversSection";
 import { BookingPaymentSection } from "./BookingPaymentSection";
-import { useBookingReturn } from "./BookingReturn";
 import { BookingSection } from "./BookingSection";
 
 interface BookingFormProps {
@@ -44,8 +48,8 @@ interface BookingFormProps {
   /** Each open branch's address by its name; any of them can take the car back. */
   addresses: Record<string, string>;
   dates: BookingDates;
-  /** Null when the company has not priced the rental yet. */
-  quote: BookingQuote | null;
+  /** What the company charges per additional driver per day; null when none can be named. */
+  driverPriceCents: number | null;
   companyName: string;
   companyHref: string;
 }
@@ -75,7 +79,7 @@ export function BookingForm({
   location,
   addresses,
   dates,
-  quote,
+  driverPriceCents,
   companyName,
   companyHref,
 }: BookingFormProps) {
@@ -98,12 +102,17 @@ export function BookingForm({
   );
   const canReturnElsewhere = branches.some((branch) => branch !== location);
   const [, showReturnLocation] = useBookingReturn();
+  const [, showDrivers] = useBookingDrivers();
+  const quote = useBookingQuote();
+  const driverCount = form.values.additionalDrivers.length;
 
   // Keeps the summary beside the form on the branch chosen here, or restored from a draft.
   useEffect(
     () => showReturnLocation(returnLocation),
     [returnLocation, showReturnLocation],
   );
+  // And priced on the drivers named here.
+  useEffect(() => showDrivers(driverCount), [driverCount, showDrivers]);
 
   useEffect(() => {
     if (attempt === 0) return;
@@ -245,6 +254,13 @@ export function BookingForm({
         )}
         <BookingDriverSection form={form} />
         <BookingDocumentsSection form={form} />
+        {driverPriceCents !== null && (
+          <BookingDriversSection
+            form={form}
+            priceCents={driverPriceCents}
+            companyName={companyName}
+          />
+        )}
         <BookingPaymentSection
           form={form}
           companyName={companyName}

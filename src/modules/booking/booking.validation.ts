@@ -7,6 +7,7 @@ import {
 } from "@/shared/lib/date";
 import type messages from "../../../messages/en/booking.json";
 import type {
+  AdditionalDriver,
   BookingCustomer,
   BookingRequest,
   Gender,
@@ -18,6 +19,8 @@ import type {
 export const MIN_RENTER_AGE = 18;
 const MAX_RENTER_AGE = 110;
 export const NOTES_MAX_LENGTH = 500;
+/** Drivers a renter can name besides themselves, as the API allows. */
+export const MAX_ADDITIONAL_DRIVERS = 3;
 export const DOCUMENT_TYPES = [
   "image/jpeg",
   "image/png",
@@ -47,12 +50,41 @@ export interface BookingFormValues {
   /** The branch the car comes back to; empty for the one it is picked up at. */
   returnLocation: string;
   notes: string;
+  additionalDrivers: DriverValues[];
+}
+
+/** One additional driver as typed; `id` keys the row and is never sent. */
+export interface DriverValues {
+  id: string;
+  name: string;
+  // Optional: the company reads the licence off the card at pick-up.
+  licenceNumber: string;
+  licenceState: string;
+  licenceExpiry: DateParts;
+}
+
+/** An empty additional-driver row. */
+export function emptyDriver(id: string): DriverValues {
+  return {
+    id,
+    name: "",
+    licenceNumber: "",
+    licenceState: "",
+    licenceExpiry: EMPTY_DATE,
+  };
 }
 
 export type BookingField = keyof BookingFormValues;
 /** What is wrong with a field: the name of its message under `booking.errors`. */
 export type BookingErrorCode = keyof typeof messages.errors;
 export type BookingErrors = Partial<Record<BookingField, BookingErrorCode>>;
+/** What is wrong with each additional driver, by row id. */
+export type DriverErrors = Record<
+  string,
+  Partial<Record<DriverField, BookingErrorCode>>
+>;
+export type DriverField =
+  "name" | "licenceNumber" | "licenceState" | "licenceExpiry";
 
 export const EMPTY_BOOKING_FORM: BookingFormValues = {
   name: "",
@@ -69,6 +101,7 @@ export const EMPTY_BOOKING_FORM: BookingFormValues = {
   paymentTiming: "",
   returnLocation: "",
   notes: "",
+  additionalDrivers: [],
 };
 
 /** Fields in the order they appear, for moving focus to the first problem. */
@@ -83,10 +116,68 @@ export const BOOKING_FIELD_ORDER: BookingField[] = [
   "licenceExpiry",
   "licencePhoto",
   "insurancePhoto",
+  "additionalDrivers",
   "paymentMethod",
   "paymentTiming",
   "notes",
 ];
+
+function nameError(
+  value: string,
+  max: number,
+  codes: Record<"required" | "tooLong" | "digits", BookingErrorCode>,
+): BookingErrorCode | undefined {
+  const name = value.trim();
+  if (name.length < 2) return codes.required;
+  if (name.length > max) return codes.tooLong;
+  if (/\d/.test(name)) return codes.digits;
+  return undefined;
+}
+
+function licenceError(
+  value: string,
+  required: BookingErrorCode,
+): BookingErrorCode | undefined {
+  const licence = value.trim();
+  if (!licence) return required;
+  if (!LICENCE_NUMBER.test(licence)) return "licenceCharacters";
+  if (licence.length < 3 || licence.length > 30) return "licenceLength";
+  return undefined;
+}
+
+/**
+ * Checks each additional driver; a driver with nothing wrong is left out. Only the name is
+ * required: licence details given are checked, and the rest wait for pick-up.
+ */
+export function validateDrivers(
+  drivers: DriverValues[],
+  returnDate: string,
+): DriverErrors {
+  const errors: DriverErrors = {};
+  for (const driver of drivers) {
+    const found: DriverErrors[string] = {};
+    const name = nameError(driver.name, 60, {
+      required: "driverNameRequired",
+      tooLong: "driverNameTooLong",
+      digits: "nameDigits",
+    });
+    if (name) found.name = name;
+    if (driver.licenceNumber.trim()) {
+      const licence = licenceError(driver.licenceNumber, "licenceRequired");
+      if (licence) found.licenceNumber = licence;
+    }
+    if (driver.licenceState.trim().length > 40) {
+      found.licenceState = "driverStateTooLong";
+    }
+    const expiry = isoFromParts(driver.licenceExpiry);
+    if (expiry === null) found.licenceExpiry = "expiryInvalid";
+    else if (expiry !== "empty" && expiry < returnDate) {
+      found.licenceExpiry = "driverExpiryBeforeReturn";
+    }
+    if (Object.keys(found).length > 0) errors[driver.id] = found;
+  }
+  return errors;
+}
 
 function documentError(file: File): BookingErrorCode | undefined {
   if (!DOCUMENT_TYPES.includes(file.type)) {
@@ -106,11 +197,12 @@ export function validateBooking(
 ): BookingErrors {
   const errors: BookingErrors = {};
 
-  const name = values.name.trim();
-  if (!name) errors.name = "nameRequired";
-  else if (name.length < 2) errors.name = "nameRequired";
-  else if (name.length > 80) errors.name = "nameTooLong";
-  else if (/\d/.test(name)) errors.name = "nameDigits";
+  const name = nameError(values.name, 80, {
+    required: "nameRequired",
+    tooLong: "nameTooLong",
+    digits: "nameDigits",
+  });
+  if (name) errors.name = name;
 
   const email = values.email.trim();
   if (!email) errors.email = "emailRequired";
@@ -149,13 +241,8 @@ export function validateBooking(
   else if (address.length < 5) errors.address = "addressShort";
   else if (address.length > 160) errors.address = "addressTooLong";
 
-  const licenceNumber = values.licenceNumber.trim();
-  if (!licenceNumber) errors.licenceNumber = "licenceRequired";
-  else if (!LICENCE_NUMBER.test(licenceNumber)) {
-    errors.licenceNumber = "licenceCharacters";
-  } else if (licenceNumber.length < 3 || licenceNumber.length > 30) {
-    errors.licenceNumber = "licenceLength";
-  }
+  const licenceNumber = licenceError(values.licenceNumber, "licenceRequired");
+  if (licenceNumber) errors.licenceNumber = licenceNumber;
 
   const licenceExpiry = isoFromParts(values.licenceExpiry);
   if (licenceExpiry === "empty") {
@@ -190,13 +277,21 @@ export function validateBooking(
     errors.notes = "notesTooLong";
   }
 
+  const drivers = validateDrivers(values.additionalDrivers, returnDate);
+  if (Object.keys(drivers).length > 0) {
+    errors.additionalDrivers = "driversIncomplete";
+  }
+
   return errors;
 }
 
 /** The parts of a booking request that come from a valid form. */
 export function toBookingRequestParts(
   values: BookingFormValues,
-): Pick<BookingRequest, "customer" | "payment" | "notes"> {
+): Pick<
+  BookingRequest,
+  "customer" | "payment" | "notes" | "additionalDrivers"
+> {
   const customer: BookingCustomer = {
     name: values.name.trim(),
     email: values.email.trim(),
@@ -216,5 +311,18 @@ export function toBookingRequestParts(
         method === "online" ? (values.paymentTiming as PaymentTiming) : null,
     },
     notes: values.notes.trim() || null,
+    additionalDrivers: values.additionalDrivers.map((driver) => {
+      const expiry = isoFromParts(driver.licenceExpiry);
+      const sent: AdditionalDriver = { name: driver.name.trim() };
+      // What was left blank is left out: the API reads it as still to come.
+      if (driver.licenceNumber.trim()) {
+        sent.licenceNumber = driver.licenceNumber.trim();
+      }
+      if (driver.licenceState.trim()) {
+        sent.licenceState = driver.licenceState.trim();
+      }
+      if (expiry && expiry !== "empty") sent.licenceExpiry = expiry;
+      return sent;
+    }),
   };
 }

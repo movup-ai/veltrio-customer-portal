@@ -6,8 +6,10 @@ import {
   MIN_RENTER_AGE,
   NOTES_MAX_LENGTH,
   validateBooking,
+  validateDrivers,
   type BookingField,
   type BookingFormValues,
+  type DriverField,
 } from "./booking.validation";
 
 /** What each section of the booking form needs to read and update the form. */
@@ -15,6 +17,8 @@ export interface BookingFormApi {
   values: BookingFormValues;
   /** Messages, in the reader's language, for fields the renter has already been through. */
   errors: Partial<Record<BookingField, string>>;
+  /** The same for each additional driver's fields, by row id. */
+  driverErrors: Record<string, Partial<Record<DriverField, string>>>;
   /** True once a field has been visited, filled in and found valid. */
   isValid: (field: BookingField) => boolean;
   set: <F extends BookingField>(field: F, value: BookingFormValues[F]) => void;
@@ -61,9 +65,25 @@ export function useBookingForm(returnDate: string, uri: string) {
       current.has(field) ? current : new Set(current).add(field),
     );
 
+  const driverErrors: BookingFormApi["driverErrors"] = shown(
+    "additionalDrivers",
+  )
+    ? Object.fromEntries(
+        Object.entries(
+          validateDrivers(values.additionalDrivers, returnDate),
+        ).map(([id, codes]) => [
+          id,
+          Object.fromEntries(
+            Object.entries(codes).map(([field, code]) => [field, t(code)]),
+          ),
+        ]),
+      )
+    : {};
+
   const form: BookingFormApi = {
     values,
     errors,
+    driverErrors,
     isValid: (field) => touched.has(field) && !allErrors[field],
     set: (field, value) =>
       setValues((current) => ({ ...current, [field]: value })),

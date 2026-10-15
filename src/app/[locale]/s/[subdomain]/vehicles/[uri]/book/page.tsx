@@ -4,15 +4,14 @@ import { localizeHref } from "@/i18n/href";
 import type { Metadata } from "next";
 import { Link } from "@/i18n/Link";
 import { notFound, redirect } from "next/navigation";
-import { quoteBooking } from "@/modules/booking/booking.quote";
 import { parseBookingDates } from "@/modules/booking/booking.utils";
 import { BookingBranch } from "@/modules/booking/components/BookingBranch";
 import { BookingForm } from "@/modules/booking/components/BookingForm";
 import {
+  BookingChoicesProvider,
+  BookingChoicesSummary,
   BookingReturnLocation,
-  BookingReturnProvider,
-} from "@/modules/booking/components/BookingReturn";
-import { BookingSummary } from "@/modules/booking/components/BookingSummary";
+} from "@/modules/booking/components/BookingChoices";
 import { listCompanyLocations } from "@/modules/company/company.repository";
 import { companyHref } from "@/modules/company/company.utils";
 import { getVehicle } from "@/modules/vehicle/vehicle.repository";
@@ -75,7 +74,6 @@ export default async function BookVehiclePage({
   }
 
   const t = await getTranslations("booking.bookPage");
-  const quote = quoteBooking(vehicle, dates);
   // Without the branch list the car simply comes back where it was picked up.
   const branches = (await settle(listCompanyLocations(subdomain))) ?? [];
   const addresses = Object.fromEntries(
@@ -87,7 +85,16 @@ export default async function BookVehiclePage({
       <SiteHeader />
       <main id="main" className="container-page pt-8 pb-16 md:pt-12">
         <div className="group/booking grid gap-x-18 gap-y-10 lg:grid-cols-[minmax(0,1fr)_25rem]">
-          <BookingReturnProvider pickupLocation={vehicle.location}>
+          <BookingChoicesProvider
+            pickupLocation={vehicle.location}
+            pricing={{
+              rateOptions: vehicle.rateOptions,
+              discountTiers: vehicle.discountTiers,
+              billableHoursPerDay: vehicle.billableHoursPerDay,
+              fees: vehicle.fees,
+            }}
+            dates={dates}
+          >
             <BookingForm
               vehicleId={vehicle.id}
               subdomain={subdomain}
@@ -95,16 +102,15 @@ export default async function BookVehiclePage({
               location={vehicle.location}
               addresses={addresses}
               dates={dates}
-              quote={quote}
+              driverPriceCents={vehicle.fees.additionalDriverCents}
               companyName={vehicle.company.name}
               companyHref={companyHref(vehicle.company)}
             />
             <aside aria-label={t("summaryLabel")} className="lg:order-last">
               <div className="lg:sticky lg:top-24">
-                <BookingSummary
+                <BookingChoicesSummary
                   vehicle={vehicle}
                   dates={dates}
-                  quote={quote}
                   pickupLocation={
                     <BookingBranch
                       name={vehicle.location}
@@ -134,7 +140,7 @@ export default async function BookVehiclePage({
                 )}
               </div>
             </aside>
-          </BookingReturnProvider>
+          </BookingChoicesProvider>
         </div>
       </main>
     </ClientMessages>

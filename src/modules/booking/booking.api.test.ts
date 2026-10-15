@@ -20,6 +20,7 @@ const request = (payment: BookingRequest["payment"]): BookingRequest => ({
   returnAt: "2026-10-13T10:00",
   payment,
   notes: null,
+  additionalDrivers: [],
 });
 
 describe("toBookingCreateDto", () => {
@@ -35,6 +36,16 @@ describe("toBookingCreateDto", () => {
       "returnAt",
       "returnLocation",
     ]);
+  });
+
+  it("sends drivers only when the renter named some", () => {
+    const drivers = [{ name: "Sam Lee", licenceState: "FL" }];
+    expect(
+      toBookingCreateDto({
+        ...request({ method: "cash", timing: null }),
+        additionalDrivers: drivers,
+      }).additionalDrivers,
+    ).toEqual(drivers);
   });
 
   it("tells paying the deposit online from settling it at pick-up", () => {

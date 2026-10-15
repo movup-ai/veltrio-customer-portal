@@ -125,6 +125,8 @@ export interface VehicleFees {
   taxRatePct: number;
   /** Refundable security deposit in cents; null when the company has not set one. */
   depositCents: number | null;
+  /** Each driver besides the renter, per day, in cents; null when drivers can't be named here. */
+  additionalDriverCents: number | null;
 }
 
 /** One vehicle's page: the listing plus what it costs and when it is free. Mirrors MarketplaceVehicleDetail. */

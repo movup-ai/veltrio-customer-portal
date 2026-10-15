@@ -58,7 +58,7 @@ describe("toVehicleDetail", () => {
     ],
     discountTiers: [{ minDays: 3, percentOff: 10 }],
     billableHoursPerDay: 6,
-    fees: { taxRatePct: 8, depositCents: 50000 },
+    fees: { taxRatePct: 8, depositCents: 50000, additionalDriverCents: 1500 },
     occupancy: {
       ranges: [{ start: "2026-10-10", end: "2026-10-12" }],
       through: "2027-04-02",
@@ -71,7 +71,11 @@ describe("toVehicleDetail", () => {
     expect(vehicle.rateOptions[0]?.rateCents).toBe(31900);
     expect(vehicle.discountTiers).toEqual([{ minDays: 3, percentOff: 10 }]);
     expect(vehicle.billableHoursPerDay).toBe(6);
-    expect(vehicle.fees).toEqual({ taxRatePct: 8, depositCents: 50000 });
+    expect(vehicle.fees).toEqual({
+      taxRatePct: 8,
+      depositCents: 50000,
+      additionalDriverCents: 1500,
+    });
     expect(vehicle.occupancy.through).toBe("2027-04-02");
   });
 
@@ -80,7 +84,11 @@ describe("toVehicleDetail", () => {
       ...detail,
       fees: { taxRatePct: null, depositCents: null },
     });
-    expect(vehicle.fees).toEqual({ taxRatePct: 0, depositCents: null });
+    expect(vehicle.fees).toEqual({
+      taxRatePct: 0,
+      depositCents: null,
+      additionalDriverCents: null,
+    });
   });
 
   it("falls back to no discounts, 8 hours a day and no fees for an older API", () => {
@@ -92,7 +100,8 @@ describe("toVehicleDetail", () => {
     expect(toVehicleDetail(older)).toMatchObject({
       discountTiers: [],
       billableHoursPerDay: 8,
-      fees: { taxRatePct: 0, depositCents: null },
+      // No driver price: an API that does not send one takes no drivers from renters.
+      fees: { taxRatePct: 0, depositCents: null, additionalDriverCents: null },
       cancellationPolicy: null,
     });
   });

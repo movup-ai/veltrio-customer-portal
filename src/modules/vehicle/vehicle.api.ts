@@ -94,7 +94,12 @@ export interface VehicleDetailDto extends VehicleDto {
   // The three below are absent from API builds that predate them.
   discountTiers?: DiscountTier[];
   billableHoursPerDay?: number;
-  fees?: { taxRatePct: number | null; depositCents: number | null };
+  fees?: {
+    taxRatePct: number | null;
+    depositCents: number | null;
+    // Absent from API builds that do not take drivers on a renter's request.
+    additionalDriverCents?: number;
+  };
   occupancy: VehicleOccupancy;
   cancellationPolicy?: CancellationPolicy | null;
 }
@@ -125,6 +130,7 @@ export function toVehicleDetail(dto: VehicleDetailDto): VehicleDetail {
       // No tax rate set means no tax.
       taxRatePct: dto.fees?.taxRatePct ?? 0,
       depositCents: dto.fees?.depositCents ?? null,
+      additionalDriverCents: dto.fees?.additionalDriverCents ?? null,
     },
     occupancy: {
       ranges: dto.occupancy.ranges.map(({ start, end }) => ({ start, end })),

@@ -1,5 +1,10 @@
 import { ApiError } from "@/shared/api/client";
-import type { BookingCustomer, BookingFailure, BookingRequest } from "./types";
+import type {
+  AdditionalDriver,
+  BookingCustomer,
+  BookingFailure,
+  BookingRequest,
+} from "./types";
 
 /** How a renter asked to pay, as the API names it. */
 export type PaymentPreferenceDto =
@@ -14,6 +19,7 @@ export interface BookingCreateDto {
   returnAt: string;
   paymentPreference: PaymentPreferenceDto;
   notes: string | null;
+  additionalDrivers?: AdditionalDriver[];
 }
 
 /** MarketplaceBookingRead in the API, as far as the marketplace reads it. */
@@ -32,10 +38,13 @@ export interface DocumentUploadSlotDto {
 
 export function toBookingCreateDto({
   payment,
+  additionalDrivers,
   ...request
 }: BookingRequest): BookingCreateDto {
   return {
     ...request,
+    // Left out when empty: an API that takes no drivers refuses the field itself.
+    ...(additionalDrivers.length > 0 && { additionalDrivers }),
     paymentPreference:
       payment.method === "cash"
         ? "cash"
