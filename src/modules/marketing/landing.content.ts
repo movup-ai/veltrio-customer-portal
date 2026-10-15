@@ -74,6 +74,8 @@ export function collectionCards(
 
 /** The page that explains Veltrio to rental companies. */
 export const COMPANIES_PATH = "/for-rental-companies";
+/** Plans and prices for rental companies. */
+export const PRICING_PATH = "/pricing";
 
 const STEPS = ["find", "request", "confirm", "pickUp"] as const;
 const FAQS = [
@@ -191,7 +193,7 @@ export function footerContent(t: Translator<"common">) {
       links: [
         { href: COMPANIES_PATH, label: t("footer.forCompanies.list") },
         {
-          href: `${COMPANIES_PATH}#pricing`,
+          href: PRICING_PATH,
           label: t("footer.forCompanies.pricing"),
         },
         ...(siteConfig.portalUrl

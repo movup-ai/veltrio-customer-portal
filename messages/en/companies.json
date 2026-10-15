@@ -48,41 +48,44 @@
       "software": "Fleet software included in every plan"
     }
   },
-  "software": {
+  "product": {
     "eyebrow": "The software",
     "title": "Everything to run your fleet, <em>in one place.</em>",
     "features": {
-      "fleet": {
-        "title": "Fleet",
-        "description": "Every vehicle with its photos, specs and features in one place."
+      "calendar": {
+        "title": "Your whole fleet at a glance",
+        "description": "A calendar of every car: which one is out, with whom, and when it's due back. Requests still waiting for your answer stand out.",
+        "alt": "The Veltrio calendar for a five-car fleet over one week, each booking a coloured bar with the renter's name and dates."
       },
-      "bookings": {
-        "title": "Bookings and calendar",
-        "description": "Accept requests and see which car is out, and when, at a glance."
+      "site": {
+        "title": "Bookings from anywhere",
+        "description": "Your own booking site at yourcompany.{domain}, and your cars in the marketplace search. Every request comes straight to you, with no commission.",
+        "alt": "A rental company's booking site: its name over a photo of a car, then its fleet with each car's daily price."
       },
-      "pricing": {
-        "title": "Pricing",
-        "description": "Hourly, daily, weekly and monthly rates, deposits and long-rental discounts."
+      "checks": {
+        "title": "Checked before the keys go",
+        "description": "Run background and insurance checks on a renter from the booking, and check every driver's licence at handover before the car leaves.",
+        "alt": "A booking's checklist: background check clear, ID verification successful and insurance verification covered."
       },
-      "customers": {
-        "title": "Customers",
-        "description": "Renter details, driving licence and insurance documents, checked before you confirm."
+      "payment": {
+        "title": "Signed and paid before pickup",
+        "description": "Send the rental agreement to sign online and a secure link to pay. The security deposit is held on the renter's card until the car comes back.",
+        "alt": "A renter's payment page for an Audi R8 with the pick-up and return details, the amount due and the security deposit held on the card."
       },
-      "agreements": {
-        "title": "Rental agreements",
-        "description": "Send the agreement and have it signed online before pick-up."
-      },
-      "payments": {
-        "title": "Payments",
-        "description": "Send a secure payment link, take cash at pick-up, and issue receipts."
-      },
-      "branches": {
-        "title": "Branches",
-        "description": "Run several locations, each with its own address and opening hours."
-      },
-      "dashboard": {
-        "title": "Dashboard",
-        "description": "Your bookings and fleet at a glance."
+      "payouts": {
+        "title": "Your money, your Stripe",
+        "description": "Renters pay into your own Stripe account, and Stripe pays out to your bank. Veltrio never holds your money. Receipts, refunds and deposit releases are a click away on the booking.",
+        "alt": "A booking's payment card: paid in full by card, with invoice, receipt and refund buttons, and a security deposit on hold with a button to release it."
+      }
+    },
+    "more": {
+      "title": "Also in every plan",
+      "items": {
+        "drivers": "Additional drivers at your own daily price.",
+        "branches": "Several branches, each with its own address and opening hours.",
+        "languages": "English and Spanish, for your staff and your renters.",
+        "ai": "Vehicle descriptions written for you by AI, ready to edit.",
+        "import": "Bring your existing fleet in from a spreadsheet."
       }
     }
   },
@@ -92,7 +95,7 @@
     "steps": {
       "account": {
         "title": "Create your account",
-        "description": "Sign up as a rental company and start your 7-day free trial."
+        "description": "Sign up as a rental company and start your {trialDays}-day free trial."
       },
       "vehicles": {
         "title": "Add your vehicles",
@@ -108,16 +111,20 @@
       }
     }
   },
-  "pricing": {
+  "pricingSummary": {
     "eyebrow": "Pricing",
     "title": "One flat price. <em>No commission.</em>",
+    "description": "Plans from {price} a month, or save {percent}% or more paying yearly. Every plan includes the full software and your marketplace listing, and starts with a {trialDays}-day free trial.",
+    "cta": "See plans and prices"
+  },
+  "pricing": {
     "mostPopular": "Most popular",
     "onPlan": " on the {name} plan",
     "perMonth": "per month",
     "custom": "Custom",
     "startTrial": "Start free trial",
     "talkToSales": "Talk to sales",
-    "note": "Every plan starts with a 7-day free trial and includes the full software, online payments through Stripe and 0% commission on bookings.",
+    "yearly": "or {price} a year, save {percent}%",
     "features": {
       "vehiclesUpTo": "Up to {count} vehicles",
       "vehiclesMoreThan": "More than {count} vehicles",
@@ -133,13 +140,85 @@
       "enterprise": "For large fleets with needs of their own."
     }
   },
+  "pricingPage": {
+    "metaTitle": "Pricing for rental companies",
+    "metaDescription": "Flat monthly or yearly plans for rental companies, sized to your fleet, with 0% commission and a free trial. Verification credits for renter checks.",
+    "title": "Simple pricing. <em>No commission.</em>",
+    "intro": "One flat subscription sized to your fleet, with the full software and your marketplace listing in every plan. Pay monthly, or a year up front and save {percent}% or more.",
+    "plansEyebrow": "Plans",
+    "plansTitle": "A plan for <em>every fleet.</em>",
+    "plansNote": "Every plan starts with a {trialDays}-day free trial. Prices are in US dollars.",
+    "included": {
+      "eyebrow": "Every plan",
+      "title": "Included, <em>whichever you pick.</em>",
+      "items": {
+        "software": {
+          "title": "The full software",
+          "description": "Fleet, calendar, bookings, agreements, payments and branches. No feature is held back for a bigger plan."
+        },
+        "listing": {
+          "title": "Your marketplace listing",
+          "description": "Your cars in the marketplace search and on your own booking site."
+        },
+        "payments": {
+          "title": "Payments through Stripe",
+          "description": "Renters pay into your own Stripe account. Stripe's standard processing fee applies."
+        },
+        "commission": {
+          "title": "0% commission",
+          "description": "Renters pay the price you set, and every booking's money is yours."
+        }
+      }
+    },
+    "credits": {
+      "eyebrow": "Renter checks",
+      "title": "Pay only for the checks <em>you run.</em>",
+      "description": "Background and insurance checks on renters are paid for with credits, which you buy in packs ahead of time.",
+      "pack": "{count} credits",
+      "perCredit": "{price} a credit",
+      "background": "A background check uses {count} credits.",
+      "insurance": "An insurance check uses {count} credits.",
+      "identity": "An ID check uses none.",
+      "note": "Credits never expire. Your first subscription comes with {count} credits, so you can try a check during the trial."
+    },
+    "faq": {
+      "eyebrow": "Pricing questions",
+      "title": "Before you <em>pick a plan.</em>",
+      "items": {
+        "trial": {
+          "question": "How does the free trial work?",
+          "answer": "Every plan starts with a {trialDays}-day free trial with the full software, so you can add your fleet and take bookings before you pay."
+        },
+        "yearly": {
+          "question": "Monthly or yearly?",
+          "answer": "Either. Paying a year up front costs less: {percent}% or more off twelve monthly payments, depending on the plan."
+        },
+        "change": {
+          "question": "Can I change plans later?",
+          "answer": "Yes. Your company's owner can move to another plan from the billing settings in the portal."
+        },
+        "size": {
+          "question": "Which plan do I need?",
+          "answer": "The one that holds your fleet: each plan has a vehicle and branch limit. Above {count} vehicles, talk to us about Enterprise."
+        },
+        "credits": {
+          "question": "What are credits for?",
+          "answer": "Paid renter checks. A background check uses {background} credits and an insurance check uses {insurance}. Credits never expire."
+        },
+        "fees": {
+          "question": "Are there any other fees?",
+          "answer": "No commission and no fee per booking. Stripe charges its standard processing fee on card payments, which comes out of your Stripe account, and renters pay no fee to Veltrio."
+        }
+      }
+    }
+  },
   "faq": {
     "eyebrow": "Questions",
     "title": "Good to know <em>before you list.</em>",
     "items": {
       "cost": {
         "question": "What does Veltrio cost?",
-        "answer": "A flat monthly subscription based on the size of your fleet. There is no commission and no charge per booking."
+        "answer": "A flat subscription sized to your fleet, from {price} a month. There is no commission and no charge per booking."
       },
       "share": {
         "question": "Does Veltrio take a share of my bookings?",
@@ -159,14 +238,14 @@
       },
       "trial": {
         "question": "Is there a free trial?",
-        "answer": "Yes. Every plan starts with a 7-day free trial, so you can add your fleet and take bookings before you pay."
+        "answer": "Yes. Every plan starts with a {trialDays}-day free trial, so you can add your fleet and take bookings before you pay."
       }
     }
   },
   "signUp": {
     "eyebrow": "Ready to list?",
     "title": "Put your fleet in front of renters today.",
-    "description": "Start your 7-day free trial, add your vehicles and keep 100% of every booking.",
+    "description": "Start your {trialDays}-day free trial, add your vehicles and keep 100% of every booking.",
     "cta": "Start free trial"
   }
 }

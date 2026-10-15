@@ -1,17 +1,19 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
+import { Link } from "@/i18n/Link";
 import type { Locale } from "@/i18n/routing";
 import { em, emOnInverse } from "@/i18n/rich";
 import { ComparisonSection } from "@/modules/marketing/components/ComparisonSection";
 import { FaqSection } from "@/modules/marketing/components/FaqSection";
-import { FeatureGridSection } from "@/modules/marketing/components/FeatureGridSection";
 import { HeroSection } from "@/modules/marketing/components/HeroSection";
 import { HostCtaSection } from "@/modules/marketing/components/HostCtaSection";
 import { HowItWorksSection } from "@/modules/marketing/components/HowItWorksSection";
-import { PricingSection } from "@/modules/marketing/components/PricingSection";
+import { PricingSummarySection } from "@/modules/marketing/components/PricingSummarySection";
+import { ScreenshotFeaturesSection } from "@/modules/marketing/components/ScreenshotFeaturesSection";
 import { ValuePropsSection } from "@/modules/marketing/components/ValuePropsSection";
 import {
   COMPANIES_PATH,
+  PRICING_PATH,
   companiesContent,
   signUpHref,
 } from "@/modules/marketing/companies.content";
@@ -46,11 +48,11 @@ export default async function ForRentalCompaniesPage({ params }: PageProps) {
     comparison,
     gettingStarted,
     marketplaceBenefits,
-    pricingNote,
-    pricingPlans,
+    moreFeatures,
+    pricingSummary,
+    productFeatures,
     signUpCta,
-    softwareFeatures,
-  } = companiesContent(t);
+  } = companiesContent(t, locale);
   return (
     <>
       <SiteHeader variant="overlay" />
@@ -67,7 +69,7 @@ export default async function ForRentalCompaniesPage({ params }: PageProps) {
               </Button>
             )}
             <Button asChild variant="glass">
-              <a href="#pricing">{t("hero.seePricing")}</a>
+              <Link href={PRICING_PATH}>{t("hero.seePricing")}</Link>
             </Button>
           </div>
         </HeroSection>
@@ -84,12 +86,23 @@ export default async function ForRentalCompaniesPage({ params }: PageProps) {
             {...comparison}
           />
 
-          <FeatureGridSection
+          <ScreenshotFeaturesSection
             id="software"
-            eyebrow={t("software.eyebrow")}
-            title={t.rich("software.title", { em })}
-            features={softwareFeatures}
-          />
+            eyebrow={t("product.eyebrow")}
+            title={t.rich("product.title", { em })}
+            features={productFeatures}
+          >
+            <div className="mt-16 rounded-xl border border-border bg-surface p-6 md:p-8">
+              <h3 className="text-h4 font-semibold">
+                {t("product.more.title")}
+              </h3>
+              <ul className="mt-4 grid list-disc gap-2 pl-5 text-foreground-secondary sm:grid-cols-2">
+                {moreFeatures.map((feature) => (
+                  <li key={feature}>{feature}</li>
+                ))}
+              </ul>
+            </div>
+          </ScreenshotFeaturesSection>
 
           <HowItWorksSection
             eyebrow={t("start.eyebrow")}
@@ -97,11 +110,10 @@ export default async function ForRentalCompaniesPage({ params }: PageProps) {
             steps={gettingStarted}
           />
 
-          <PricingSection
-            eyebrow={t("pricing.eyebrow")}
-            title={t.rich("pricing.title", { em })}
-            plans={pricingPlans}
-            note={pricingNote}
+          <PricingSummarySection
+            eyebrow={t("pricingSummary.eyebrow")}
+            title={t.rich("pricingSummary.title", { em })}
+            {...pricingSummary}
           />
 
           <FaqSection

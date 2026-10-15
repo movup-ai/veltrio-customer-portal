@@ -48,41 +48,44 @@
       "software": "Software para tu flota incluido en todos los planes"
     }
   },
-  "software": {
+  "product": {
     "eyebrow": "El software",
     "title": "Todo para gestionar tu flota, <em>en un solo lugar.</em>",
     "features": {
-      "fleet": {
-        "title": "Flota",
-        "description": "Cada vehículo con sus fotos, especificaciones y equipamiento en un solo lugar."
+      "calendar": {
+        "title": "Toda tu flota de un vistazo",
+        "description": "Un calendario con cada auto: cuál está fuera, con quién y cuándo vuelve. Las solicitudes que esperan tu respuesta destacan.",
+        "alt": "El calendario de Veltrio de una flota de cinco autos durante una semana; cada reserva es una barra de color con el nombre del arrendatario y las fechas."
       },
-      "bookings": {
-        "title": "Reservas y calendario",
-        "description": "Acepta solicitudes y mira de un vistazo qué auto está fuera y cuándo."
+      "site": {
+        "title": "Reservas desde cualquier lugar",
+        "description": "Tu propio sitio de reservas en tuempresa.{domain} y tus autos en la búsqueda del marketplace. Cada solicitud te llega directamente, sin comisión.",
+        "alt": "El sitio de reservas de una empresa de alquiler: su nombre sobre la foto de un auto y luego su flota con el precio por día de cada auto."
       },
-      "pricing": {
-        "title": "Precios",
-        "description": "Tarifas por hora, día, semana y mes, depósitos y descuentos por alquileres largos."
+      "checks": {
+        "title": "Revisado antes de entregar las llaves",
+        "description": "Haz verificaciones de antecedentes y de seguro al arrendatario desde la reserva, y revisa la licencia de cada conductor en la entrega antes de que salga el auto.",
+        "alt": "La lista de verificación de una reserva: antecedentes sin registros, verificación de identidad correcta y seguro vigente."
       },
-      "customers": {
-        "title": "Clientes",
-        "description": "Datos del cliente, licencia de conducir y documentos del seguro, revisados antes de confirmar."
+      "payment": {
+        "title": "Firmado y pagado antes de recoger",
+        "description": "Envía el contrato de alquiler para firmar en línea y un enlace seguro para pagar. El depósito de seguridad se retiene en la tarjeta del arrendatario hasta que vuelve el auto.",
+        "alt": "La página de pago de un arrendatario para un Audi R8, con los datos de recogida y devolución, el importe a pagar y el depósito de seguridad retenido en la tarjeta."
       },
-      "agreements": {
-        "title": "Contratos de alquiler",
-        "description": "Envía el contrato y recíbelo firmado en línea antes de la recogida."
-      },
-      "payments": {
-        "title": "Pagos",
-        "description": "Envía un enlace de pago seguro, cobra en efectivo en la recogida y emite recibos."
-      },
-      "branches": {
-        "title": "Sucursales",
-        "description": "Gestiona varias sucursales, cada una con su dirección y su horario."
-      },
-      "dashboard": {
-        "title": "Panel",
-        "description": "Tus reservas y tu flota de un vistazo."
+      "payouts": {
+        "title": "Tu dinero, tu Stripe",
+        "description": "Los arrendatarios pagan en tu propia cuenta de Stripe, y Stripe transfiere a tu banco. Veltrio nunca retiene tu dinero. Recibos, reembolsos y liberación de depósitos están a un clic en la reserva.",
+        "alt": "La tarjeta de pago de una reserva: pagada por completo con tarjeta, con botones de factura, recibo y reembolso, y un depósito de seguridad retenido con un botón para liberarlo."
+      }
+    },
+    "more": {
+      "title": "También en todos los planes",
+      "items": {
+        "drivers": "Conductores adicionales a tu propio precio por día.",
+        "branches": "Varias sucursales, cada una con su dirección y su horario.",
+        "languages": "Inglés y español, para tu equipo y tus arrendatarios.",
+        "ai": "Descripciones de vehículos escritas por IA, listas para editar.",
+        "import": "Trae tu flota actual desde una hoja de cálculo."
       }
     }
   },
@@ -92,7 +95,7 @@
     "steps": {
       "account": {
         "title": "Crea tu cuenta",
-        "description": "Regístrate como empresa de alquiler y empieza tu prueba gratis de 7 días."
+        "description": "Regístrate como empresa de alquiler y empieza tu prueba gratis de {trialDays} días."
       },
       "vehicles": {
         "title": "Añade tus vehículos",
@@ -108,23 +111,27 @@
       }
     }
   },
-  "pricing": {
+  "pricingSummary": {
     "eyebrow": "Precios",
     "title": "Un precio fijo. <em>Sin comisión.</em>",
+    "description": "Planes desde {price} al mes, o ahorra un {percent}% o más pagando por año. Todos los planes incluyen el software completo y tu presencia en el marketplace, y empiezan con una prueba gratis de {trialDays} días.",
+    "cta": "Ver planes y precios"
+  },
+  "pricing": {
     "mostPopular": "El más elegido",
     "onPlan": " en el plan {name}",
     "perMonth": "al mes",
     "custom": "A medida",
-    "startTrial": "Empezar prueba gratis",
-    "talkToSales": "Hablar con ventas",
-    "note": "Todos los planes empiezan con una prueba gratis de 7 días e incluyen el software completo, pagos en línea con Stripe y 0% de comisión en las reservas.",
+    "startTrial": "Empieza la prueba gratis",
+    "talkToSales": "Habla con ventas",
+    "yearly": "o {price} al año, ahorra un {percent}%",
     "features": {
       "vehiclesUpTo": "Hasta {count} vehículos",
       "vehiclesMoreThan": "Más de {count} vehículos",
       "branches": "{count, plural, =1 {1 sucursal} other {Hasta # sucursales}}",
       "unlimitedBranches": "Sucursales ilimitadas",
-      "listing": "Presencia en el mercado",
-      "onboarding": "Puesta en marcha guiada por nuestro equipo"
+      "listing": "Presencia en el marketplace",
+      "onboarding": "Puesta en marcha guiada con nuestro equipo"
     },
     "plans": {
       "starter": "Para flotas nuevas y pequeñas.",
@@ -133,13 +140,85 @@
       "enterprise": "Para flotas grandes con necesidades propias."
     }
   },
+  "pricingPage": {
+    "metaTitle": "Precios para empresas de alquiler",
+    "metaDescription": "Planes mensuales o anuales para empresas de alquiler, según el tamaño de tu flota, con 0% de comisión y prueba gratis. Créditos para verificar arrendatarios.",
+    "title": "Precios simples. <em>Sin comisión.</em>",
+    "intro": "Una suscripción fija según el tamaño de tu flota, con el software completo y tu presencia en el marketplace en todos los planes. Paga cada mes, o un año por adelantado y ahorra un {percent}% o más.",
+    "plansEyebrow": "Planes",
+    "plansTitle": "Un plan para <em>cada flota.</em>",
+    "plansNote": "Todos los planes empiezan con una prueba gratis de {trialDays} días. Los precios están en dólares estadounidenses.",
+    "included": {
+      "eyebrow": "Todos los planes",
+      "title": "Incluido, <em>elijas el que elijas.</em>",
+      "items": {
+        "software": {
+          "title": "El software completo",
+          "description": "Flota, calendario, reservas, contratos, pagos y sucursales. Ninguna función se reserva para un plan mayor."
+        },
+        "listing": {
+          "title": "Tu presencia en el marketplace",
+          "description": "Tus autos en la búsqueda del marketplace y en tu propio sitio de reservas."
+        },
+        "payments": {
+          "title": "Pagos con Stripe",
+          "description": "Los arrendatarios pagan en tu propia cuenta de Stripe. Se aplica la comisión estándar de procesamiento de Stripe."
+        },
+        "commission": {
+          "title": "0% de comisión",
+          "description": "Los arrendatarios pagan el precio que fijas, y el dinero de cada reserva es tuyo."
+        }
+      }
+    },
+    "credits": {
+      "eyebrow": "Verificación de arrendatarios",
+      "title": "Paga solo por las verificaciones <em>que haces.</em>",
+      "description": "Las verificaciones de antecedentes y de seguro se pagan con créditos, que compras en paquetes por adelantado.",
+      "pack": "{count} créditos",
+      "perCredit": "{price} por crédito",
+      "background": "Una verificación de antecedentes usa {count} créditos.",
+      "insurance": "Una verificación de seguro usa {count} créditos.",
+      "identity": "Una verificación de identidad no usa ninguno.",
+      "note": "Los créditos no caducan. Tu primera suscripción incluye {count} créditos para que pruebes una verificación durante la prueba gratis."
+    },
+    "faq": {
+      "eyebrow": "Preguntas sobre precios",
+      "title": "Antes de <em>elegir un plan.</em>",
+      "items": {
+        "trial": {
+          "question": "¿Cómo funciona la prueba gratis?",
+          "answer": "Todos los planes empiezan con una prueba gratis de {trialDays} días con el software completo, para que añadas tu flota y recibas reservas antes de pagar."
+        },
+        "yearly": {
+          "question": "¿Pago mensual o anual?",
+          "answer": "Lo que prefieras. Pagar un año por adelantado cuesta menos: un {percent}% o más que doce pagos mensuales, según el plan."
+        },
+        "change": {
+          "question": "¿Puedo cambiar de plan más adelante?",
+          "answer": "Sí. El propietario de tu empresa puede pasar a otro plan desde la configuración de facturación del portal."
+        },
+        "size": {
+          "question": "¿Qué plan necesito?",
+          "answer": "El que abarque tu flota: cada plan tiene un límite de vehículos y de sucursales. Con más de {count} vehículos, habla con nosotros sobre Enterprise."
+        },
+        "credits": {
+          "question": "¿Para qué sirven los créditos?",
+          "answer": "Para las verificaciones de pago a arrendatarios. Una verificación de antecedentes usa {background} créditos y una de seguro usa {insurance}. Los créditos no caducan."
+        },
+        "fees": {
+          "question": "¿Hay otros cargos?",
+          "answer": "Sin comisión y sin cargo por reserva. Stripe cobra su comisión estándar de procesamiento en los pagos con tarjeta, que sale de tu cuenta de Stripe, y los arrendatarios no pagan ningún cargo a Veltrio."
+        }
+      }
+    }
+  },
   "faq": {
     "eyebrow": "Preguntas",
     "title": "Conviene saberlo <em>antes de publicar.</em>",
     "items": {
       "cost": {
         "question": "¿Cuánto cuesta Veltrio?",
-        "answer": "Una suscripción mensual fija según el tamaño de tu flota. No hay comisión ni cargos por reserva."
+        "answer": "Una suscripción fija según el tamaño de tu flota, desde {price} al mes. Sin comisión y sin cargo por reserva."
       },
       "share": {
         "question": "¿Veltrio se queda con una parte de mis reservas?",
@@ -159,14 +238,14 @@
       },
       "trial": {
         "question": "¿Hay una prueba gratis?",
-        "answer": "Sí. Todos los planes empiezan con una prueba gratis de 7 días, para que añadas tu flota y recibas reservas antes de pagar."
+        "answer": "Sí. Todos los planes empiezan con una prueba gratis de {trialDays} días, para que añadas tu flota y recibas reservas antes de pagar."
       }
     }
   },
   "signUp": {
     "eyebrow": "¿Listo para publicar?",
     "title": "Pon tu flota frente a los clientes hoy mismo.",
-    "description": "Empieza tu prueba gratis de 7 días, añade tus vehículos y quédate con el 100% de cada reserva.",
+    "description": "Empieza tu prueba gratis de {trialDays} días, añade tus vehículos y quédate con el 100% de cada reserva.",
     "cta": "Empezar prueba gratis"
   }
 }

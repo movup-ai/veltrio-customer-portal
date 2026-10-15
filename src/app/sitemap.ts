@@ -41,6 +41,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.5,
       alternates: translations(`${siteConfig.url}/for-rental-companies`),
     },
+    {
+      url: `${siteConfig.url}/pricing`,
+      changeFrequency: "monthly",
+      priority: 0.5,
+      alternates: translations(`${siteConfig.url}/pricing`),
+    },
     ...[TERMS_PATH, PRIVACY_PATH].map((path) => ({
       url: `${siteConfig.url}${path}`,
       changeFrequency: "yearly" as const,
