@@ -12,10 +12,10 @@ export function VehicleTerms({ fees }: VehicleTermsProps) {
   const rows = [
     {
       label: t("deposit"),
-      value:
-        fees.depositCents === null
-          ? t("noDeposit")
-          : t("depositHeld", { price: formatMoney(fees.depositCents) }),
+      // Null is the API's "none", the same as a deposit of nothing.
+      value: !fees.depositCents
+        ? t("noDeposit")
+        : t("depositHeld", { price: formatMoney(fees.depositCents) }),
     },
     ...(fees.additionalDriverCents === null
       ? []

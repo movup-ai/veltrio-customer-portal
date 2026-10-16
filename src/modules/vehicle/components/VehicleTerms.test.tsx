@@ -19,6 +19,11 @@ describe("VehicleTerms", () => {
     expect(rows()).toEqual(["Security deposit: None"]);
   });
 
+  it("says a deposit of nothing is none, not $0", () => {
+    renderInEnglish(<VehicleTerms fees={{ ...fees, depositCents: 0 }} />);
+    expect(rows()).toEqual(["Security deposit: None"]);
+  });
+
   it("shows the deposit and the extra-driver price", () => {
     renderInEnglish(
       <VehicleTerms

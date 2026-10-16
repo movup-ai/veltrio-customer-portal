@@ -64,7 +64,7 @@ export async function findListedVehicles(
   for (const key of ["city", "state"] as const) {
     const value = filter[key];
     // A city listed with no state is asked for as an empty one; left out, any state would match.
-    if (key === "state" && value === null && filter.city) {
+    if (key === "state" && value === null && filter.city?.trim()) {
       params.set(key, "");
       continue;
     }

@@ -86,7 +86,7 @@ export function ValuePropsSection({
             </span>
             <div>
               <h3 className="text-h4 font-semibold">{title}</h3>
-              <p className="mt-3 max-w-prose text-lead leading-relaxed text-foreground-secondary">
+              <p className="mt-3 max-w-prose text-ui leading-relaxed text-foreground-secondary">
                 {description}
               </p>
             </div>

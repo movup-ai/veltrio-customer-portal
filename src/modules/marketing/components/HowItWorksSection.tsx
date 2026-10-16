@@ -38,19 +38,19 @@ export function HowItWorksSection({
           {steps.map((step, index) => (
             <li
               key={step.title}
-              className="grid grid-cols-[4rem_1fr] gap-x-6 border-t border-border py-12 first:border-t-0 first:pt-4 md:grid-cols-[6rem_1fr] md:gap-x-10 md:py-16"
+              className="grid grid-cols-[3rem_1fr] gap-x-6 border-t border-border py-4 first:border-t-0 first:pt-4 md:grid-cols-[4.5rem_1fr] md:gap-x-10 md:py-8"
             >
               <span
                 aria-hidden
-                className="font-display text-h1 leading-none text-muted md:text-display"
+                className="font-display text-h2 leading-none text-muted md:text-h1"
               >
                 {index + 1}
               </span>
-              <div className="pt-1 md:pt-3">
-                <h3 className="text-h3 font-semibold tracking-tight">
+              <div className="pt-1 md:pt-2">
+                <h3 className="text-h4 font-semibold tracking-tight">
                   {step.title}
                 </h3>
-                <p className="mt-4 max-w-prose text-lead leading-relaxed text-foreground-secondary">
+                <p className="mt-3 max-w-prose text-ui leading-relaxed text-foreground-secondary">
                   {step.description}
                 </p>
               </div>

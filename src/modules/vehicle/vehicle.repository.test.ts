@@ -31,4 +31,9 @@ describe("findListedVehicles", () => {
     await findListedVehicles({ state: null });
     expect(asked()).toEqual({});
   });
+
+  it("treats a blank city as none, so it does not become a search by missing state", async () => {
+    await findListedVehicles({ city: "   ", state: null });
+    expect(asked()).toEqual({});
+  });
 });
