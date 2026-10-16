@@ -173,6 +173,7 @@ export default async function HomePage({ params }: PageProps) {
       <main id="main">
         <SearchBanner
           title={intro.title}
+          image={intro.image}
           note={<TrustStrip label={t("trust.label")} points={trustPoints} />}
         >
           <SearchCapsule cities={cities} />

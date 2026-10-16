@@ -100,7 +100,11 @@ export function landingContent(t: Translator<"landing">) {
   const intro = {
     title: t("intro.title"),
     image: {
-      variants: [{ url: "/images/landing.jpg", width: 2000, height: 1335 }],
+      variants: unsplash(
+        "1529369623266-f5264b696110",
+        [800, 1600, 2400],
+        16 / 9,
+      ),
       alt: t("intro.imageAlt"),
     },
   };
