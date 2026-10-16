@@ -15,6 +15,7 @@ import styles from "@/modules/marketing/components/story/story.module.css";
 import {
   COMPANIES_PATH,
   PRICING_PATH,
+  SHARE_IMAGE,
   companiesContent,
   signUpHref,
 } from "@/modules/marketing/companies.content";
@@ -37,6 +38,7 @@ export async function generateMetadata({
     description: t("metaDescription"),
     path: COMPANIES_PATH,
     locale,
+    image: SHARE_IMAGE,
   });
 }
 
@@ -248,6 +250,7 @@ export default async function ForRentalCompaniesPage({ params }: PageProps) {
             <StoryFigure
               image={figures.paid.image}
               motion="wipe"
+              narrow
               className="mx-auto w-full max-w-md lg:col-span-5"
             />
             <div className="lg:col-span-6 lg:col-start-7">
@@ -314,6 +317,7 @@ export default async function ForRentalCompaniesPage({ params }: PageProps) {
               image={figures.money.image}
               motion="rise"
               inverse
+              narrow
               className="mx-auto w-full max-w-md lg:col-span-4 lg:col-start-9 lg:mt-96"
             />
           </div>
