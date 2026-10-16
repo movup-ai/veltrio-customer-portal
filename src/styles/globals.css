@@ -75,6 +75,18 @@
   --color-success-soft: var(--color-verdant-50);
   --color-highlight: var(--color-amber-400);
 
+  /* Booking statuses, in the same colours the company portal shows them. */
+  --color-status-pending: #b45309;
+  --color-status-pending-soft: #fef3c7;
+  --color-status-confirmed: #0369a1;
+  --color-status-confirmed-soft: #e0f2fe;
+  --color-status-ready: #6d28d9;
+  --color-status-ready-soft: #ede9fe;
+  --color-status-rental: #0f766e;
+  --color-status-rental-soft: #ccfbf1;
+  --color-status-completed: #15803d;
+  --color-status-completed-soft: #dcfce7;
+
   /* ---- Typography ---- */
   --font-display: var(--font-instrument-serif), "Times New Roman", serif;
   --font-sans:

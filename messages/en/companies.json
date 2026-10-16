@@ -9,8 +9,6 @@
     "seePricing": "See pricing"
   },
   "marketplace": {
-    "eyebrow": "The marketplace",
-    "title": "0% commission. <em>On every booking.</em>",
     "benefits": {
       "find": {
         "title": "Renters find you",
@@ -31,8 +29,6 @@
     }
   },
   "comparison": {
-    "eyebrow": "The difference",
-    "title": "A marketplace that <em>does not take a cut.</em>",
     "others": {
       "title": "Typical marketplaces",
       "commission": "Take a commission on every booking",
@@ -49,8 +45,6 @@
     }
   },
   "product": {
-    "eyebrow": "The software",
-    "title": "Everything to run your fleet, <em>in one place.</em>",
     "features": {
       "calendar": {
         "title": "Your whole fleet at a glance",
@@ -112,10 +106,7 @@
     }
   },
   "pricingSummary": {
-    "eyebrow": "Pricing",
-    "title": "One flat price. <em>No commission.</em>",
-    "description": "Plans from {price} a month, or save {percent}% or more paying yearly. Every plan includes the full software and your marketplace listing, and starts with a {trialDays}-day free trial.",
-    "cta": "See plans and prices"
+    "description": "Plans from {price} a month, or save {percent}% or more paying yearly. Every plan includes the full software and your marketplace listing, and starts with a {trialDays}-day free trial."
   },
   "pricing": {
     "mostPopular": "Most popular",
@@ -247,5 +238,76 @@
     "title": "Put your fleet in front of renters today.",
     "description": "Start your {trialDays}-day free trial, add your vehicles and keep 100% of every booking.",
     "cta": "Start free trial"
+  },
+  "story": {
+    "kicker": "For rental companies",
+    "facts": {
+      "commission": "0% commission",
+      "price": "Plans from {price} a month",
+      "trial": "{trialDays}-day free trial"
+    },
+    "chaptersLabel": "Chapters",
+    "chapterN": "Chapter {number}",
+    "chapters": {
+      "find": {
+        "folio": "Renters find you",
+        "title": "Renters find you. <em>You keep the booking.</em>"
+      },
+      "fleet": {
+        "folio": "Your fleet at a glance"
+      },
+      "checks": {
+        "folio": "Checked before the keys go"
+      },
+      "paid": {
+        "folio": "Signed and paid"
+      },
+      "money": {
+        "folio": "Your money, your Stripe",
+        "intertitle": "Then the renter pays.",
+        "ledger": "Where the money goes",
+        "paid": "Paid by card",
+        "to": "Paid to",
+        "toValue": "{company}'s own Stripe account",
+        "share": "Veltrio's share"
+      },
+      "start": {
+        "folio": "Everything else, and how to start",
+        "moreTitle": "Also in every plan"
+      },
+      "cost": {
+        "folio": "What it costs",
+        "title": "One flat price. <em>No commission.</em>",
+        "pricing": "See plans and prices",
+        "closing": "Ready when you are.",
+        "trial": "Start your {trialDays}-day free trial"
+      }
+    },
+    "captions": {
+      "find": "A company's own booking site, beside its listing in the marketplace search.",
+      "fleet": "The calendar: every car, who has it and when it comes back.",
+      "checks": "A booking's checklist, filled in before pick-up.",
+      "paid": "What the renter sees when they pay: the rental now, the deposit held.",
+      "money": "The same booking in your portal: paid in full, the deposit on hold until the return."
+    },
+    "ticket": {
+      "sample": "Sample booking",
+      "statuses": {
+        "pending": "Pending",
+        "confirmed": "Confirmed",
+        "ready": "Ready",
+        "onRental": "On rental",
+        "completed": "Completed"
+      },
+      "steps": {
+        "requested": "Request received from the marketplace",
+        "calendar": "Accepted, the dates held on the calendar",
+        "checks": "Background, ID and insurance checks clear",
+        "paid": "Agreement signed, rental paid, deposit held",
+        "payout": "Paid out to the company's Stripe, Veltrio takes nothing",
+        "handover": "Every driver's licence checked, keys handed over",
+        "returned": "Car returned, deposit released"
+      }
+    }
   }
 }

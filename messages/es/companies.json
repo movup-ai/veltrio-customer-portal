@@ -9,8 +9,6 @@
     "seePricing": "Ver precios"
   },
   "marketplace": {
-    "eyebrow": "El mercado",
-    "title": "0% de comisión. <em>En cada reserva.</em>",
     "benefits": {
       "find": {
         "title": "Los clientes te encuentran",
@@ -31,8 +29,6 @@
     }
   },
   "comparison": {
-    "eyebrow": "La diferencia",
-    "title": "Un mercado que <em>no se queda con una parte.</em>",
     "others": {
       "title": "Mercados habituales",
       "commission": "Cobran una comisión por cada reserva",
@@ -49,8 +45,6 @@
     }
   },
   "product": {
-    "eyebrow": "El software",
-    "title": "Todo para gestionar tu flota, <em>en un solo lugar.</em>",
     "features": {
       "calendar": {
         "title": "Toda tu flota de un vistazo",
@@ -112,10 +106,7 @@
     }
   },
   "pricingSummary": {
-    "eyebrow": "Precios",
-    "title": "Un precio fijo. <em>Sin comisión.</em>",
-    "description": "Planes desde {price} al mes, o ahorra un {percent}% o más pagando por año. Todos los planes incluyen el software completo y tu presencia en el marketplace, y empiezan con una prueba gratis de {trialDays} días.",
-    "cta": "Ver planes y precios"
+    "description": "Planes desde {price} al mes, o ahorra un {percent}% o más pagando por año. Todos los planes incluyen el software completo y tu presencia en el marketplace, y empiezan con una prueba gratis de {trialDays} días."
   },
   "pricing": {
     "mostPopular": "El más elegido",
@@ -247,5 +238,76 @@
     "title": "Pon tu flota frente a los clientes hoy mismo.",
     "description": "Empieza tu prueba gratis de {trialDays} días, añade tus vehículos y quédate con el 100% de cada reserva.",
     "cta": "Empezar prueba gratis"
+  },
+  "story": {
+    "kicker": "Para empresas de alquiler",
+    "facts": {
+      "commission": "0% de comisión",
+      "price": "Planes desde {price} al mes",
+      "trial": "Prueba gratis de {trialDays} días"
+    },
+    "chaptersLabel": "Capítulos",
+    "chapterN": "Capítulo {number}",
+    "chapters": {
+      "find": {
+        "folio": "Los arrendatarios te encuentran",
+        "title": "Los arrendatarios te encuentran. <em>La reserva es tuya.</em>"
+      },
+      "fleet": {
+        "folio": "Tu flota de un vistazo"
+      },
+      "checks": {
+        "folio": "Revisado antes de entregar las llaves"
+      },
+      "paid": {
+        "folio": "Firmado y pagado"
+      },
+      "money": {
+        "folio": "Tu dinero, tu Stripe",
+        "intertitle": "Luego el arrendatario paga.",
+        "ledger": "Adónde va el dinero",
+        "paid": "Pagado con tarjeta",
+        "to": "Pagado a",
+        "toValue": "La propia cuenta de Stripe de {company}",
+        "share": "La parte de Veltrio"
+      },
+      "start": {
+        "folio": "Todo lo demás, y cómo empezar",
+        "moreTitle": "También en todos los planes"
+      },
+      "cost": {
+        "folio": "Cuánto cuesta",
+        "title": "Un precio fijo. <em>Sin comisión.</em>",
+        "pricing": "Ver planes y precios",
+        "closing": "Cuando quieras empezar.",
+        "trial": "Empieza tu prueba gratis de {trialDays} días"
+      }
+    },
+    "captions": {
+      "find": "El propio sitio de reservas de una empresa, junto a su presencia en la búsqueda del marketplace.",
+      "fleet": "El calendario: cada auto, quién lo tiene y cuándo vuelve.",
+      "checks": "La lista de verificación de una reserva, completa antes de recoger el auto.",
+      "paid": "Lo que ve el arrendatario al pagar: el alquiler ahora y el depósito retenido.",
+      "money": "La misma reserva en tu portal: pagada por completo y el depósito retenido hasta la devolución."
+    },
+    "ticket": {
+      "sample": "Reserva de ejemplo",
+      "statuses": {
+        "pending": "Pendiente",
+        "confirmed": "Confirmada",
+        "ready": "Lista",
+        "onRental": "En alquiler",
+        "completed": "Completada"
+      },
+      "steps": {
+        "requested": "Solicitud recibida desde el marketplace",
+        "calendar": "Aceptada, con las fechas reservadas en el calendario",
+        "checks": "Antecedentes, identidad y seguro verificados",
+        "paid": "Contrato firmado, alquiler pagado y depósito retenido",
+        "payout": "Transferido al Stripe de la empresa, Veltrio no se queda nada",
+        "handover": "Licencia de cada conductor revisada y llaves entregadas",
+        "returned": "Auto devuelto y depósito liberado"
+      }
+    }
   }
 }

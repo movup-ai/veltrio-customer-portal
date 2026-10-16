@@ -1,0 +1,98 @@
+/*
+ * The story's motion, driven by scroll in CSS alone. Browsers without scroll timelines, and
+ * readers who ask for less motion, get every element in its final place.
+ */
+
+@keyframes arrive {
+  from {
+    opacity: 0;
+    transform: translateY(1.25rem);
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(2rem);
+  }
+}
+
+@keyframes wipe {
+  from {
+    clip-path: inset(0 100% 0 0 round var(--radius-xl));
+  }
+  to {
+    clip-path: inset(0 0 0 0 round var(--radius-xl));
+  }
+}
+
+@keyframes drift {
+  from {
+    transform: translateY(3rem);
+  }
+  to {
+    transform: translateY(-3rem);
+  }
+}
+
+@keyframes drive {
+  from {
+    transform: translateX(var(--from));
+  }
+  to {
+    transform: translateX(var(--to));
+  }
+}
+
+/* Where the car stands in a chapter when nothing moves it there. */
+.drive {
+  transform: translateX(var(--to));
+}
+
+@keyframes draw {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* The title page, on load: each line a beat after the one before. */
+  .arrive {
+    animation: arrive 700ms var(--ease-standard) both;
+    animation-delay: calc(var(--beat, 0) * 120ms);
+  }
+
+  @supports (animation-timeline: view()) {
+    .rise {
+      animation: rise linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 70%;
+    }
+
+    .wipe {
+      animation: wipe linear both;
+      animation-timeline: view();
+      animation-range: entry 15% cover 45%;
+    }
+
+    .drift {
+      animation: drift linear both;
+      animation-timeline: view();
+      animation-range: cover;
+    }
+
+    /* The car drives from where the last chapter left it as this chapter's road comes up. */
+    .drive {
+      animation: drive linear both;
+      animation-timeline: view();
+      animation-range: entry 30% cover 45%;
+    }
+
+    .draw {
+      transform-origin: left center;
+      animation: draw linear both;
+      animation-timeline: view();
+      animation-range: entry 30% cover 50%;
+    }
+  }
+}
