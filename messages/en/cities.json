@@ -11,5 +11,7 @@
   "companiesDescription": "Independent businesses, each with their own fleet and terms.",
   "otherCities": "Other cities",
   "otherCitiesDescription": "More places to rent from local companies.",
-  "loading": "Loading cars"
+  "loading": "Loading cars",
+  "photoAlt": "A view of {place}",
+  "moreCities": "More cities"
 }

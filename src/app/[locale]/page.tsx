@@ -23,6 +23,7 @@ import {
   NEW_VEHICLES,
   vehicleRows,
 } from "@/modules/marketing/landing.utils";
+import { cityPhoto } from "@/modules/search/city-photos";
 import { cityHref, cityLabel } from "@/modules/search/cities";
 import { RecentSearchVehicles } from "@/modules/search/components/RecentSearchVehicles";
 import { SearchCapsule } from "@/modules/search/components/SearchCapsule";
@@ -41,8 +42,10 @@ import { SectionHeading } from "@/shared/ui/molecules/SectionHeading";
 import { SiteHeader } from "@/shared/ui/organisms/SiteHeader";
 import { ClientMessages } from "@/i18n/ClientMessages";
 
-/** City chips on the landing page at most, the fullest cities first. */
+/** Cities on the landing page at most, the fullest first. */
 const CITY_LIMIT = 12;
+/** A city tile's photo widths, from a phone's half-width tile to a retina desktop one. */
+const TILE_WIDTHS = [400, 800];
 
 interface PageProps {
   params: Promise<{ locale: Locale }>;
@@ -173,7 +176,8 @@ export default async function HomePage({ params }: PageProps) {
       <main id="main">
         <SearchBanner
           title={intro.title}
-          image={intro.image}
+          // Low enough that the title sits on the sky, above the car.
+          image={{ ...intro.image, position: "50% 70%" }}
           note={<TrustStrip label={t("trust.label")} points={trustPoints} />}
         >
           <SearchCapsule cities={cities} />
@@ -187,9 +191,11 @@ export default async function HomePage({ params }: PageProps) {
             <CitiesSection
               title={t("cities.title")}
               description={t("cities.description")}
+              moreLabel={t("cities.more")}
               cities={cities.slice(0, CITY_LIMIT).map((city) => ({
                 label: cityLabel(city),
                 href: cityHref(city),
+                image: cityPhoto(city, TILE_WIDTHS, 4 / 3),
               }))}
             />
           )}

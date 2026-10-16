@@ -44,7 +44,8 @@
   },
   "cities": {
     "title": "Alquila un auto en tu ciudad",
-    "description": "Empresas de alquiler locales, ciudad por ciudad."
+    "description": "Empresas de alquiler locales, ciudad por ciudad.",
+    "more": "Más ciudades"
   },
   "companies": {
     "title": "Conoce a las empresas de alquiler",

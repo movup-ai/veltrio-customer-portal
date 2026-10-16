@@ -44,7 +44,8 @@
   },
   "cities": {
     "title": "Rent a car in your city",
-    "description": "Local rental companies, city by city."
+    "description": "Local rental companies, city by city.",
+    "more": "More cities"
   },
   "companies": {
     "title": "Meet the rental companies",

@@ -7,6 +7,8 @@ import type { Locale } from "@/i18n/routing";
 import { listCompanies } from "@/modules/company/company.repository";
 import { CompanyCard } from "@/modules/company/components/CompanyCard";
 import { CitiesSection } from "@/modules/marketing/components/CitiesSection";
+import { SearchBanner } from "@/modules/marketing/components/SearchBanner";
+import { cityPhoto } from "@/modules/search/city-photos";
 import { cityHref, cityLabel, findCity } from "@/modules/search/cities";
 import { SearchCapsule } from "@/modules/search/components/SearchCapsule";
 import { listCities } from "@/modules/search/search.repository";
@@ -26,6 +28,10 @@ interface PageProps {
 
 /** Other cities linked from a city page at most, the fullest first. */
 const OTHER_CITIES = 12;
+/** The banner photo's widths, phone to wide desktop. */
+const BANNER_WIDTHS = [800, 1600, 2400];
+/** A city tile's photo widths. */
+const TILE_WIDTHS = [400, 800];
 
 export async function generateMetadata({
   params,
@@ -40,6 +46,7 @@ export async function generateMetadata({
     description: t("metaDescription", { place }),
     path: cityHref(city),
     locale,
+    image: cityPhoto(city, [1200], 1200 / 630)?.[0]?.url,
   });
 }
 
@@ -66,6 +73,7 @@ export default async function CityPage({ params }: PageProps) {
     subdomains.has(company.subdomain),
   );
   const others = cities.filter((each) => each !== city).slice(0, OTHER_CITIES);
+  const photo = cityPhoto(city, BANNER_WIDTHS, 16 / 9);
 
   return (
     <ClientMessages namespaces={["search", "vehicle"]}>
@@ -101,17 +109,19 @@ export default async function CityPage({ params }: PageProps) {
       )}
       <SiteHeader />
       <main id="main">
-        <section className="container-page flex flex-col items-center pt-8 text-center md:pt-12">
-          <h1 className="font-display text-h2 md:text-h1">
-            {t("title", { place })}
-          </h1>
-          <p className="mt-4 max-w-2xl text-lead text-foreground-secondary">
-            {t("description", { city: city.city })}
-          </p>
-          <div className="mt-8 w-full max-w-5xl text-left">
-            <SearchCapsule initialQuery={{ location: slug }} cities={cities} />
-          </div>
-        </section>
+        <SearchBanner
+          title={t("title", { place })}
+          description={t("description", { city: city.city })}
+          image={
+            photo && {
+              variants: photo,
+              alt: t("photoAlt", { place }),
+              shaded: true,
+            }
+          }
+        >
+          <SearchCapsule initialQuery={{ location: slug }} cities={cities} />
+        </SearchBanner>
 
         <div className="container-page space-y-16 pt-16 pb-8 md:space-y-24 md:pt-20">
           <section aria-labelledby="vehicles-heading">
@@ -155,9 +165,11 @@ export default async function CityPage({ params }: PageProps) {
             <CitiesSection
               title={t("otherCities")}
               description={t("otherCitiesDescription")}
+              moreLabel={t("moreCities")}
               cities={others.map((each) => ({
                 label: cityLabel(each),
                 href: cityHref(each),
+                image: cityPhoto(each, TILE_WIDTHS, 4 / 3),
               }))}
             />
           )}

@@ -11,5 +11,7 @@
   "companiesDescription": "Negocios independientes, cada uno con su propia flota y condiciones.",
   "otherCities": "Otras ciudades",
   "otherCitiesDescription": "Más lugares para alquilar con empresas locales.",
-  "loading": "Cargando autos"
+  "loading": "Cargando autos",
+  "photoAlt": "Vista de {place}",
+  "moreCities": "Más ciudades"
 }
