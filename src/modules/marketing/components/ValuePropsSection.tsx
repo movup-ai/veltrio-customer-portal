@@ -6,7 +6,7 @@ import {
   ResponsiveImage,
   type ImageVariant,
 } from "@/shared/ui/atoms/ResponsiveImage";
-import { FeatureCard, type Feature } from "./FeatureCard";
+import type { Feature } from "./FeatureCard";
 
 /** One headline figure, e.g. 312 "Rental companies". */
 export interface ValueStat {
@@ -24,7 +24,7 @@ interface ValuePropsSectionProps {
   image?: { variants: ImageVariant[]; alt: string };
 }
 
-/** Dark statement panel, optionally over a photo, beside a grid of value cards. */
+/** A dark statement panel across the page, optionally over a photo, with the values under it. */
 export function ValuePropsSection({
   eyebrow,
   title,
@@ -34,11 +34,8 @@ export function ValuePropsSection({
 }: ValuePropsSectionProps) {
   const format = useFormatter();
   return (
-    <section
-      aria-labelledby="values-heading"
-      className="grid gap-5 lg:grid-cols-[1.1fr_1fr]"
-    >
-      <div className="relative isolate flex min-h-80 flex-col justify-between overflow-hidden rounded-xl bg-surface-inverse p-6 text-on-inverse md:p-12 lg:min-h-[27rem]">
+    <section aria-labelledby="values-heading">
+      <div className="relative isolate flex min-h-96 flex-col justify-between overflow-hidden rounded-xl bg-surface-inverse p-8 text-on-inverse md:min-h-128 md:p-16">
         {image && (
           <>
             <ResponsiveImage
@@ -80,9 +77,20 @@ export function ValuePropsSection({
           </dl>
         )}
       </div>
-      <ul className="grid gap-5 sm:grid-cols-2">
-        {values.map((value) => (
-          <FeatureCard key={value.title} {...value} />
+      {/* Open, not boxed: each value gets room to be read on its own. */}
+      <ul className="mt-16 grid gap-x-16 gap-y-14 sm:grid-cols-2 md:mt-24">
+        {values.map(({ icon: Icon, title, description }) => (
+          <li key={title} className="flex gap-5">
+            <span className="grid size-12 shrink-0 place-items-center rounded-full bg-surface-muted">
+              <Icon aria-hidden className="size-5" strokeWidth={1.75} />
+            </span>
+            <div>
+              <h3 className="text-h4 font-semibold">{title}</h3>
+              <p className="mt-3 max-w-prose text-lead leading-relaxed text-foreground-secondary">
+                {description}
+              </p>
+            </div>
+          </li>
         ))}
       </ul>
     </section>

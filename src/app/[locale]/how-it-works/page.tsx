@@ -73,11 +73,13 @@ export default async function HowItWorksPage({ params }: PageProps) {
           compact
           title={t.rich("howItWorksPage.heroTitle", { em: emOnInverse })}
         />
-        <div className="container-page space-y-16 pt-10 pb-16 md:pt-16">
+        {/* Wide gaps between sections: this page is read, not scanned. */}
+        <div className="container-page space-y-32 pt-20 pb-24 md:space-y-44 md:pt-32 md:pb-32">
           <HowItWorksSection
             eyebrow={t("howItWorksPage.stepsEyebrow")}
             title={t.rich("steps.title", { em })}
             steps={howItWorks}
+            layout="list"
           />
 
           <ValuePropsSection
