@@ -1,37 +1,15 @@
 import { useTranslations } from "next-intl";
 import { formatMoney } from "@/shared/lib/format";
-import type { BillingBasis, VehicleDetail } from "../types";
-
-type Terms = Pick<VehicleDetail, "rateOptions" | "discountTiers" | "fees">;
+import type { VehicleFees } from "../types";
 
 interface VehicleTermsProps {
-  terms: Terms;
+  fees: VehicleFees;
 }
 
-/** What one billing unit of a rate option covers, for "200 mi per day". */
-const PER: Record<BillingBasis, "hour" | "day" | "week" | "month" | "rental"> =
-  { hour: "hour", day: "day", week: "week", month: "month", fixed: "rental" };
-
-/** The vehicle's rental terms: mileage, deposit, long-rental discounts and extra drivers. */
-export function VehicleTerms({ terms }: VehicleTermsProps) {
+/** The vehicle's rental terms beyond its price: the deposit and extra drivers. */
+export function VehicleTerms({ fees }: VehicleTermsProps) {
   const t = useTranslations("vehicle.terms");
-  const { rateOptions, discountTiers, fees } = terms;
-
-  // An option that states no allowance either way says nothing about mileage, so it is left out.
-  const mileage = rateOptions.filter(
-    (option) => option.unlimitedMileage || option.includedMiles !== null,
-  );
   const rows = [
-    ...mileage.map((option) => ({
-      // One option needs no name of its own.
-      label: mileage.length > 1 ? option.label : t("mileage"),
-      value: option.unlimitedMileage
-        ? t("unlimited")
-        : t("included", {
-            miles: option.includedMiles ?? 0,
-            per: PER[option.basis],
-          }),
-    })),
     {
       label: t("deposit"),
       value:
@@ -39,10 +17,6 @@ export function VehicleTerms({ terms }: VehicleTermsProps) {
           ? t("noDeposit")
           : t("depositHeld", { price: formatMoney(fees.depositCents) }),
     },
-    ...discountTiers.map((tier) => ({
-      label: t("longRental", { days: tier.minDays }),
-      value: t("percentOff", { percent: tier.percentOff }),
-    })),
     ...(fees.additionalDriverCents === null
       ? []
       : [

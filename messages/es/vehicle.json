@@ -48,7 +48,8 @@
     "bookLabel": "Reservar este vehículo",
     "pickupAt": "Recogida en {location}. Tu reserva llega directamente a esta empresa.",
     "terms": "Condiciones del alquiler",
-    "pickup": "Lugar de recogida"
+    "pickup": "Lugar de recogida",
+    "prices": "Precios"
   },
   "specs": {
     "transmission": "Transmisión",
@@ -60,15 +61,18 @@
     "topSpeed": "Velocidad máxima",
     "cylinders": "Cilindros"
   },
-  "terms": {
-    "mileage": "Kilometraje",
+  "prices": {
+    "per": "{price} por {per, select, hour {hora} day {día} week {semana} other {mes}}",
+    "block": "{price} por {count, plural, one {# {unit, select, hours {hora} days {día} weeks {semana} other {mes}}} other {# {unit, select, hours {horas} days {días} weeks {semanas} other {meses}}}}",
     "unlimited": "Millas ilimitadas",
     "included": "{miles, number} mi por {per, select, hour {hora} day {día} week {semana} month {mes} other {alquiler}} incluidas",
+    "longRental": "{days}+ días",
+    "percentOff": "{percent}% de descuento"
+  },
+  "terms": {
     "deposit": "Depósito de garantía",
     "noDeposit": "Ninguno",
     "depositHeld": "{price}, reembolsable al devolverlo",
-    "longRental": "{days}+ días",
-    "percentOff": "{percent}% de descuento",
     "drivers": "Conductores adicionales",
     "perDriver": "{price} por conductor al día"
   },

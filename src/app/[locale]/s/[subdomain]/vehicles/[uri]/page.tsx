@@ -13,6 +13,7 @@ import { VehicleDetailSection } from "@/modules/vehicle/components/VehicleDetail
 import { VehicleFeatures } from "@/modules/vehicle/components/VehicleFeatures";
 import { VehicleGallery } from "@/modules/vehicle/components/VehicleGallery";
 import { VehicleHeader } from "@/modules/vehicle/components/VehicleHeader";
+import { VehiclePrices } from "@/modules/vehicle/components/VehiclePrices";
 import { VehicleSpecs } from "@/modules/vehicle/components/VehicleSpecs";
 import { VehicleTerms } from "@/modules/vehicle/components/VehicleTerms";
 import type { Vehicle } from "@/modules/vehicle/types";
@@ -161,8 +162,13 @@ export default async function VehiclePage({ params }: PageProps) {
                   <VehicleFeatures features={vehicle.features} />
                 </VehicleDetailSection>
               )}
+              {vehicle.rateOptions.length > 0 && (
+                <VehicleDetailSection id="prices" title={t("page.prices")}>
+                  <VehiclePrices prices={vehicle} />
+                </VehicleDetailSection>
+              )}
               <VehicleDetailSection id="terms" title={t("page.terms")}>
-                <VehicleTerms terms={vehicle} />
+                <VehicleTerms fees={vehicle.fees} />
                 {vehicle.cancellationPolicy && (
                   <CancellationPolicy
                     policy={vehicle.cancellationPolicy}
