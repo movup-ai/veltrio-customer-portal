@@ -19,8 +19,9 @@
     }
   },
   "collections": {
-    "title": "Explora por categoría",
-    "viewAll": "Ver todos los autos",
+    "eyebrow": "Colecciones",
+    "title": "Elegidos para disfrutar el camino, <em>no para hacer recados.</em>",
+    "viewAll": "Ver todos",
     "explore": "Explorar",
     "count": "{count, plural, =1 {1 vehículo} other {# vehículos}}",
     "items": {
@@ -52,8 +53,8 @@
       "description": "Los últimos vehículos que han añadido las empresas de alquiler."
     },
     "budget": {
-      "title": "${price} al día o menos",
-      "description": "Las tarifas diarias más bajas del mercado."
+      "title": "Autos para cada día, hasta ${price} diarios",
+      "description": "Buenos autos de buenas empresas, sin el depósito de un superdeportivo."
     },
     "electric": {
       "title": "Vehículos eléctricos",

@@ -10,7 +10,7 @@ describe("collectionTiles", () => {
       specs: { fuelType, seats: 5, horsepower: null },
     }) as unknown as Vehicle;
 
-  it("counts every collection, empty ones included, linking to its search", () => {
+  it("keeps only the collections with a vehicle in them, leaving economy to its row", () => {
     const listed = [
       car("electric", 5000),
       car("electric", 7000),
@@ -18,15 +18,12 @@ describe("collectionTiles", () => {
       car("petrol", 6000),
     ];
     expect(collectionTiles(listed)).toEqual([
-      { collection: "exotic", count: 0, href: "/search?collection=exotic" },
       { collection: "electric", count: 3, href: "/search?collection=electric" },
-      { collection: "economy", count: 3, href: "/search?collection=economy" },
-      { collection: "family", count: 0, href: "/search?collection=family" },
     ]);
   });
 
-  it("keeps all four when nothing is listed", () => {
-    expect(collectionTiles([]).map((tile) => tile.count)).toEqual([0, 0, 0, 0]);
+  it("is empty when nothing is listed", () => {
+    expect(collectionTiles([])).toEqual([]);
   });
 });
 
@@ -34,7 +31,19 @@ describe("vehicleRows", () => {
   const priced = (dailyRateCents: number, fuelType = "petrol") =>
     ({ make: "Audi", dailyRateCents, specs: { fuelType } }) as Vehicle;
 
-  it("shows the newest eight, and a themed row only with four or more", () => {
+  it("shows the newest eight, and the budget row with a single car", () => {
+    const rows = vehicleRows([
+      priced(20000),
+      priced(5000),
+      priced(9000, "electric"),
+    ]);
+    expect(rows.map((row) => [row.id, row.vehicles.length])).toEqual([
+      ["new-vehicles", 3],
+      ["budget-vehicles", 1],
+    ]);
+  });
+
+  it("leaves out another themed row with fewer than four", () => {
     const cheap = [7000, 3000, 5000, 4000].map((rate) => priced(rate));
     const listed = [
       ...Array.from({ length: 6 }, () => priced(20000)),

@@ -14,13 +14,18 @@ export interface CollectionTile {
   href: string;
 }
 
-/** Every collection in its set order, even an empty one. */
+/** The collections shown as tiles; economy has its own row of cars instead. */
+const TILE_COLLECTIONS = COLLECTIONS.filter(
+  (collection) => collection !== "economy",
+);
+
+/** The tiled collections with at least one listed vehicle, in their set order. */
 export function collectionTiles(vehicles: Vehicle[]): CollectionTile[] {
-  return COLLECTIONS.map((collection) => ({
+  return TILE_COLLECTIONS.map((collection) => ({
     collection,
     count: vehicles.filter(IN_COLLECTION[collection]).length,
     href: buildSearchUrl({ collection }),
-  }));
+  })).filter((tile) => tile.count > 0);
 }
 
 /** The first row, shown even when nothing is listed yet. */
@@ -41,7 +46,7 @@ export interface VehicleRow {
 
 /** Cards a row shows at most; its "See all" link lists the rest. */
 const ROW_SIZE = 8;
-/** A themed row with fewer vehicles than this is left out. */
+/** A themed row, other than the budget one, with fewer vehicles than this is left out. */
 const ROW_MIN = 4;
 /** Highest daily rate of the budget row, in whole dollars. */
 export const BUDGET = 75;
@@ -63,7 +68,10 @@ export function vehicleRows(vehicles: Vehicle[]): VehicleRow[] {
       href: buildSearchUrl(electric),
       vehicles: filterVehicles(vehicles, electric),
     },
-  ].filter((row) => row.vehicles.length >= ROW_MIN);
+    // The budget row stands in for the economy tile, so one car is enough for it.
+  ].filter(
+    (row) => row.vehicles.length >= (row.theme === "budget" ? 1 : ROW_MIN),
+  );
   return [{ ...NEW_VEHICLES, vehicles }, ...themed].map((row) => ({
     ...row,
     vehicles: row.vehicles.slice(0, ROW_SIZE),

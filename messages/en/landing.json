@@ -19,8 +19,9 @@
     }
   },
   "collections": {
-    "title": "Browse by category",
-    "viewAll": "View all cars",
+    "eyebrow": "Collections",
+    "title": "Curated for the drive, <em>not the errand.</em>",
+    "viewAll": "View all",
     "explore": "Explore",
     "count": "{count, plural, =1 {1 vehicle} other {# vehicles}}",
     "items": {
@@ -52,8 +53,8 @@
       "description": "The latest vehicles added by rental companies."
     },
     "budget": {
-      "title": "${price} a day or less",
-      "description": "The lowest daily rates on the marketplace."
+      "title": "Everyday drives, up to ${price} a day",
+      "description": "Great cars from great companies, without the supercar deposit."
     },
     "electric": {
       "title": "Electric vehicles",
