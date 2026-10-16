@@ -20,10 +20,9 @@
   },
   "collections": {
     "eyebrow": "Colecciones",
-    "title": "Elegidos para disfrutar el camino, <em>no para hacer recados.</em>",
+    "title": "El auto adecuado <em>para cada viaje.</em>",
     "viewAll": "Ver todos",
     "explore": "Explorar",
-    "count": "{count, plural, =1 {1 vehículo} other {# vehículos}}",
     "items": {
       "exotic": {
         "description": "Mucha potencia para un fin de semana inolvidable",
@@ -43,6 +42,10 @@
       }
     }
   },
+  "cities": {
+    "title": "Alquila un auto en tu ciudad",
+    "description": "Empresas de alquiler locales, ciudad por ciudad."
+  },
   "companies": {
     "title": "Conoce a las empresas de alquiler",
     "description": "Negocios independientes, cada uno con su propia flota y sus condiciones."
@@ -54,11 +57,7 @@
     },
     "budget": {
       "title": "Autos para cada día, hasta ${price} diarios",
-      "description": "Buenos autos de buenas empresas, sin el depósito de un superdeportivo."
-    },
-    "electric": {
-      "title": "Vehículos eléctricos",
-      "description": "Olvídate de la gasolinera y enchúfalo."
+      "description": "Buenos autos de empresas locales, a precios de todos los días."
     },
     "none": "Todavía no hay vehículos publicados.",
     "unavailable": "Los vehículos no están disponibles en este momento. Vuelve a intentarlo en unos minutos."

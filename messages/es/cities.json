@@ -1,0 +1,15 @@
+{
+  "metaTitle": "Alquiler de autos en {place}",
+  "metaDescription": "Alquila un auto en {place} con empresas de alquiler locales y profesionales. Sin cargos de reserva: pagas directamente a la empresa.",
+  "home": "Inicio",
+  "title": "Alquiler de autos en {place}",
+  "description": "Autos de empresas de alquiler locales y profesionales en {city}. Sin cargos de reserva y sin pagar nada hasta que la empresa confirme.",
+  "vehicles": "Autos para alquilar en {city}",
+  "vehiclesDescription": "Agrega tus fechas arriba para ver cuáles están libres.",
+  "unavailable": "Los vehículos no están disponibles ahora. Inténtalo de nuevo en un momento.",
+  "companies": "Empresas de alquiler en {city}",
+  "companiesDescription": "Negocios independientes, cada uno con su propia flota y condiciones.",
+  "otherCities": "Otras ciudades",
+  "otherCitiesDescription": "Más lugares para alquilar con empresas locales.",
+  "loading": "Cargando autos"
+}

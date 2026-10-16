@@ -30,6 +30,7 @@
     "explore": {
       "title": "Explore",
       "vehicles": "Browse vehicles",
+      "cities": "Cities",
       "collections": "Collections",
       "companies": "Rental companies"
     },

@@ -6,6 +6,7 @@ import type { Locale } from "@/i18n/routing";
 import { em } from "@/i18n/rich";
 import { listCompanies } from "@/modules/company/company.repository";
 import { CompanyCard } from "@/modules/company/components/CompanyCard";
+import { CitiesSection } from "@/modules/marketing/components/CitiesSection";
 import { CollectionsSection } from "@/modules/marketing/components/CollectionsSection";
 import { FaqSection } from "@/modules/marketing/components/FaqSection";
 import { HostCtaSection } from "@/modules/marketing/components/HostCtaSection";
@@ -22,6 +23,7 @@ import {
   NEW_VEHICLES,
   vehicleRows,
 } from "@/modules/marketing/landing.utils";
+import { cityHref, cityLabel } from "@/modules/search/cities";
 import { RecentSearchVehicles } from "@/modules/search/components/RecentSearchVehicles";
 import { SearchCapsule } from "@/modules/search/components/SearchCapsule";
 import { buildSearchUrl } from "@/modules/search/search-params";
@@ -38,6 +40,9 @@ import { ScrollRow } from "@/shared/ui/molecules/ScrollRow";
 import { SectionHeading } from "@/shared/ui/molecules/SectionHeading";
 import { SiteHeader } from "@/shared/ui/organisms/SiteHeader";
 import { ClientMessages } from "@/i18n/ClientMessages";
+
+/** City chips on the landing page at most, the fullest cities first. */
+const CITY_LIMIT = 12;
 
 interface PageProps {
   params: Promise<{ locale: Locale }>;
@@ -92,7 +97,7 @@ async function VehicleRows() {
       ))}
     </ScrollRow>
   ));
-  // The newest cars first, then the ways to browse them, then the themed rows.
+  // The first row of cars, then the ways to browse them, then the everyday row.
   return (
     <>
       {rows[0]}
@@ -176,6 +181,17 @@ export default async function HomePage({ params }: PageProps) {
         {/* Wide gaps between sections, so each one is taken in on its own. */}
         <div className="container-page space-y-16 pt-16 pb-8 md:space-y-24 md:pt-20">
           <RecentSearchVehicles cities={cities} />
+
+          {cities.length > 0 && (
+            <CitiesSection
+              title={t("cities.title")}
+              description={t("cities.description")}
+              cities={cities.slice(0, CITY_LIMIT).map((city) => ({
+                label: cityLabel(city),
+                href: cityHref(city),
+              }))}
+            />
+          )}
 
           <Suspense
             fallback={

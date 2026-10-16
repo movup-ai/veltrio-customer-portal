@@ -1,0 +1,15 @@
+{
+  "metaTitle": "Car rental in {place}",
+  "metaDescription": "Rent a car in {place} from local, professional rental companies. No booking fees: you pay the company directly.",
+  "home": "Home",
+  "title": "Car rental in {place}",
+  "description": "Cars from local, professional rental companies in {city}. No booking fees, and nothing to pay until the company confirms.",
+  "vehicles": "Cars to rent in {city}",
+  "vehiclesDescription": "Add your dates above to see which are free.",
+  "unavailable": "Vehicles are unavailable right now. Please try again shortly.",
+  "companies": "Rental companies in {city}",
+  "companiesDescription": "Independent businesses, each with their own fleet and terms.",
+  "otherCities": "Other cities",
+  "otherCitiesDescription": "More places to rent from local companies.",
+  "loading": "Loading cars"
+}

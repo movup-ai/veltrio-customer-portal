@@ -58,13 +58,12 @@ export function collectionCards(
   name: (collection: CollectionId) => string,
   tiles: CollectionTile[],
 ): Collection[] {
-  return tiles.map(({ collection, count, href }) => ({
+  return tiles.map(({ collection, href }) => ({
     title: name(collection),
     description: t(`collections.items.${collection}.description`, {
       price: ECONOMY_MAX_PRICE,
     }),
     href,
-    eyebrow: t("collections.count", { count }),
     image: {
       variants: unsplash(COLLECTION_PHOTOS[collection], [600, 1200], 3 / 4),
       alt: t(`collections.items.${collection}.alt`),
@@ -184,6 +183,7 @@ export function footerContent(t: Translator<"common">) {
       title: t("footer.explore.title"),
       links: [
         { href: "/search", label: t("footer.explore.vehicles") },
+        { href: "/#cities", label: t("footer.explore.cities") },
         { href: "/#collections", label: t("footer.explore.collections") },
         { href: "/#companies", label: t("footer.explore.companies") },
       ],

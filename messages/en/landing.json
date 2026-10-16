@@ -20,10 +20,9 @@
   },
   "collections": {
     "eyebrow": "Collections",
-    "title": "Curated for the drive, <em>not the errand.</em>",
+    "title": "The right car <em>for the trip.</em>",
     "viewAll": "View all",
     "explore": "Explore",
-    "count": "{count, plural, =1 {1 vehicle} other {# vehicles}}",
     "items": {
       "exotic": {
         "description": "Big horsepower for a weekend to remember",
@@ -43,6 +42,10 @@
       }
     }
   },
+  "cities": {
+    "title": "Rent a car in your city",
+    "description": "Local rental companies, city by city."
+  },
   "companies": {
     "title": "Meet the rental companies",
     "description": "Independent businesses, each with their own fleet and terms."
@@ -54,11 +57,7 @@
     },
     "budget": {
       "title": "Everyday drives, up to ${price} a day",
-      "description": "Great cars from great companies, without the supercar deposit."
-    },
-    "electric": {
-      "title": "Electric vehicles",
-      "description": "Skip the pump and plug in instead."
+      "description": "Good cars from local companies, at everyday prices."
     },
     "none": "No vehicles are listed yet.",
     "unavailable": "Vehicles are unavailable right now. Please try again shortly."
