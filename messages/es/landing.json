@@ -1,7 +1,7 @@
 {
   "intro": {
     "title": "Alquiler de autos para el día a día, directo de empresas locales",
-    "imageAlt": "Audi R8 gris estacionado en una carretera de montaña al atardecer"
+    "imageAlt": "SUV blanca estacionada en una carretera del desierto bajo el sol"
   },
   "trust": {
     "label": "Por qué reservar en Veltrio",
@@ -19,10 +19,10 @@
     }
   },
   "collections": {
-    "title": "Explora por categoría",
-    "viewAll": "Ver todos los autos",
+    "eyebrow": "Colecciones",
+    "title": "El auto adecuado <em>para cada viaje.</em>",
+    "viewAll": "Ver todos",
     "explore": "Explorar",
-    "count": "{count, plural, =1 {1 vehículo} other {# vehículos}}",
     "items": {
       "exotic": {
         "description": "Mucha potencia para un fin de semana inolvidable",
@@ -42,6 +42,11 @@
       }
     }
   },
+  "cities": {
+    "title": "Alquila un auto en tu ciudad",
+    "description": "Empresas de alquiler locales, ciudad por ciudad.",
+    "more": "Más ciudades"
+  },
   "companies": {
     "title": "Conoce a las empresas de alquiler",
     "description": "Negocios independientes, cada uno con su propia flota y sus condiciones."
@@ -52,12 +57,8 @@
       "description": "Los últimos vehículos que han añadido las empresas de alquiler."
     },
     "budget": {
-      "title": "${price} al día o menos",
-      "description": "Las tarifas diarias más bajas del mercado."
-    },
-    "electric": {
-      "title": "Vehículos eléctricos",
-      "description": "Olvídate de la gasolinera y enchúfalo."
+      "title": "Autos para cada día, hasta ${price} diarios",
+      "description": "Buenos autos de empresas locales, a precios de todos los días."
     },
     "none": "Todavía no hay vehículos publicados.",
     "unavailable": "Los vehículos no están disponibles en este momento. Vuelve a intentarlo en unos minutos."
@@ -115,6 +116,18 @@
       "return": {
         "question": "¿Puedo devolver el auto en otro lugar?",
         "answer": "Sí, cuando la empresa tiene más de una sucursal. Eliges la sucursal de devolución al reservar; la recogida siempre es en la sucursal donde está el auto."
+      },
+      "drivers": {
+        "question": "¿Puede conducir otra persona?",
+        "answer": "Sí, si figura en el contrato de alquiler. Añádela como conductor adicional al reservar; la empresa fija su precio por conductor y día, que se muestra antes de enviar la solicitud. Cada conductor debe cumplir los requisitos de edad y de licencia de la empresa y mostrar su licencia al recoger el auto."
+      },
+      "cancel": {
+        "question": "¿Y si necesito cancelar?",
+        "answer": "Cada empresa fija su propia política de cancelación, que se muestra en la página del vehículo y otra vez antes de pagar. Cualquier reembolso sigue esa política y lo paga la empresa. No se cobra nada mientras la empresa revisa tu solicitud."
+      },
+      "pickup": {
+        "question": "¿Qué pasa al recoger el auto?",
+        "answer": "Lleva tu licencia de conducir, y cada conductor adicional la suya: la empresa revisa cada licencia antes de entregar las llaves. El alquiler y cualquier depósito deben estar pagados, y el contrato firmado, antes de que el auto salga."
       }
     }
   },

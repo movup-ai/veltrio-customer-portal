@@ -12,6 +12,8 @@ export interface PricingPlan {
   price: string;
   /** What the price is per, e.g. "per month"; left out for a custom plan. */
   period?: string;
+  /** Under the price, e.g. "or $399 a year, save 15%". */
+  priceNote?: string;
   description: string;
   features: string[];
   /** Left out when there is nowhere to send the reader yet. */
@@ -74,6 +76,11 @@ export function PricingSection({
                 <span className="text-sm text-muted">{plan.period}</span>
               )}
             </p>
+            {plan.priceNote && (
+              <p className="mt-1 text-sm font-medium text-success">
+                {plan.priceNote}
+              </p>
+            )}
             <p className="mt-2 text-sm text-muted">{plan.description}</p>
             <ul className="mt-6 mb-8 space-y-3 text-sm">
               {plan.features.map((feature) => (

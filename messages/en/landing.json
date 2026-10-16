@@ -1,7 +1,7 @@
 {
   "intro": {
     "title": "Everyday car rental, straight from local companies",
-    "imageAlt": "Grey Audi R8 parked on a mountain road at sunset"
+    "imageAlt": "White SUV parked on a sunny desert road"
   },
   "trust": {
     "label": "Why book on Veltrio",
@@ -19,10 +19,10 @@
     }
   },
   "collections": {
-    "title": "Browse by category",
-    "viewAll": "View all cars",
+    "eyebrow": "Collections",
+    "title": "The right car <em>for the trip.</em>",
+    "viewAll": "View all",
     "explore": "Explore",
-    "count": "{count, plural, =1 {1 vehicle} other {# vehicles}}",
     "items": {
       "exotic": {
         "description": "Big horsepower for a weekend to remember",
@@ -42,6 +42,11 @@
       }
     }
   },
+  "cities": {
+    "title": "Rent a car in your city",
+    "description": "Local rental companies, city by city.",
+    "more": "More cities"
+  },
   "companies": {
     "title": "Meet the rental companies",
     "description": "Independent businesses, each with their own fleet and terms."
@@ -52,12 +57,8 @@
       "description": "The latest vehicles added by rental companies."
     },
     "budget": {
-      "title": "${price} a day or less",
-      "description": "The lowest daily rates on the marketplace."
-    },
-    "electric": {
-      "title": "Electric vehicles",
-      "description": "Skip the pump and plug in instead."
+      "title": "Everyday drives, up to ${price} a day",
+      "description": "Good cars from local companies, at everyday prices."
     },
     "none": "No vehicles are listed yet.",
     "unavailable": "Vehicles are unavailable right now. Please try again shortly."
@@ -115,6 +116,18 @@
       "return": {
         "question": "Can I return the car to a different location?",
         "answer": "Yes, when the company has more than one branch. You choose the return branch while booking; pick-up is always at the branch where the car is kept."
+      },
+      "drivers": {
+        "question": "Can someone else drive?",
+        "answer": "Yes, if they're named on the rental agreement. Add them as an additional driver when you book; the company sets its price per driver per day, shown before you send the request. Each driver must meet the company's age and licence rules and show their licence at pick-up."
+      },
+      "cancel": {
+        "question": "What if I need to cancel?",
+        "answer": "Each company sets its own cancellation policy, shown on the vehicle page and again before you pay. Any refund follows that policy and is paid by the company. Nothing is charged while the company is still reviewing your request."
+      },
+      "pickup": {
+        "question": "What happens at pick-up?",
+        "answer": "Bring your driving licence, and each additional driver brings theirs: the company checks every licence before handing over the keys. The rental and any deposit need to be paid, and the rental agreement signed, before the car leaves."
       }
     }
   },

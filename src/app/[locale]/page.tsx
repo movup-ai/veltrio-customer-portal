@@ -6,10 +6,8 @@ import type { Locale } from "@/i18n/routing";
 import { em } from "@/i18n/rich";
 import { listCompanies } from "@/modules/company/company.repository";
 import { CompanyCard } from "@/modules/company/components/CompanyCard";
-import {
-  CollectionsSection,
-  CollectionsSkeleton,
-} from "@/modules/marketing/components/CollectionsSection";
+import { CitiesSection } from "@/modules/marketing/components/CitiesSection";
+import { CollectionsSection } from "@/modules/marketing/components/CollectionsSection";
 import { FaqSection } from "@/modules/marketing/components/FaqSection";
 import { HostCtaSection } from "@/modules/marketing/components/HostCtaSection";
 import { HowItWorksSection } from "@/modules/marketing/components/HowItWorksSection";
@@ -25,21 +23,29 @@ import {
   NEW_VEHICLES,
   vehicleRows,
 } from "@/modules/marketing/landing.utils";
+import { cityPhoto } from "@/modules/search/city-photos";
+import { cityHref, cityLabel } from "@/modules/search/cities";
 import { RecentSearchVehicles } from "@/modules/search/components/RecentSearchVehicles";
 import { SearchCapsule } from "@/modules/search/components/SearchCapsule";
-import { COLLECTIONS } from "@/modules/search/collections";
 import { buildSearchUrl } from "@/modules/search/search-params";
 import { listCities } from "@/modules/search/search.repository";
 import { VehicleCard } from "@/modules/vehicle/components/VehicleCard";
+import type { Vehicle } from "@/modules/vehicle/types";
 import { VehicleCardSkeleton } from "@/modules/vehicle/components/VehicleCardSkeleton";
 import { listVehicles } from "@/modules/vehicle/vehicle.repository";
 import { siteConfig } from "@/shared/config/site";
 import { buildMetadata, JsonLd } from "@/shared/lib/seo";
+import { Button } from "@/shared/ui/atoms/Button";
 import { settle } from "@/shared/lib/settle";
 import { ScrollRow } from "@/shared/ui/molecules/ScrollRow";
 import { SectionHeading } from "@/shared/ui/molecules/SectionHeading";
 import { SiteHeader } from "@/shared/ui/organisms/SiteHeader";
 import { ClientMessages } from "@/i18n/ClientMessages";
+
+/** Cities on the landing page at most, the fullest first. */
+const CITY_LIMIT = 12;
+/** A city tile's photo widths, from a phone's half-width tile to a retina desktop one. */
+const TILE_WIDTHS = [400, 800];
 
 interface PageProps {
   params: Promise<{ locale: Locale }>;
@@ -75,7 +81,7 @@ async function VehicleRows() {
       </section>
     );
   }
-  return vehicleRows(vehicles).map((row, rowIndex) => (
+  const rows = vehicleRows(vehicles).map((row, rowIndex) => (
     <ScrollRow
       key={row.id}
       id={row.id}
@@ -94,26 +100,32 @@ async function VehicleRows() {
       ))}
     </ScrollRow>
   ));
+  // The first row of cars, then the ways to browse them, then the everyday row.
+  return (
+    <>
+      {rows[0]}
+      <Collections vehicles={vehicles} />
+      {rows.slice(1)}
+    </>
+  );
 }
 
-/** Hand-picked groups of the listed vehicles, shown whether or not any are listed yet. */
-async function Collections() {
+/** Hand-picked groups of the listed vehicles; one with nothing in it is left out. */
+async function Collections({ vehicles }: { vehicles: Vehicle[] }) {
   const t = await getTranslations("landing");
   const names = await getTranslations("search.collections");
-  const vehicles = await settle(listVehicles());
-  const tiles = collectionTiles(vehicles ?? []);
+  const tiles = collectionTiles(vehicles);
+  if (tiles.length === 0) return null;
   return (
     <CollectionsSection
-      title={t("collections.title")}
+      eyebrow={t("collections.eyebrow")}
+      title={t.rich("collections.title", { em })}
       exploreLabel={t("collections.explore")}
       collections={collectionCards(t, (id) => names(id), tiles)}
       action={
-        <Link
-          href={buildSearchUrl()}
-          className="text-sm font-semibold underline underline-offset-4"
-        >
-          {t("collections.viewAll")}
-        </Link>
+        <Button asChild variant="outline" size="sm">
+          <Link href={buildSearchUrl()}>{t("collections.viewAll")}</Link>
+        </Button>
       }
     />
   );
@@ -164,20 +176,29 @@ export default async function HomePage({ params }: PageProps) {
       <main id="main">
         <SearchBanner
           title={intro.title}
+          // Low enough that the title sits on the sky, above the car.
+          image={{ ...intro.image, position: "50% 70%" }}
           note={<TrustStrip label={t("trust.label")} points={trustPoints} />}
-          footer={
-            <Suspense
-              fallback={<CollectionsSkeleton count={COLLECTIONS.length} />}
-            >
-              <Collections />
-            </Suspense>
-          }
         >
           <SearchCapsule cities={cities} />
         </SearchBanner>
 
-        <div className="container-page space-y-16 pt-10 md:pt-12">
+        {/* Wide gaps between sections, so each one is taken in on its own. */}
+        <div className="container-page space-y-16 pt-16 pb-8 md:space-y-24 md:pt-20">
           <RecentSearchVehicles cities={cities} />
+
+          {cities.length > 0 && (
+            <CitiesSection
+              title={t("cities.title")}
+              description={t("cities.description")}
+              moreLabel={t("cities.more")}
+              cities={cities.slice(0, CITY_LIMIT).map((city) => ({
+                label: cityLabel(city),
+                href: cityHref(city),
+                image: cityPhoto(city, TILE_WIDTHS, 4 / 3),
+              }))}
+            />
+          )}
 
           <Suspense
             fallback={
@@ -203,6 +224,7 @@ export default async function HomePage({ params }: PageProps) {
             eyebrow={t("steps.eyebrow")}
             title={t.rich("steps.title", { em })}
             steps={howItWorks}
+            layout="list"
             action={
               <Link
                 href="/how-it-works"

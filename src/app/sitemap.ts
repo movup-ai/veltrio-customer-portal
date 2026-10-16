@@ -1,6 +1,9 @@
 import type { MetadataRoute } from "next";
 import { listCompanies } from "@/modules/company/company.repository";
 import { companyHref } from "@/modules/company/company.utils";
+import { cityHref } from "@/modules/search/cities";
+import { listCities } from "@/modules/search/search.repository";
+import { PRIVACY_PATH, TERMS_PATH } from "@/modules/legal/legal";
 import { listVehicles } from "@/modules/vehicle/vehicle.repository";
 import { vehicleHref } from "@/modules/vehicle/vehicle.utils";
 import { localizeHref } from "@/i18n/href";
@@ -21,6 +24,7 @@ function translations(url: string) {
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const vehicles = (await settle(listVehicles())) ?? [];
   const companies = (await settle(listCompanies())) ?? [];
+  const cities = (await settle(listCities())) ?? [];
   return [
     {
       url: siteConfig.url,
@@ -40,6 +44,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.5,
       alternates: translations(`${siteConfig.url}/for-rental-companies`),
     },
+    {
+      url: `${siteConfig.url}/pricing`,
+      changeFrequency: "monthly",
+      priority: 0.5,
+      alternates: translations(`${siteConfig.url}/pricing`),
+    },
+    ...[TERMS_PATH, PRIVACY_PATH].map((path) => ({
+      url: `${siteConfig.url}${path}`,
+      changeFrequency: "yearly" as const,
+      priority: 0.2,
+      alternates: translations(`${siteConfig.url}${path}`),
+    })),
+    ...cities.map((city) => ({
+      url: `${siteConfig.url}${cityHref(city)}`,
+      changeFrequency: "daily" as const,
+      priority: 0.9,
+      alternates: translations(`${siteConfig.url}${cityHref(city)}`),
+    })),
     ...companies.map((company) => ({
       url: companyHref(company),
       changeFrequency: "daily" as const,

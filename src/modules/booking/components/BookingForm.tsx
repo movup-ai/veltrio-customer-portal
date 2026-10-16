@@ -3,6 +3,8 @@
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { localizeHref } from "@/i18n/href";
+import { Link } from "@/i18n/Link";
+import { PRIVACY_PATH, TERMS_PATH } from "@/modules/legal/legal";
 import { track } from "@/shared/lib/analytics";
 import { Button } from "@/shared/ui/atoms/Button";
 import { Select } from "@/shared/ui/molecules/Select";
@@ -307,6 +309,29 @@ export function BookingForm({
             {status.sending ? t("form.sending") : t("form.submit")}
           </Button>
           <p className="mt-3 text-meta text-muted">{t("form.notCharged")}</p>
+          <p className="mt-1 text-meta text-muted">
+            {t.rich("form.agreement", {
+              // A new tab, so the form and its photos stay as they are.
+              terms: (chunks) => (
+                <Link
+                  href={TERMS_PATH}
+                  target="_blank"
+                  className="underline underline-offset-4"
+                >
+                  {chunks}
+                </Link>
+              ),
+              privacy: (chunks) => (
+                <Link
+                  href={PRIVACY_PATH}
+                  target="_blank"
+                  className="underline underline-offset-4"
+                >
+                  {chunks}
+                </Link>
+              ),
+            })}
+          </p>
         </div>
       </form>
     </div>

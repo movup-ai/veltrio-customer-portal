@@ -27,6 +27,11 @@ export function citySlug({ city, state }: Place) {
     .replace(/^-|-$/g, "");
 }
 
+/** The city's own page, e.g. "/cars/miami-fl". */
+export function cityHref(place: Place) {
+  return `/cars/${citySlug(place)}`;
+}
+
 /** The city a location slug names, if it still has vehicles. */
 export function findCity<C extends Place>(
   cities: C[],

@@ -16,7 +16,8 @@
     "needAttention": "{count, plural, =1 {Un campo de arriba necesita tu atención.} other {# campos de arriba necesitan tu atención.}}",
     "sending": "Enviando solicitud…",
     "submit": "Solicitar reserva",
-    "notCharged": "Todavía no se te cobrará nada."
+    "notCharged": "Todavía no se te cobrará nada.",
+    "agreement": "Al enviar una solicitud, aceptas los <terms>Términos del servicio</terms> y la <privacy>Política de privacidad</privacy> de Veltrio. El alquiler en sí se rige por el contrato de la empresa, que firmas antes de recoger el auto."
   },
   "failures": {
     "unavailable": "Este vehículo ya no está disponible en esas fechas. Cambia las fechas e inténtalo de nuevo.",

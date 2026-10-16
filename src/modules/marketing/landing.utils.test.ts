@@ -10,7 +10,7 @@ describe("collectionTiles", () => {
       specs: { fuelType, seats: 5, horsepower: null },
     }) as unknown as Vehicle;
 
-  it("counts every collection, empty ones included, linking to its search", () => {
+  it("keeps the everyday-first collections with a vehicle in them, leaving economy to its row", () => {
     const listed = [
       car("electric", 5000),
       car("electric", 7000),
@@ -18,40 +18,38 @@ describe("collectionTiles", () => {
       car("petrol", 6000),
     ];
     expect(collectionTiles(listed)).toEqual([
-      { collection: "exotic", count: 0, href: "/search?collection=exotic" },
       { collection: "electric", count: 3, href: "/search?collection=electric" },
-      { collection: "economy", count: 3, href: "/search?collection=economy" },
-      { collection: "family", count: 0, href: "/search?collection=family" },
     ]);
   });
 
-  it("keeps all four when nothing is listed", () => {
-    expect(collectionTiles([]).map((tile) => tile.count)).toEqual([0, 0, 0, 0]);
+  it("is empty when nothing is listed", () => {
+    expect(collectionTiles([])).toEqual([]);
   });
 });
 
 describe("vehicleRows", () => {
-  const priced = (dailyRateCents: number, fuelType = "petrol") =>
-    ({ make: "Audi", dailyRateCents, specs: { fuelType } }) as Vehicle;
+  const priced = (dailyRateCents: number) =>
+    ({
+      make: "Audi",
+      dailyRateCents,
+      specs: { fuelType: "petrol" },
+    }) as Vehicle;
 
-  it("shows the newest eight, and a themed row only with four or more", () => {
-    const cheap = [7000, 3000, 5000, 4000].map((rate) => priced(rate));
-    const listed = [
-      ...Array.from({ length: 6 }, () => priced(20000)),
-      ...cheap,
-      priced(9000, "electric"),
-    ];
+  it("puts each car in one row: the cheap ones by price, the rest newest first", () => {
+    const listed = [priced(20000), priced(7000), priced(15000), priced(3000)];
     const rows = vehicleRows(listed);
-    expect(rows.map((row) => [row.id, row.href, row.vehicles.length])).toEqual([
-      ["new-vehicles", "/search", 8],
-      ["budget-vehicles", "/search?maxPrice=75&sort=price-asc", 4],
+    expect(rows.map((row) => [row.id, row.href])).toEqual([
+      ["new-vehicles", "/search"],
+      ["budget-vehicles", "/search?maxPrice=75&sort=price-asc"],
     ]);
-    expect(rows[1]?.vehicles.map((vehicle) => vehicle.dailyRateCents)).toEqual([
-      3000, 4000, 5000, 7000,
-    ]);
+    expect(rows[0]?.vehicles).toEqual([listed[0], listed[2]]);
+    expect(rows[1]?.vehicles).toEqual([listed[3], listed[1]]);
   });
 
-  it("keeps the first row when nothing is listed", () => {
-    expect(vehicleRows([]).map((row) => row.vehicles)).toEqual([[]]);
+  it("shows at most eight a row and leaves an empty one out", () => {
+    const rows = vehicleRows(Array.from({ length: 10 }, () => priced(5000)));
+    expect(rows.map((row) => [row.id, row.vehicles.length])).toEqual([
+      ["budget-vehicles", 8],
+    ]);
   });
 });

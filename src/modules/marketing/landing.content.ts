@@ -10,6 +10,7 @@ import {
   ECONOMY_MAX_PRICE,
   type CollectionId,
 } from "@/modules/search/collections";
+import { PRIVACY_PATH, TERMS_PATH } from "@/modules/legal/legal";
 import { siteConfig } from "@/shared/config/site";
 import { unsplash } from "@/shared/lib/unsplash";
 import type { FooterColumn } from "@/shared/ui/organisms/SiteFooter";
@@ -57,13 +58,12 @@ export function collectionCards(
   name: (collection: CollectionId) => string,
   tiles: CollectionTile[],
 ): Collection[] {
-  return tiles.map(({ collection, count, href }) => ({
+  return tiles.map(({ collection, href }) => ({
     title: name(collection),
     description: t(`collections.items.${collection}.description`, {
       price: ECONOMY_MAX_PRICE,
     }),
     href,
-    eyebrow: t("collections.count", { count }),
     image: {
       variants: unsplash(COLLECTION_PHOTOS[collection], [600, 1200], 3 / 4),
       alt: t(`collections.items.${collection}.alt`),
@@ -73,6 +73,8 @@ export function collectionCards(
 
 /** The page that explains Veltrio to rental companies. */
 export const COMPANIES_PATH = "/for-rental-companies";
+/** Plans and prices for rental companies. */
+export const PRICING_PATH = "/pricing";
 
 const STEPS = ["find", "request", "confirm", "pickUp"] as const;
 const FAQS = [
@@ -83,6 +85,9 @@ const FAQS = [
   "need",
   "deposit",
   "return",
+  "drivers",
+  "cancel",
+  "pickup",
 ] as const;
 /** How many questions the landing page repeats; the rest are on the how-it-works page. */
 const TOP_FAQS = 5;
@@ -95,7 +100,11 @@ export function landingContent(t: Translator<"landing">) {
   const intro = {
     title: t("intro.title"),
     image: {
-      variants: [{ url: "/images/landing.jpg", width: 2000, height: 1335 }],
+      variants: unsplash(
+        "1529369623266-f5264b696110",
+        [800, 1600, 2400],
+        16 / 9,
+      ),
       alt: t("intro.imageAlt"),
     },
   };
@@ -178,6 +187,7 @@ export function footerContent(t: Translator<"common">) {
       title: t("footer.explore.title"),
       links: [
         { href: "/search", label: t("footer.explore.vehicles") },
+        { href: "/#cities", label: t("footer.explore.cities") },
         { href: "/#collections", label: t("footer.explore.collections") },
         { href: "/#companies", label: t("footer.explore.companies") },
       ],
@@ -187,7 +197,7 @@ export function footerContent(t: Translator<"common">) {
       links: [
         { href: COMPANIES_PATH, label: t("footer.forCompanies.list") },
         {
-          href: `${COMPANIES_PATH}#pricing`,
+          href: PRICING_PATH,
           label: t("footer.forCompanies.pricing"),
         },
         ...(siteConfig.portalUrl
@@ -208,14 +218,18 @@ export function footerContent(t: Translator<"common">) {
       ],
     },
   ];
-  /** Beside the copyright line. Privacy and Terms join it once their text exists. */
-  const legalLinks = siteConfig.supportEmail
-    ? [
-        {
-          href: `mailto:${siteConfig.supportEmail}`,
-          label: t("footer.contact"),
-        },
-      ]
-    : [];
+  /** Beside the copyright line. */
+  const legalLinks = [
+    { href: TERMS_PATH, label: t("footer.terms") },
+    { href: PRIVACY_PATH, label: t("footer.privacy") },
+    ...(siteConfig.supportEmail
+      ? [
+          {
+            href: `mailto:${siteConfig.supportEmail}`,
+            label: t("footer.contact"),
+          },
+        ]
+      : []),
+  ];
   return { columns, legalLinks };
 }

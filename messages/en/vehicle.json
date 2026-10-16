@@ -46,7 +46,10 @@
     "features": "Features",
     "company": "Rental company",
     "bookLabel": "Book this vehicle",
-    "pickupAt": "Pick-up at {location}. Your booking goes straight to this company."
+    "pickupAt": "Pick-up at {location}. Your booking goes straight to this company.",
+    "terms": "Rental terms",
+    "pickup": "Pick-up location",
+    "prices": "Prices"
   },
   "specs": {
     "transmission": "Transmission",
@@ -57,6 +60,21 @@
     "zeroToSixty": "0–60 mph",
     "topSpeed": "Top speed",
     "cylinders": "Cylinders"
+  },
+  "prices": {
+    "per": "{price} per {per, select, hour {hour} day {day} week {week} other {month}}",
+    "block": "{price} for {count, plural, one {# {unit, select, hours {hour} days {day} weeks {week} other {month}}} other {# {unit, select, hours {hours} days {days} weeks {weeks} other {months}}}}",
+    "unlimited": "Unlimited miles",
+    "included": "{miles, number} mi per {per, select, hour {hour} day {day} week {week} month {month} other {rental}} included",
+    "longRental": "{days}+ days",
+    "percentOff": "{percent}% off"
+  },
+  "terms": {
+    "deposit": "Security deposit",
+    "noDeposit": "None",
+    "depositHeld": "{price}, refunded on return",
+    "drivers": "Additional drivers",
+    "perDriver": "{price} per driver per day"
   },
   "features": {
     "air_conditioning": "Air conditioning",
