@@ -46,7 +46,9 @@
     "features": "Equipamiento",
     "company": "Empresa de alquiler",
     "bookLabel": "Reservar este vehículo",
-    "pickupAt": "Recogida en {location}. Tu reserva llega directamente a esta empresa."
+    "pickupAt": "Recogida en {location}. Tu reserva llega directamente a esta empresa.",
+    "terms": "Condiciones del alquiler",
+    "pickup": "Lugar de recogida"
   },
   "specs": {
     "transmission": "Transmisión",
@@ -57,6 +59,18 @@
     "zeroToSixty": "0–60 mph",
     "topSpeed": "Velocidad máxima",
     "cylinders": "Cilindros"
+  },
+  "terms": {
+    "mileage": "Kilometraje",
+    "unlimited": "Millas ilimitadas",
+    "included": "{miles, number} mi por {per, select, hour {hora} day {día} week {semana} month {mes} other {alquiler}} incluidas",
+    "deposit": "Depósito de garantía",
+    "noDeposit": "Ninguno",
+    "depositHeld": "{price}, reembolsable al devolverlo",
+    "longRental": "{days}+ días",
+    "percentOff": "{percent}% de descuento",
+    "drivers": "Conductores adicionales",
+    "perDriver": "{price} por conductor al día"
   },
   "features": {
     "air_conditioning": "Aire acondicionado",

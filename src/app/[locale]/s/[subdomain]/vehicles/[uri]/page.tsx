@@ -5,13 +5,16 @@ import type { Locale } from "@/i18n/routing";
 import { Suspense } from "react";
 import { BookingPanel } from "@/modules/booking/components/BookingPanel";
 import { MobileBookingBar } from "@/modules/booking/components/MobileBookingBar";
+import { listCompanyLocations } from "@/modules/company/company.repository";
 import { companyHref } from "@/modules/company/company.utils";
+import { CompanyLocations } from "@/modules/company/components/CompanyLocations";
 import { RentalCompanyCard } from "@/modules/company/components/RentalCompanyCard";
 import { VehicleDetailSection } from "@/modules/vehicle/components/VehicleDetailSection";
 import { VehicleFeatures } from "@/modules/vehicle/components/VehicleFeatures";
 import { VehicleGallery } from "@/modules/vehicle/components/VehicleGallery";
 import { VehicleHeader } from "@/modules/vehicle/components/VehicleHeader";
 import { VehicleSpecs } from "@/modules/vehicle/components/VehicleSpecs";
+import { VehicleTerms } from "@/modules/vehicle/components/VehicleTerms";
 import type { Vehicle } from "@/modules/vehicle/types";
 import { getVehicle } from "@/modules/vehicle/vehicle.repository";
 import {
@@ -21,8 +24,10 @@ import {
 } from "@/modules/vehicle/vehicle.utils";
 import { siteConfig } from "@/shared/config/site";
 import { formatMoney } from "@/shared/lib/format";
+import { settle } from "@/shared/lib/settle";
 import { buildMetadata, JsonLd } from "@/shared/lib/seo";
 import { Skeleton } from "@/shared/ui/atoms/Skeleton";
+import { CancellationPolicy } from "@/shared/ui/molecules/CancellationPolicy";
 import { SiteHeader } from "@/shared/ui/organisms/SiteHeader";
 import { ClientMessages } from "@/i18n/ClientMessages";
 
@@ -82,11 +87,15 @@ export default async function VehiclePage({ params }: PageProps) {
   if (!vehicle) notFound();
 
   const t = await getTranslations("vehicle");
+  // Optional: without its branches the page simply has no pick-up section.
+  const branch = ((await settle(listCompanyLocations(subdomain))) ?? []).find(
+    (location) => location.name === vehicle.location,
+  );
   const name = vehicleName(vehicle);
   const url = vehicleHref(vehicle);
 
   return (
-    <ClientMessages namespaces={["vehicle"]}>
+    <ClientMessages namespaces={["vehicle", "company"]}>
       <JsonLd
         data={{
           "@context": "https://schema.org",
@@ -150,6 +159,21 @@ export default async function VehiclePage({ params }: PageProps) {
               {vehicle.features.length > 0 && (
                 <VehicleDetailSection id="features" title={t("page.features")}>
                   <VehicleFeatures features={vehicle.features} />
+                </VehicleDetailSection>
+              )}
+              <VehicleDetailSection id="terms" title={t("page.terms")}>
+                <VehicleTerms terms={vehicle} />
+                {vehicle.cancellationPolicy && (
+                  <CancellationPolicy
+                    policy={vehicle.cancellationPolicy}
+                    companyName={vehicle.company.name}
+                    className="mt-4"
+                  />
+                )}
+              </VehicleDetailSection>
+              {branch && (
+                <VehicleDetailSection id="pickup" title={t("page.pickup")}>
+                  <CompanyLocations locations={[branch]} />
                 </VehicleDetailSection>
               )}
               <VehicleDetailSection id="company" title={t("page.company")}>
