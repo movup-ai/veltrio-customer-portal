@@ -53,6 +53,12 @@ const HERO_IMAGE = unsplash(
   [800, 1600, 2400],
   16 / 10,
 );
+/** The photo cut to the 1.91:1 of a link preview. */
+export const SHARE_IMAGE = unsplash(
+  "1492144534655-ae79c964c9d7",
+  [1200],
+  1200 / 630,
+)[0]!.url;
 const POINTS = ["commission", "fee", "payout", "software"] as const;
 const STEPS = ["account", "vehicles", "stripe", "live"] as const;
 const FAQS = ["cost", "share", "paid", "who", "decline", "trial"] as const;

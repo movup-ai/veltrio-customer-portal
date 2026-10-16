@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
+import { localizeHref } from "@/i18n/href";
 import type { Locale } from "@/i18n/routing";
 import { Suspense } from "react";
 import { BookingPanel } from "@/modules/booking/components/BookingPanel";
@@ -16,7 +17,7 @@ import { VehicleHeader } from "@/modules/vehicle/components/VehicleHeader";
 import { VehiclePrices } from "@/modules/vehicle/components/VehiclePrices";
 import { VehicleSpecs } from "@/modules/vehicle/components/VehicleSpecs";
 import { VehicleTerms } from "@/modules/vehicle/components/VehicleTerms";
-import type { Vehicle } from "@/modules/vehicle/types";
+import type { Vehicle, VehiclePhoto } from "@/modules/vehicle/types";
 import { getVehicle } from "@/modules/vehicle/vehicle.repository";
 import {
   bookedRanges,
@@ -36,9 +37,8 @@ interface PageProps {
   params: Promise<{ locale: Locale; subdomain: string; uri: string }>;
 }
 
-function largestPhotoUrl(vehicle: Vehicle) {
-  const variants = vehicle.photos[0]?.variants ?? [];
-  return [...variants].sort((a, b) => b.width - a.width)[0]?.url;
+function largestUrl(photo: VehiclePhoto) {
+  return [...photo.variants].sort((a, b) => b.width - a.width)[0]?.url;
 }
 
 type Translator = Awaited<ReturnType<typeof getTranslations<"vehicle">>>;
@@ -77,13 +77,13 @@ export async function generateMetadata({
     description: describe(vehicle, t),
     path: vehicleHref(vehicle),
     locale,
-    image: largestPhotoUrl(vehicle),
+    image: vehicle.photos[0] && largestUrl(vehicle.photos[0]),
     siteName: vehicle.company.name,
   });
 }
 
 export default async function VehiclePage({ params }: PageProps) {
-  const { subdomain, uri } = await params;
+  const { locale, subdomain, uri } = await params;
   const vehicle = await getVehicle(subdomain, uri);
   if (!vehicle) notFound();
 
@@ -102,7 +102,7 @@ export default async function VehiclePage({ params }: PageProps) {
           "@context": "https://schema.org",
           "@type": "Car",
           name: `${vehicle.year} ${name}`,
-          url,
+          url: localizeHref(url, locale),
           description: describe(vehicle, t),
           brand: { "@type": "Brand", name: vehicle.make },
           model: vehicle.model,
@@ -112,18 +112,20 @@ export default async function VehiclePage({ params }: PageProps) {
           numberOfDoors: vehicle.specs.doors,
           vehicleTransmission: vehicle.specs.transmission,
           fuelType: vehicle.specs.fuelType,
-          image: vehicle.photos.flatMap((photo) => {
-            const largest = [...photo.variants].sort(
-              (a, b) => b.width - a.width,
-            )[0];
-            return largest ? [largest.url] : [];
-          }),
+          image: vehicle.photos.flatMap((photo) => largestUrl(photo) ?? []),
           ...(vehicle.dailyRateCents !== null && {
             offers: {
               "@type": "Offer",
-              url,
+              url: localizeHref(url, locale),
               price: vehicle.dailyRateCents / 100,
               priceCurrency: "USD",
+              // The price is per rental day, not for the car.
+              priceSpecification: {
+                "@type": "UnitPriceSpecification",
+                price: vehicle.dailyRateCents / 100,
+                priceCurrency: "USD",
+                unitCode: "DAY",
+              },
               seller: { "@type": "Organization", name: vehicle.company.name },
             },
           }),

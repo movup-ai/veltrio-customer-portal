@@ -1,7 +1,7 @@
 "use server";
 
-import { headers } from "next/headers";
 import { apiPost } from "@/shared/api/client";
+import { forwardedHeaders } from "@/shared/api/forwarded-headers";
 import { logMarketplaceOutcome } from "@/shared/lib/posthog-logs";
 import { toSignFailure } from "./contract.api";
 import { agreementPath } from "./contract.repository";
@@ -17,13 +17,6 @@ export async function signAgreement(
   input: SignatureInput,
 ): Promise<SignResult> {
   try {
-    const request = await headers();
-    const forwarded: Record<string, string> = {};
-    const agent = request.get("user-agent");
-    const address = request.get("x-forwarded-for");
-    if (agent) forwarded["User-Agent"] = agent;
-    if (address) forwarded["X-Forwarded-For"] = address;
-
     await apiPost(
       `${agreementPath(link)}/sign`,
       {
@@ -32,7 +25,7 @@ export async function signAgreement(
         // Sent only from the form's ticked box: agreeing is the renter's act.
         consent: true,
       },
-      forwarded,
+      await forwardedHeaders(),
     );
     logMarketplaceOutcome("agreement_signature_recorded");
     return { ok: true };

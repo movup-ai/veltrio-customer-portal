@@ -1,5 +1,5 @@
 import { useTranslations } from "next-intl";
-import { VehicleCardSkeleton } from "@/modules/vehicle/components/VehicleCardSkeleton";
+import { VehicleGridSkeleton } from "@/modules/vehicle/components/VehicleCardSkeleton";
 import { Skeleton } from "@/shared/ui/atoms/Skeleton";
 import { SiteHeader } from "@/shared/ui/organisms/SiteHeader";
 
@@ -17,11 +17,7 @@ export default function CityLoading() {
         </div>
         <div className="container-page pt-16 md:pt-20">
           <Skeleton className="mb-6 h-7 w-56" />
-          <div className="grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {Array.from({ length: 8 }, (_, index) => (
-              <VehicleCardSkeleton key={index} />
-            ))}
-          </div>
+          <VehicleGridSkeleton />
         </div>
       </main>
     </>

@@ -24,6 +24,14 @@ export function readableOn(
   return value !== null && value > 0.179 ? dark : light;
 }
 
+/** WCAG contrast ratio of two "#rrggbb" colours, 1 to 21; null when either is not one. */
+export function contrastRatio(a: string, b: string) {
+  const la = luminance(a);
+  const lb = luminance(b);
+  if (la === null || lb === null) return null;
+  return (Math.max(la, lb) + 0.05) / (Math.min(la, lb) + 0.05);
+}
+
 /** Guards a colour that comes from data before it reaches inline CSS. */
 export function isHexColor(value: string | null | undefined): value is string {
   return !!value && HEX.test(value);

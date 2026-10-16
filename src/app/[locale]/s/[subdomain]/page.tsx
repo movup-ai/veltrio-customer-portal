@@ -12,7 +12,7 @@ import { CompanyBrandStyle } from "@/modules/company/components/CompanyBrandStyl
 import { CompanyHero } from "@/modules/company/components/CompanyHero";
 import { CompanyLocations } from "@/modules/company/components/CompanyLocations";
 import { CompanyMap } from "@/modules/company/components/CompanyMap";
-import { VehicleCard } from "@/modules/vehicle/components/VehicleCard";
+import { VehicleGrid } from "@/modules/vehicle/components/VehicleGrid";
 import { listCompanyVehicles } from "@/modules/vehicle/vehicle.repository";
 import { buildMetadata, JsonLd } from "@/shared/lib/seo";
 import { settle } from "@/shared/lib/settle";
@@ -99,17 +99,7 @@ export default async function CompanyPage({ params }: PageProps) {
                 name: company.name,
               })}
             />
-            <ul className="grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {vehicles.map((vehicle, index) => (
-                <li key={vehicle.id}>
-                  <VehicleCard
-                    vehicle={vehicle}
-                    index={index}
-                    priority={index < 4}
-                  />
-                </li>
-              ))}
-            </ul>
+            <VehicleGrid vehicles={vehicles} />
           </section>
 
           <section aria-labelledby="about-heading">

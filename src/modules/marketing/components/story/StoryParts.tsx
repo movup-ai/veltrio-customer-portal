@@ -22,6 +22,7 @@ export function StoryFigure({
   image,
   motion,
   inverse = false,
+  narrow = false,
   address,
   className,
 }: {
@@ -29,6 +30,8 @@ export function StoryFigure({
   motion: StoryMotion;
   /** On a dark chapter. */
   inverse?: boolean;
+  /** Held to max-w-md, so a phone-sized screenshot is not fetched at desktop width. */
+  narrow?: boolean;
   /** Frames the picture as a browser window open at this address. */
   address?: string;
   className?: string;
@@ -60,7 +63,11 @@ export function StoryFigure({
           width={image.width}
           height={image.height}
           alt={image.alt}
-          sizes="(min-width: 1024px) 55vw, 100vw"
+          sizes={
+            narrow
+              ? "(min-width: 28rem) 28rem, 100vw"
+              : "(min-width: 1024px) 55vw, 100vw"
+          }
           className="mx-auto h-auto w-full rounded-lg"
         />
       </div>

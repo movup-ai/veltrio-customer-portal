@@ -23,21 +23,18 @@ export async function generateMetadata({
   const t = await getTranslations({ locale, namespace: "vehicle.photosPage" });
   const name = `${vehicle.year} ${vehicleName(vehicle)}`;
   const company = vehicle.company.name;
-  return {
-    ...buildMetadata({
-      title: t("metaTitle", { name, company }),
-      description: t("metaDescription", {
-        count: vehicle.photos.length,
-        name,
-        company,
-      }),
-      // The vehicle page is the one to rank; this page only repeats its photos.
-      path: vehicleHref(vehicle),
-      siteName: vehicle.company.name,
-      locale,
+  return buildMetadata({
+    title: t("metaTitle", { name, company }),
+    description: t("metaDescription", {
+      count: vehicle.photos.length,
+      name,
+      company,
     }),
-    robots: { index: false, follow: true },
-  };
+    // The vehicle page is the one to rank; this page only repeats its photos.
+    path: vehicleHref(vehicle),
+    siteName: vehicle.company.name,
+    locale,
+  });
 }
 
 export default async function VehiclePhotosPage({ params }: PageProps) {

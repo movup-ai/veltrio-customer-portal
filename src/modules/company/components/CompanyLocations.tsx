@@ -45,15 +45,17 @@ export function CompanyLocations({ locations }: CompanyLocationsProps) {
               type="button"
               aria-pressed={location.id === selected.id}
               onClick={() => setSelectedId(location.id)}
-              className="w-full rounded-xl border border-border bg-surface p-5 text-left text-carbon transition-colors hover:border-border-strong aria-pressed:border-carbon aria-pressed:shadow-1"
+              className="w-full rounded-xl border border-border bg-surface p-5 text-left text-foreground transition-colors hover:border-border-strong aria-pressed:border-foreground aria-pressed:shadow-1"
             >
               <span className="flex flex-wrap items-center gap-2">
-                <span className="font-semibold">{location.name}</span>
+                <span className="font-semibold text-heading">
+                  {location.name}
+                </span>
                 {location.isDefault && (
                   <Badge variant="muted">{t("mainBranch")}</Badge>
                 )}
               </span>
-              <span className="mt-3 grid gap-1.5 text-sm text-graphite">
+              <span className="mt-3 grid gap-1.5 text-sm text-muted">
                 {location.address && (
                   <span className="flex gap-2">
                     <MapPin aria-hidden className="mt-0.5 size-4 shrink-0" />

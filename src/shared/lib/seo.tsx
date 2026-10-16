@@ -7,6 +7,9 @@ import { siteConfig } from "@/shared/config/site";
 /** Open Graph's name for each language the site is in. */
 export const OG_LOCALE: Record<string, string> = { en: "en_US", es: "es_US" };
 
+/** The site-wide image from app/[locale]/opengraph-image.tsx; a page's own openGraph would otherwise drop it. */
+const DEFAULT_IMAGE = "/opengraph-image";
+
 interface PageSeo {
   title: string;
   description: string;
@@ -52,14 +55,19 @@ export function buildMetadata({
       url,
       siteName: siteName ?? siteConfig.name,
       locale: locale ? OG_LOCALE[locale] : siteConfig.locale,
+      ...(locale && {
+        alternateLocale: routing.locales
+          .filter((each) => each !== locale)
+          .map((each) => OG_LOCALE[each]!),
+      }),
       type: "website",
-      ...(image && { images: [image] }),
+      images: [image ?? DEFAULT_IMAGE],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      ...(image && { images: [image] }),
+      images: [image ?? DEFAULT_IMAGE],
     },
   };
 }
