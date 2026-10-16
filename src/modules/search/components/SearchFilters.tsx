@@ -3,22 +3,20 @@
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/Link";
 import { useRouter } from "@/i18n/navigation";
-import type {
-  FuelType,
-  Transmission,
-  VehicleType,
-} from "@/modules/vehicle/types";
+import type { VehicleType } from "@/modules/vehicle/types";
 import { COLLECTIONS } from "../collections";
-import { buildSearchUrl, type SearchQuery } from "../search-params";
+import {
+  buildSearchUrl,
+  FUEL_TYPES,
+  TRANSMISSIONS,
+  type SearchQuery,
+} from "../search-params";
 import { FilterMenu } from "./FilterMenu";
 
 /** Daily budgets offered, in dollars. */
 const PRICES = [50, 100, 200, 300, 500];
 /** Fewest seats offered. */
 const SEATS = [2, 4, 5, 7];
-
-const FUELS: FuelType[] = ["petrol", "diesel", "hybrid", "electric"];
-const TRANSMISSIONS: Transmission[] = ["automatic", "manual"];
 
 /** The filters that narrow results, as opposed to where, when and in what order. */
 const FACETS = [
@@ -116,7 +114,7 @@ export function SearchFilters({ query, types, makes }: SearchFiltersProps) {
       <FilterMenu
         label={t("fuel")}
         anyLabel={t("anyFuel")}
-        options={FUELS.map((fuel) => ({
+        options={FUEL_TYPES.map((fuel) => ({
           value: fuel,
           label: vehicle(`fuel.${fuel}`),
         }))}

@@ -12,7 +12,7 @@ import { cityPhoto } from "@/modules/search/city-photos";
 import { cityHref, cityLabel, findCity } from "@/modules/search/cities";
 import { SearchCapsule } from "@/modules/search/components/SearchCapsule";
 import { listCities } from "@/modules/search/search.repository";
-import { VehicleCard } from "@/modules/vehicle/components/VehicleCard";
+import { VehicleGrid } from "@/modules/vehicle/components/VehicleGrid";
 import { findListedVehicles } from "@/modules/vehicle/vehicle.repository";
 import { vehicleHref, vehicleName } from "@/modules/vehicle/vehicle.utils";
 import { siteConfig } from "@/shared/config/site";
@@ -102,7 +102,7 @@ export default async function CityPage({ params }: PageProps) {
               "@type": "ListItem",
               position: index + 1,
               name: `${vehicleName(vehicle)} ${vehicle.year}`,
-              url: vehicleHref(vehicle),
+              url: localizeHref(vehicleHref(vehicle), locale),
             })),
           }}
         />
@@ -131,17 +131,7 @@ export default async function CityPage({ params }: PageProps) {
               description={vehicles ? t("vehiclesDescription") : undefined}
             />
             {vehicles ? (
-              <ul className="grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {vehicles.map((vehicle, index) => (
-                  <li key={vehicle.id}>
-                    <VehicleCard
-                      vehicle={vehicle}
-                      index={index}
-                      priority={index < 4}
-                    />
-                  </li>
-                ))}
-              </ul>
+              <VehicleGrid vehicles={vehicles} />
             ) : (
               <p role="status" className="text-muted">
                 {t("unavailable")}

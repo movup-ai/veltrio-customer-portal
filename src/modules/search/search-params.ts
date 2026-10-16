@@ -10,8 +10,13 @@ import { COLLECTIONS, type CollectionId } from "./collections";
 export const SEARCH_SORTS = ["price-asc", "price-desc"] as const;
 export type SearchSort = (typeof SEARCH_SORTS)[number];
 
-const FUEL_TYPES: FuelType[] = ["petrol", "diesel", "hybrid", "electric"];
-const TRANSMISSIONS: Transmission[] = ["automatic", "manual"];
+export const FUEL_TYPES: FuelType[] = [
+  "petrol",
+  "diesel",
+  "hybrid",
+  "electric",
+];
+export const TRANSMISSIONS: Transmission[] = ["automatic", "manual"];
 
 /** How far a search near a point reaches, as the API does by default. */
 export const SEARCH_RADIUS_MILES = 25;

@@ -1,7 +1,7 @@
 "use server";
 
-import { headers } from "next/headers";
 import { ApiError, apiPost } from "@/shared/api/client";
+import { forwardedHeaders } from "@/shared/api/forwarded-headers";
 import { logMarketplaceOutcome } from "@/shared/lib/posthog-logs";
 import { paymentPath } from "./payment.repository";
 
@@ -19,18 +19,11 @@ export async function acceptExtension(
   signerName: string,
 ): Promise<AcceptResult> {
   try {
-    const request = await headers();
-    const forwarded: Record<string, string> = {};
-    const agent = request.get("user-agent");
-    const address = request.get("x-forwarded-for");
-    if (agent) forwarded["User-Agent"] = agent;
-    if (address) forwarded["X-Forwarded-For"] = address;
-
     await apiPost(
       `${paymentPath(subdomain, token)}/extension/accept`,
       // Sent only from the form's ticked box: agreeing is the renter's act.
       { signerName, consent: true },
-      forwarded,
+      await forwardedHeaders(),
     );
     logMarketplaceOutcome("extension_consent_recorded");
     return { ok: true };

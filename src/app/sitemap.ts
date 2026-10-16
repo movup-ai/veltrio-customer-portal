@@ -14,9 +14,12 @@ import { settle } from "@/shared/lib/settle";
 /** The other languages of a page whose text is translated, for search engines. */
 function translations(url: string) {
   return {
-    languages: Object.fromEntries(
-      routing.locales.map((locale) => [locale, localizeHref(url, locale)]),
-    ),
+    languages: {
+      ...Object.fromEntries(
+        routing.locales.map((locale) => [locale, localizeHref(url, locale)]),
+      ),
+      "x-default": url,
+    },
   };
 }
 

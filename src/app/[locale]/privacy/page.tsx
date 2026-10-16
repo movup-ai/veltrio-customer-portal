@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/i18n/routing";
 import { LegalDocument } from "@/modules/legal/components/LegalDocument";
+import { PRIVACY_PATH } from "@/modules/legal/legal";
 import { buildMetadata } from "@/shared/lib/seo";
 import { SiteHeader } from "@/shared/ui/organisms/SiteHeader";
 
@@ -17,7 +18,7 @@ export async function generateMetadata({
   return buildMetadata({
     title: t("metaTitle"),
     description: t("metaDescription"),
-    path: "/privacy",
+    path: PRIVACY_PATH,
     locale,
   });
 }

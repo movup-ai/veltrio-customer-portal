@@ -33,7 +33,7 @@ import { VehicleCard } from "@/modules/vehicle/components/VehicleCard";
 import type { Vehicle } from "@/modules/vehicle/types";
 import { VehicleCardSkeleton } from "@/modules/vehicle/components/VehicleCardSkeleton";
 import { listVehicles } from "@/modules/vehicle/vehicle.repository";
-import { siteConfig } from "@/shared/config/site";
+import { siteConfig, siteHref } from "@/shared/config/site";
 import { buildMetadata, JsonLd } from "@/shared/lib/seo";
 import { Button } from "@/shared/ui/atoms/Button";
 import { settle } from "@/shared/lib/settle";
@@ -81,7 +81,7 @@ async function VehicleRows() {
       </section>
     );
   }
-  const rows = vehicleRows(vehicles).map((row, rowIndex) => (
+  const rows = vehicleRows(vehicles).map((row) => (
     <ScrollRow
       key={row.id}
       id={row.id}
@@ -90,13 +90,7 @@ async function VehicleRows() {
       seeAllHref={row.href}
     >
       {row.vehicles.map((vehicle, index) => (
-        <VehicleCard
-          key={vehicle.id}
-          vehicle={vehicle}
-          index={index}
-          priority={rowIndex === 0 && index < 4}
-          newTab
-        />
+        <VehicleCard key={vehicle.id} vehicle={vehicle} index={index} newTab />
       ))}
     </ScrollRow>
   ));
@@ -161,6 +155,7 @@ export default async function HomePage({ params }: PageProps) {
           "@type": "Organization",
           name: siteConfig.name,
           url: siteConfig.url,
+          logo: siteHref("/apple-icon.png"),
           description: site("description"),
         }}
       />

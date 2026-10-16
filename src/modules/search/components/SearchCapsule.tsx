@@ -13,7 +13,6 @@ import { formatDay, fromIsoDate, toIsoDate } from "@/shared/lib/date";
 import { formatTime, HOURLY_TIMES } from "@/shared/lib/time";
 import { Button } from "@/shared/ui/atoms/Button";
 import { Skeleton } from "@/shared/ui/atoms/Skeleton";
-import { DateRangePicker } from "@/shared/ui/molecules/DateRangePicker";
 import { ListboxContent } from "@/shared/ui/molecules/Listbox";
 import {
   Popover,
@@ -52,6 +51,15 @@ const TIME_OPTIONS = HOURLY_TIMES.map((time) => ({
 const PlaceSuggestions = dynamic(
   () => import("./PlaceSuggestions").then((module) => module.PlaceSuggestions),
   { ssr: false, loading: () => <Skeleton className="m-2 h-11" /> },
+);
+
+// The calendar is only downloaded once the dates are opened.
+const DateRangePicker = dynamic(
+  () =>
+    import("@/shared/ui/molecules/DateRangePicker").then(
+      (module) => module.DateRangePicker,
+    ),
+  { ssr: false, loading: () => <Skeleton className="h-80 w-72" /> },
 );
 
 /** Letters typed before places are looked up. */
