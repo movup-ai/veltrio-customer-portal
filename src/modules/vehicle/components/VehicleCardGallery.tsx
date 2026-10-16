@@ -19,7 +19,7 @@ interface VehicleCardGalleryProps {
 
 // Hidden until the card is hovered or focused; always shown on touch screens.
 const ARROW =
-  "absolute top-1/2 z-20 grid size-8 -translate-y-1/2 place-items-center rounded-full bg-white/94 opacity-0 shadow-1 transition duration-(--duration-fast) before:absolute before:-inset-1.5 group-hover:opacity-100 hover:scale-106 focus-visible:opacity-100 pointer-coarse:opacity-100";
+  "absolute top-1/2 z-20 grid size-8 -translate-y-1/2 place-items-center rounded-full bg-surface/94 opacity-0 shadow-1 transition duration-(--duration-fast) before:absolute before:-inset-1.5 group-hover:opacity-100 hover:scale-106 focus-visible:opacity-100 pointer-coarse:opacity-100";
 
 /** The photo area of a vehicle card: a sliding track with arrows and position dots. */
 export function VehicleCardGallery({

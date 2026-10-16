@@ -53,6 +53,8 @@
 
   --color-foreground: var(--color-carbon);
   --color-foreground-secondary: var(--color-ink);
+  /* Titles; a company storefront points it at its text colour. */
+  --color-heading: var(--color-foreground);
   --color-muted: var(--color-graphite);
   --color-placeholder: var(
     --color-steel
@@ -70,6 +72,8 @@
   --color-primary: var(--color-ember-600);
   --color-primary-hover: var(--color-ember-700);
   --color-on-primary: var(--color-white);
+  /* A vehicle's rate; a company storefront points it at its primary colour. */
+  --color-price: var(--color-foreground);
 
   --color-success: var(--color-verdant-600);
   --color-success-soft: var(--color-verdant-50);

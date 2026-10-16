@@ -111,7 +111,9 @@ export function VehicleCard({
           <p className="mt-2 flex items-baseline gap-1.5">
             {t.rich("card.rate", {
               price: formatMoney(rate),
-              b: (chunks) => <span className="font-bold">{chunks}</span>,
+              b: (chunks) => (
+                <span className="font-bold text-price">{chunks}</span>
+              ),
             })}
           </p>
         )}
